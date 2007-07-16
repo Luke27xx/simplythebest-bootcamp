@@ -1,0 +1,10 @@
+ORCL =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = sgh42802tw)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = orcl)
+      (SERVER = DEDICATED)
+    )
+  )

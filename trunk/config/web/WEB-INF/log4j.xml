@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+  <!-- ====================== -->
+  <!-- HRS Application Log4J  -->
+  <!-- ====================== -->
+
+<log4j:configuration>
+        
+  <appender name="LF5Appender" class="org.apache.log4j.lf5.LF5Appender">
+     <param name="MaxNumberOfRecords" value="1000"/> 
+  </appender>
+
+  <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p: %d: %x: %c: %C: %M: - %m %n"/>
+    </layout>
+  </appender>
+  
+  <appender name="File" class="org.apache.log4j.RollingFileAppender">
+      <param name="File" value="C:/hr.log"/>
+      <param name="MaxFileSize" value="500KB"/>
+	  <param name="MaxBackupIndex" value="5"/>
+	  <param name="Append" value="true"/>
+      <layout class="org.apache.log4j.PatternLayout">
+      	<param name="ConversionPattern" value="%p: %d: %x: %c: %C: %M: - %m %n"/>
+      </layout>
+  </appender>
+
+<!--
+  <logger name="accenture.manila"> 
+	<level value="DEBUG" /> 
+	<appender-ref ref="LF5Appender" />
+    <appender-ref ref="Console" />
+    <appender-ref ref="File" />	 
+  </logger>
+-->
+
+  <root>
+    <priority value ="ERROR" />
+    <appender-ref ref="File"/>
+  </root>
+
+</log4j:configuration>

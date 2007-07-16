@@ -1,0 +1,19 @@
+	<tr>
+		  	<td rowspan="50" colspan="4" align="left" valign="top" width="25%">
+			  	Preview<br>
+			  	<html:link page="/logoff.do">Exit</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="4" width="25%">
+			  	<html:link page="/navigate.do?target=demographics">Demographics</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="4" width="25%">
+			  	<html:link page="/navigate.do?target=empskills">Skills</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="4" width="25%">
+			  	<html:link page="/empprojects.do?">Job Experience</html:link>
+		  	</td>
+    </tr>
+    <tr>
+		  	<td colspan="12">&nbsp;
+		  	</td>
+    </tr>

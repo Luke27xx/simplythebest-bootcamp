@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context docBase="/C:/temp/dist/hrs/" path="/hrs">
+ <!--Resource name="jdbc/HRDB" scope="Shareable" type="oracle.jdbc.pool.OracleDataSource"/-->
+    <Resource name="jdbc/HRDB"
+      auth="Container"
+      type="oracle.jdbc.pool.OracleDataSource"
+      driverClassName="oracle.jdbc.driver.OracleDriver"
+      factory="oracle.jdbc.pool.OracleDataSourceFactory"
+      scope="Shareable"/>
+	    <ResourceParams name="jdbc/HRDB">
+	      <parameter>
+	        <name>factory</name>
+	        <value>oracle.jdbc.pool.OracleDataSourceFactory</value>
+	      </parameter>
+	      <parameter>
+	        <name>validationQuery</name>
+	        <value>select * from project</value>
+	      </parameter>
+	      <parameter>
+	        <name>maxWait</name>
+	        <value>5000</value>
+	      </parameter>
+	      <parameter>
+	        <name>maxActive</name>
+	        <value>10</value>
+	      </parameter>   
+	      <parameter>
+	        <name>password</name>
+	        <value>hruser</value>
+	      </parameter>
+	      <parameter>
+	        <name>url</name>
+	        <value>jdbc:oracle:oci:@ORCL.ACCENTURE.COM</value>
+	      </parameter>
+	      <parameter>
+	        <name>driverClassName</name>
+	        <value>oracle.jdbc.driver.OracleDriver</value>
+	      </parameter>
+	      <parameter>
+	        <name>maxIdle</name>
+	        <value>5</value>
+	      </parameter>
+	      <parameter>
+	        <name>username</name>
+	        <value>hruser</value>
+	      </parameter>
+	    </ResourceParams>
+
+  <Resource name="UserTransaction" auth="Container"
+    type="javax.transaction.UserTransaction"/>
+  <ResourceParams name="UserTransaction">
+    <parameter>
+      <name>factory</name>
+      <value>org.objectweb.jotm.UserTransactionFactory</value>
+    </parameter>
+    <parameter>
+      <name>jotm.timeout</name>
+      <value>60</value>
+    </parameter>
+  </ResourceParams>
+
+
+</Context>
