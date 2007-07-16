@@ -41,8 +41,10 @@ public class StringArrayToCalendar implements  TransformStrategy {
 	 */
 	public Object transform(Object target) {
 	
-        
-		return null;
+        Calendar cal= Calendar.getInstance();
+        String[] s = (String[])target;
+        cal.set(Integer.parseInt(s[0]), Integer.parseInt(s[1])-1 ,Integer.parseInt(s[2]));
+		return cal;
 	}
 
 }
