@@ -2,6 +2,7 @@
  * Created on Feb 2, 2005
  */
 package com.jds.architecture.utilities;
+import java.lang.Object;
 
 /**
  * Validation strategy object used to determine if the argument object can translates
@@ -31,8 +32,30 @@ public class StringIsDouble implements ValidationStrategy{
 	 * @return boolean true if the object can be parsed as a double, false otherwise
 	 */
 	public boolean validate(Object target) {
+		//double temp = Double.parseDouble(target.toString());
+		//String s = target.toString();
+		//String x = String.valueOf(target);
+		//double z = Double.valueOf(x);
 		
-	    return false;
+		//if( target.equals(Double.parseDouble(target.toString() ) ) ){
+		//if (x.equals(Double.toString(z)) ){
+		//	return true;
+		//}
+	    
+		//return false;
+		
+		if (target==null) throw new NullPointerException();
+		
+		try{
+			
+			String x = String.valueOf(target);
+			double z = Double.valueOf(x); 
+			
+		}catch(Exception e){
+			return false;
+		}
+		
+		return true;
 		
 	}
 
