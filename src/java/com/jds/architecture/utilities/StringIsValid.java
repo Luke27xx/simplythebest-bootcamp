@@ -70,8 +70,7 @@ public class StringIsValid implements ValidationStrategy{
 	
 	private boolean specialCharIsOK(char c){
 		
-		
-		return false;
+		return ('!' == c) || ('@' == c) || ('#' == c);
 	}
 	
 	
