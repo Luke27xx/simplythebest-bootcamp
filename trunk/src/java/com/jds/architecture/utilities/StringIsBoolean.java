@@ -37,7 +37,11 @@ public class StringIsBoolean implements  ValidationStrategy {
 	public boolean validate(Object target) {
 	
 		
-		
+		if ( (target.toString().equalsIgnoreCase("true") ) 
+				|| (target.toString().equalsIgnoreCase("yes") )
+				|| (target.toString().equalsIgnoreCase("ok") ) ){
+			return true;
+		}
 	
 		return false;
 		
