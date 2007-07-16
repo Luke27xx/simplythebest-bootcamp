@@ -35,10 +35,40 @@ public class IntArrayToCalendar implements  TransformStrategy {
 	 * @return Calendar object equivalent of the argument
 	 */
 	public Object transform(Object target) {
-		// TODO Auto-generated method stub
+
+	// declaring calendar variable to store our date
+	Calendar calendar = Calendar.getInstance();
 	
-        return null;
+	// external try
+	try {
+	
+	// trying to convert types from unknown to integer
+	int[] transformedTargetInIntArray = (int[])target;
+
+		// internal try
+		try {
+			
+		// internal try: trying to setup fields with year, month-1 , date	
+		calendar.set(transformedTargetInIntArray[0], transformedTargetInIntArray[1]-1, transformedTargetInIntArray[2]);
 		
+		//internal try: catching exeption on trying to access
+		// to pointer not in Array range
+		} catch( ArrayIndexOutOfBoundsException e) {
+			
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	
+	// external try : cathing Converting types
+	} catch (ClassCastException ex) {
+	
+		throw new ClassCastException();
 	}
+		
+	// if everything normal then return calendar
+	return calendar;
+	
+	}
+
+	
 
 }
