@@ -36,7 +36,28 @@ public class CalendarIsValid implements ValidationStrategy  {
 	 * 
 	 */
 	public boolean validate(Object target) {
+		int year  = ((int[])target)[0];
+		int month = ((int[])target)[1];
+		int date  = ((int[])target)[2];
 		
+		if (year < 0) return false;
+		
+		if (date > 31) return false;
+		
+		if (date > 30 && (
+				month == 2  ||
+				month == 4  ||
+				month == 6  ||
+				month == 9  ||
+				month == 11 				
+				)) return false;
+		if (date == 30 && month == 2) return false;
+		if (date == 29 && month == 2 && !(year % 400 == 0 || year % 4 == 0))
+			return false;
+		
+		if (month > 12) return false;
+		
+		if (date < 1 || month < 1) return false;
 		
 		return true;	
 	}
