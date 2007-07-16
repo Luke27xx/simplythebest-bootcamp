@@ -1,0 +1,22 @@
+	<tr>
+		  	<td rowspan="50" colspan="3" align="left" valign="top" width="20%">
+			  	Preview<br>
+			  	<a href="javascript:window.close();">Exit</a>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="3" width="20%">
+			  	<html:link page="/navigate.do?target=employee">Employee</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="3" width="20%">
+			  	<html:link page="/navigate.do?target=category">Category</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="3" width="20%">
+			  	<html:link page="/navigate.do?target=skills">Skills</html:link>
+		  	</td>
+		  	<td bgcolor="lightblue" colspan="3" width="20%">
+			  	<html:link page="/navigate.do?target=projects">Projects</html:link>
+		  	</td>
+    </tr>
+    <tr>
+		  	<td colspan="12">&nbsp;
+		  	</td>
+    </tr>

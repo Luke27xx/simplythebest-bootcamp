@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="HRS" basedir="." default="jar">
+	
+	<property environment="env" />
+	<property file="build.properties" />
+	
+	<path id="class.path">
+		<pathelement location="${build.classes.dir}"/>
+		<fileset dir="${lib.thirdparty.dir}">
+			<include name="*.jar"/>
+		</fileset> 
+	</path>  	
+	
+    <target name="clean" description="delete all generated files">
+        <delete dir="${classes.dir}" failonerror="false"/>
+    	<delete dir="${warfile.dir}" failonerror="false"/>    	
+    	<delete dir="${gensrc.java.dir}" failonerror="false"/>
+    	<delete file="${dist.dir}/${project.name}.jar"/>
+    	<delete file="${dist.dir}/${project.name}.war"/>
+    </target>
+
+	<target name="copy-src" description="copies the source code">	  			  
+		<copy toDir="${gensrc.java.dir}">
+			  <fileset dir="${src.java.dir}">
+			    <include name="**/*.java" />
+			  </fileset>			
+			  <filterset>
+			  	<!-- Properties Monitor Filter -->
+			  	<filter token="props.dir" value="${props.dir}"/>
+			  </filterset>
+		</copy>		
+	</target>
+		
+    <target name="compile" description="compiles the project" depends="clean, copy-src">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${gensrc.java.dir}" 
+        		destdir="${classes.dir}"
+        		failonerror="${compile.fail}">
+        	<classpath> 
+				<path refid="class.path"/>        	
+			</classpath>        	
+    	</javac>
+    </target>
+
+    <target name="jar" description="JARs the project" depends="compile">
+    	<mkdir dir="${dist.dir}"/>
+        <jar destfile="${dist.dir}/${project.name}.jar" basedir="${classes.dir}"/>
+    </target>
+	
+	<target name="copy-props" description="copies the properties">	  			  
+		<copy toDir="${props.dir}">
+			  <fileset dir="${config.props.dir}">
+			    <include name="**/*.properties" />
+			  </fileset>
+		</copy>		
+	</target>	
+	
+    <target name="war" description="Creates the Web Archive (WAR) of the project"
+    					depends="copy-props">
+    	<mkdir dir="${dist.dir}"/>
+        <war 
+        	destfile="${dist.dir}/${project.name}.war" 
+        	webxml="${config.web.dir}/WEB-INF/web.xml">
+        	
+        	<lib dir="${lib.thirdparty.dir}" includes="*.jar"/>
+        	<lib dir="${dist.dir}" includes="*.jar"/>        	        	
+        	<classes dir="${config.props.dir}" excludes="*tmp.dir"/>
+        	<classes file="${config.web.dir}/WEB-INF/log4j.xml" />
+        	<fileset dir="${src.web.dir}" excludes="tmp.dir" />
+       	</war>    	
+    	<unzip src="${dist.dir}/${project.name}.war" dest="${warfile.dir}" />
+    </target>
+
+	<target name="undeploy" description="undeploys web app">
+		<fail unless="env.CATALINA_HOME" message="Tomcat 5 not found" />
+		<property name="deploy.local.remove.url" 
+			value="http://localhost:${catalina.port}/manager/remove" />
+		<get
+			src="${deploy.local.remove.url}?path=/${project.name}"
+			dest="deploy-local-remove.txt"
+			username="${catalina.username}"
+			password="${catalina.password}" />
+		
+		<loadfile property="deploy.local.remove.result"
+					srcFile="deploy-local-remove.txt"/>
+		
+		<echo>${deploy.local.remove.result}</echo>
+	</target>
+
+	<target name="deploy" depends="war,undeploy" 
+							description="deploys web app">
+		
+		<property name="deploy.local.urlpath" value="file:///${warfile.dir}/" />
+		<property name="deploy.local.url.params" value="path=/${project.name}&amp;war=${deploy.local.urlpath}" />
+		<property name="deploy.local.url" value="http://localhost:${catalina.port}/manager/install" />
+	
+		<get src="${deploy.local.url}?${deploy.local.url.params}"
+				dest="deploy-local.txt"
+				username="${catalina.username}"
+				password="${catalina.password}" />
+		
+		<loadfile property="deploy.local.result"
+					srcFile="deploy-local.txt"/>
+		
+		<echo>${deploy.local.result}</echo>
+	</target>
+			
+</project>

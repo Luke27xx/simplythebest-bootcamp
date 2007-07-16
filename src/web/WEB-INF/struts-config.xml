@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<!--
+     This is the Struts configuration file for the example application,
+     using the proposed new syntax.
+-->
+
+
+<struts-config>
+
+
+  <!-- ========== Data Source Configuration =============================== -->
+<!--
+ <data-sources>
+   <data-source>
+     <set-property property="autoCommit"
+                      value="false"/>
+     <set-property property="description"
+                      value="Example Data Source Configuration"/>
+     <set-property property="driverClass"
+                      value="org.postgresql.Driver"/>
+     <set-property property="maxCount"
+                      value="4"/>
+     <set-property property="minCount"
+                      value="2"/>
+     <set-property property="password"
+                      value="mypassword"/>
+     <set-property property="url"
+                      value="jdbc:postgresql://localhost/mydatabase"/>
+     <set-property property="user"
+                      value="myusername"/>
+   </data-source>
+ </data-sources>
+-->
+  <!-- ========== Form Bean Definitions =================================== -->
+  <form-beans type="org.apache.struts.action.ActionFormBean">
+    <form-bean name="LoginForm" type="com.jds.architecture.authenticate.LoginForm">
+    </form-bean>
+    <form-bean name="EmployeeInfoForm" type="com.jds.apps.hr.employee.form.EmployeeInfoForm">
+    </form-bean>
+    <form-bean name="EmployeeSearchForm" type="com.jds.apps.hr.employee.form.EmployeeSearchForm">
+    </form-bean>
+    <form-bean name="ApproversSearchForm" type="com.jds.apps.hr.approver.form.ApproversSearchForm">
+    </form-bean>
+    <form-bean name="BlankForm" type="com.jds.architecture.beans.BlankFormBean">
+    </form-bean>
+    <form-bean name="CategoryForm" type="com.jds.apps.hr.skill.category.form.CategoryForm">
+    </form-bean>
+    <form-bean name="SearchCategoryForm" type="com.jds.apps.hr.skill.category.form.SearchCategoryForm">
+    </form-bean>
+    <form-bean name="SkillForm" type="com.jds.apps.hr.skill.set.form.SkillForm">
+    </form-bean>
+    <form-bean name="SearchSkillForm" type="com.jds.apps.hr.skill.set.form.SearchSkillForm">
+    </form-bean>
+    <form-bean name="SearchProjectForm" type="com.jds.apps.hr.project.form.SearchProjectForm">
+    </form-bean>
+    <form-bean name="ProjectForm" type="com.jds.apps.hr.project.form.ProjectForm">
+    </form-bean>
+    <form-bean name="EmpProjectListContainForm" type="com.jds.apps.employee.project.form.EmpProjectListContainForm">
+    </form-bean>
+    <form-bean name="EmpProjectForm" type="com.jds.apps.employee.project.form.EmpProjectForm">
+    </form-bean>
+    <form-bean name="ApproversSearchListItemForm" type="com.jds.apps.hr.approver.form.ApproversSearchListItemForm">
+    </form-bean>
+
+  </form-beans>
+
+
+  <!-- ========== Global Forward Definitions ============================== -->
+
+
+  <!-- ========== Action Mapping Definitions ============================== -->
+  <global-forwards>
+  	<forward name="login" path="/login.do">
+  	</forward>
+  	<forward name="logoff" path="/logoff.do">
+  	</forward>
+  	<forward name="systemError" path="/error/errorPage.jsp">
+  	</forward>
+  </global-forwards>
+
+  <action-mappings>
+
+	<!-- login action -->
+    <action path="/login" 
+            name="LoginForm" 
+            scope="request" 
+            type="com.jds.architecture.authenticate.LoginAction" 
+            validate="false" 
+            input="login">
+     <forward  name="HR"           path="/hrDashboard.jsp"/>
+     <forward  name="staff"        path="/staffDashboard.jsp"/>
+     <forward  name="approver"     path="/approverssearch.do?viewtype=init"/>
+    </action>
+
+	<!-- logoff action -->
+    <action    path="/logoff"
+               type="com.jds.architecture.authenticate.LogoffAction"
+               name="BlankForm"
+              scope="request">
+     <forward  name="success"           path="/login.jsp"/>
+    </action>
+
+	<!-- menu navigation action -->
+    <action    path="/navigate"
+               type="com.jds.apps.hr.NavigationAction"
+               name="BlankForm"
+              scope="request" validate="false">
+     <!-- HR -->
+     <forward  name="employee"          path="/employee/search.jsp"/>
+     <forward  name="category"          path="/category/search.jsp"/>
+     <forward  name="skills"            path="/skill/search.jsp"/>
+     <forward  name="projects"          path="/project/search.jsp"/>
+     <!-- employee -->
+     <forward  name="demographics"      path="/employeeview.do?viewtype=editstaff"/>
+     <forward  name="empskills"         path="/empskills/empskills.jsp"/>
+     <forward  name="experience"        path="/empprojects"/>
+    </action>
+
+	<!-- employee view action -->
+    <action    path="/employeeview"
+               type="com.jds.apps.hr.employee.action.EmployeeViewAction"
+               name="EmployeeInfoForm"
+               scope="request" 
+               input="/employee/search.jsp"
+               validate="false">
+     <forward  name="edithr"           path="/employee/editHr.jsp"/>
+     <forward  name="editstaff"        path="/employee/editStaff.jsp"/>
+     <forward  name="view"             path="/employee/view.jsp"/>
+    </action>
+
+	<!-- search employee action -->
+    <action    path="/employeesearch"
+               type="com.jds.apps.hr.employee.action.EmployeeSearchAction"
+               name="EmployeeSearchForm"
+               scope="request" 
+               validate="false" 
+               input="/employee/search.jsp">
+     <forward  name="success"           path="/employee/search.jsp"/>
+    </action>
+    
+	<!-- add employee action -->
+    <action    path="/employeeadd"
+               type="com.jds.apps.hr.employee.action.EmployeeAddAction"
+               name="EmployeeInfoForm"
+               scope="request" 
+               input="/employee/add.jsp"
+               validate="false">
+     <forward  name="HR"           path="/employee/search.jsp"/>
+     <forward  name="staff"        path="/staffDashboard.jsp"/>
+    </action>
+    
+    <action    path="/employeeloadadd"
+               type="com.jds.apps.hr.employee.action.EmployeeLoadAddAction"
+               name="EmployeeInfoForm"
+               scope="request" 
+               validate="false">
+     <forward  name="success"           path="/employee/add.jsp"/>
+    </action>
+    
+	<!-- update employee action -->
+    <action    path="/employeeupdate"
+               type="com.jds.apps.hr.employee.action.EmployeeUpdateAction"
+               name="EmployeeInfoForm"
+               input="/employee/editHr.jsp"
+               scope="request" 
+               validate="false">
+     <forward  name="HR"           path="/employee/search.jsp"/>
+     <forward  name="staff"        path="/staffDashboard.jsp"/>
+    </action>
+
+	<!-- approvers' search page -->
+    <action    path="/approverssearch"
+               type="com.jds.apps.hr.approver.action.ApproversSearchAction"
+               name="ApproversSearchForm"
+               input="approverDashboard.jsp"
+               scope="session" validate="false">
+     <forward  name="success"        path="/approverDashboard.jsp"/>
+     <forward  name="Approve"        path="/approvelist.do"/>
+     <forward  name="Reject"         path="/rejectlist.do"/>
+    </action>
+
+    <action    path="/approvelist"
+               type="com.jds.apps.hr.approver.action.ApproveAction"
+               name="ApproversSearchForm"
+               input="approverDashboard.jsp"
+              scope="session" validate="false">
+     <forward  name="success"        path="/approverDashboard.jsp"/>
+    </action>
+
+    <action    path="/rejectlist"
+               type="com.jds.apps.hr.approver.action.RejectAction"
+               name="ApproversSearchForm"
+               input="approverDashboard.jsp"
+               scope="session" validate="false">
+     <forward  name="success"        path="/approverDashboard.jsp"/>
+    </action>
+
+
+    <action path="/categoryview" type="com.jds.apps.hr.skill.category.action.CategoryViewAction" input="/category/search.jsp" name="CategoryForm" scope="request" validate="false">
+    	<forward name="view" path="/category/categoryview.jsp">
+    	</forward>
+    	<forward name="editCategory" path="/category/categoryedit.jsp">
+    	</forward>
+    </action>
+    <action path="/categorysearch" type="com.jds.apps.hr.skill.category.action.CategorySearchAction" name="SearchCategoryForm" scope="request" input="/category/search.jsp" validate="false">
+    	<forward name="success" path="/category/search.jsp">
+    	</forward>
+    </action>
+    <action path="/categorysave" type="com.jds.apps.hr.skill.category.action.CategorySaveAction" name="CategoryForm" scope="request" validate="false" input="/category/category.jsp">
+    	<forward name="success" path="/category/search.jsp">
+    	</forward>
+    </action>
+    <action path="/categoryadd" type="com.jds.apps.hr.skill.category.action.CategoryAddAction" name="SearchCategoryForm" scope="request" validate="false">
+    	<forward name="addCategory" path="/category/category.jsp">
+    	</forward>
+    </action>
+    <action path="/categoryclose" type="com.jds.apps.hr.skill.category.action.CategoryCloseAction" name="SearchCategoryForm" validate="false">
+    	<forward name="closebyhr" path="/category/search.jsp">
+    	</forward>
+    	<forward name="closebyapprover" path="/category/search.jsp">
+    	</forward>
+    </action>
+    <action path="/categoryupdate" input="/category/categoryedit.jsp" type="com.jds.apps.hr.skill.category.action.CategoryUpdateAction" name="CategoryForm" scope="request" validate="false">
+    	<forward name="success" path="/category/search.jsp">
+    	</forward>
+    </action>
+
+
+    <action path="/skillview" type="com.jds.apps.hr.skill.set.action.SkillViewAction" name="SkillForm" input="/skill/search.jsp" scope="request" validate="false">
+    	<forward name="view" path="/skill/skillview.jsp">
+    	</forward>
+    	<forward name="editSkill" path="/skill/skilledit.jsp">
+    	</forward>
+    </action>
+    <action path="/skillsearch" type="com.jds.apps.hr.skill.set.action.SkillSearchAction" name="SearchSkillForm" scope="request" validate="false" input="/skill/search.jsp">
+    	<forward name="success" path="/skill/search.jsp">
+    	</forward>
+    </action>
+    <action path="/skillsave" type="com.jds.apps.hr.skill.set.action.SkillSaveAction" name="SkillForm" scope="request" validate="false" input="/skill/skill.jsp">
+    	<forward name="success" path="/skill/search.jsp">
+    	</forward>
+    </action>
+    <action path="/skilladd" type="com.jds.apps.hr.skill.set.action.SkillAddAction" name="SearchSkillForm" scope="request" validate="false">
+    	<forward name="addSkill" path="/skill/skill.jsp">
+    	</forward>
+    </action>
+    <action path="/skillclose" name="SearchSkillForm" type="com.jds.apps.hr.skill.set.action.SkillCloseAction" validate="false">
+    	<forward name="closebyhr" path="/skill/search.jsp">
+    	</forward>
+    	<forward name="closebyapprover" path="/skill/search.jsp">
+    	</forward>
+    </action>
+    <action path="/skillupdate" type="com.jds.apps.hr.skill.set.action.SkillUpdateAction" name="SkillForm" validate="false" scope="request" input="/skill/skilledit.jsp">
+    	<forward name="success" path="/skill/search.jsp">
+    	</forward>
+    </action>
+    
+    
+    <action path="/projectsearch" type="com.jds.apps.hr.project.action.ProjectSearchAction" name="SearchProjectForm" input="/project/search.jsp" validate="false" scope="request">
+    	<forward name="success" path="/project/search.jsp">
+    	</forward>
+    </action>
+    <action path="/projectsave" type="com.jds.apps.hr.project.action.ProjectSaveAction" name="ProjectForm" scope="request" validate="false" input="/project/project.jsp">
+    	<forward name="success" path="/project/search.jsp">
+    	</forward>
+    </action>
+    <action path="/projectadd" type="com.jds.apps.hr.project.action.ProjectAddAction" name="SearchProjectForm" scope="request" validate="false">
+    	<forward name="addProject" path="/project/project.jsp">
+    	</forward>
+    </action>
+    <action path="/projectupdate" input="/project/projectedit.jsp" type="com.jds.apps.hr.project.action.ProjectUpdateAction" name="ProjectForm" scope="request" validate="false">
+    	<forward name="success" path="/project/search.jsp">
+    	</forward>
+    </action>
+    <action path="/projectview" type="com.jds.apps.hr.project.action.ProjectViewAction" name="ProjectForm" scope="request" input="/project/search.jsp" validate="false">
+    	<forward name="view" path="/project/projectview.jsp">
+    	</forward>
+    	<forward name="editProject" path="/project/projectedit.jsp">
+    	</forward>
+    </action>
+    <action path="/projectclose" name="SearchProjectForm" type="com.jds.apps.hr.project.action.ProjectCloseAction" validate="false">
+    	<forward name="closebyhr" path="/project/search.jsp">
+    	</forward>
+    	<forward name="closebyapprover" path="/project/search.jsp">
+    	</forward> 
+    	<forward name="closebystaff" path="/empprojects/empprojects.jsp">
+    	</forward> 
+    </action>
+    
+    
+    <action path="/empprojects" type="com.jds.apps.employee.project.action.ListEmpProjectsAction" name="EmpProjectListContainForm" scope="session">
+    	<forward name="success" path="/empprojects/empprojects.jsp">
+    	</forward>
+    </action>
+    <action path="/addempproject" type="com.jds.apps.employee.project.action.AddEmpProjectsAction" name="EmpProjectForm" scope="session">
+    	<forward name="Add" path="/empprojects/addempproject.jsp">
+    	</forward>
+    	<forward name="Delete" path="/deleteempprojects.do">
+    	</forward>
+    </action>
+    <action path="/saveempproject" type="com.jds.apps.employee.project.action.SaveEmpProjectsAction" name="EmpProjectForm" input="/empprojects/addempproject.jsp" validate="true" scope="request">
+    	<forward name="success" path="/empprojects.do">
+    	</forward>
+    </action>
+    <action path="/viewempproject" type="com.jds.apps.employee.project.action.ViewEmpProjectAction" name="ProjectForm" scope="session">
+    	<forward name="view" path="/empprojects/viewempproject.jsp">
+    	</forward>
+    </action>
+    <action path="/editempproject" type="com.jds.apps.employee.project.action.EditEmpProjectsAction" name="EmpProjectForm" scope="request">
+    	<forward name="editEmpProject" path="/empprojects/editempproject.jsp">
+    	</forward>
+    </action>
+    <action path="/updateempproject" type="com.jds.apps.employee.project.action.UpdateEmpProjectsAction" name="EmpProjectForm" scope="request" input="/empprojects/editempproject.jsp" validate="true">
+    	<forward name="success" path="/empprojects.do">
+    	</forward>
+    </action>
+    <action path="/deleteempprojects" type="com.jds.apps.employee.project.action.DeleteEmpProjectsAction" name="EmpProjectListContainForm" scope="session" input="/empprojects/empprojects.jsp">
+    	<forward name="success" path="/empprojects.do">
+    	</forward>
+    </action>
+  </action-mappings>
+
+
+  <!-- ========== Controller Configuration ================================ -->
+
+  <controller>
+    <!-- The "input" parameter on "action" elements is the name of a
+         local or global "forward" rather than a module-relative path -->
+    <set-property property="inputForward" value="true"/>
+  </controller>
+
+
+  <!-- ========== Message Resources Definitions =========================== -->
+
+
+  <!-- ========== Plug Ins Configuration ================================== -->
+  <message-resources parameter="com.jds.architecture.util.messages"/>
+
+
+</struts-config>
