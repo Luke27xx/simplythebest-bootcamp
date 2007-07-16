@@ -66,10 +66,29 @@ public class CalendarToStringArray implements TransformStrategy{
 	 * @return array of strings representing the Calendar
 	 */
 	public Object transform(Object target) {
-	
-   
 		
-		return null;	
+		// DOESN'T WORK
+		// TODO
+		// FIXME
+		
+		System.err.println(target.getClass().getName());
+
+		if (target.getClass() == Calendar.class) {
+			calendarStr = df.format(((Calendar)target).getTime());
+		} else if (target.getClass() == java.util.Date.class) {
+			calendarStr = df.format(target);
+		} else {
+			throw new RuntimeException("Wrong argument");
+		}
+
+		String[] returnValue = {
+				calendarStr,
+				calendarStr.split(" ")[2],
+			    calendarStr.split(" ")[0],
+			    calendarStr.split(" ")[1].replaceAll(",", "")
+		};
+		
+		return returnValue;	
 	}
 	
 }
