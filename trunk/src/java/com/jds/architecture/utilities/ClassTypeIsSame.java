@@ -34,9 +34,15 @@ public class ClassTypeIsSame implements ValidationStrategy {
 	public boolean validate(Object target) {
 		
 		//Get arguments array
+		Object target1 = ((Object[])target)[0];
+		Object target2 = ((Object[])target)[1];
+
+		if (target1 == null)
+			return (target2 == null);
+		if (target2 == null)
+			return (target1 == null);
 		
-		
-		return false;
+		return (target1.getClass() == target2.getClass());
 		
 	}
 
