@@ -66,10 +66,10 @@ public class SkillForm extends AbstractSkillForm {
         	   errors.add("skill", new ActionError("field.null" ,"skill field is empty"));
            }
            else if( !stringIsValidE.validate(this.getSkill() )  ) {
-   			errors.add("skill", new ActionError("field.invalid.specialcharacter", "skill allowed characters are ", allowedCharactersD));
+   			errors.add("skill", new ActionError("field.invalid.specialcharacter", "skill allowed characters ", allowedCharactersD));
            }
            else if( !stringLengthIsValidFifty.validate( this.getSkill() ) ) {
-   			errors.add("skill", new ActionError("field.invalid.length", "skill max length is ", "50"));        	
+   			errors.add("skill", new ActionError("field.invalid.length", "skill  length  ", "50"));        	
            }  
            
            // Description field if its empty , contains illegal characters 
@@ -78,10 +78,10 @@ public class SkillForm extends AbstractSkillForm {
         	   errors.add("description", new ActionError("field.null" ,"description field is empty"));
            }
            else if( !stringIsValidE.validate(this.getDescription() )  ) {
-   			errors.add("description", new ActionError("field.invalid.specialcharacter", "description allowed characters are ", allowedCharactersD));
+   			errors.add("description", new ActionError("field.invalid.specialcharacter", "description allowed characters  ", allowedCharactersD));
            }
            else if( !stringLenghtIsValidHundred.validate( this.getDescription() ) ) {
-   			errors.add("description", new ActionError("field.invalid.length", "description max length is ", "100"));        	
+   			errors.add("description", new ActionError("field.invalid.length", "description  length ", "100"));        	
            }  
     
            return errors;
