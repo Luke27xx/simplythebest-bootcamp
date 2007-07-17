@@ -42,8 +42,18 @@ public class StringToArray implements TransformStrategy{
 	 * @return String array containing the substring components of the argument
 	 */
 	public Object transform(Object target) {
-	
-		return null;
+		String str = target.toString();
+		StringTokenizer st = new StringTokenizer(str, this.delim);
+		
+		String[] strarr = new String[st.countTokens()];
+		
+		int i = 0;
+		while (st.hasMoreTokens()) {
+			strarr[i] = st.nextToken();
+			i++;
+		}
+		
+		return strarr;
 		
 	}
 
