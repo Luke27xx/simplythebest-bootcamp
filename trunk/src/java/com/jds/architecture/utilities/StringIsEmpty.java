@@ -37,7 +37,7 @@ public class StringIsEmpty implements ValidationStrategy{
 		}
 		return true;
 	} catch (NullPointerException ex) {
-		 throw new NullPointerException("Wrong ");
+		 throw new NullPointerException("NullPointerException");
 		
 	}
 }
