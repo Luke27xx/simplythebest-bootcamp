@@ -26,10 +26,7 @@ public class ObjectIsNull implements ValidationStrategy {
 	 * @return true if the argument is null, false otherwise
 	 */
 	public boolean validate(Object target) {
-		if(target == null){
-			return true;
-		}
-		return false;
+		return (target == null);
 	}
 
 }
