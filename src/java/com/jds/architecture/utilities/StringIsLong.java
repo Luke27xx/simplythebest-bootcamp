@@ -30,10 +30,24 @@ public class StringIsLong implements  ValidationStrategy{
 	 * @return boolean true if the object can be parsed as a long, false otherwise
 	 */
 	public boolean validate(Object target) {
-		
-	    
-        return false;
-		
-	}
+		if (target == null) {
+			throw new NullPointerException();
+		}
+		try {
+			String str = (String) target;
+			long i = Long.parseLong(str);
+
+			if (i <= Long.MAX_VALUE && i >= Long.MIN_VALUE) {
+				return true;
+			}
+
+		} catch (Exception x) {
+		}
+
+		return false;
+
+	
+
+}
 
 }
