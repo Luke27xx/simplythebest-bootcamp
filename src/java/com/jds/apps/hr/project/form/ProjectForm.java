@@ -81,7 +81,7 @@ public class ProjectForm extends AbstractProjectForm {
         Validator stringLengthIsValidHundred     = new Validator( new StringLengthIsValid(100) );
         Validator stringLengthIsValidFiveHundred = new Validator( new StringLengthIsValid(500) );
 
-        
+//Text Fields
         //Project Name: if it is empty, has a special character, or exceeds it's maximum length
         if (objectIsNull.validate(this.getProject()) || stringIsEmpty.validate(this.getProject()))
         {
@@ -96,7 +96,64 @@ public class ProjectForm extends AbstractProjectForm {
         	errors.add("Project Name", new ActionError("field.invalid.length", "Project Name", "50"));
         }
         
-        //
+        //Client: if it's empty, has a special character, or exceeds it's maximum length
+        if (objectIsNull.validate(this.getClient()) || stringIsEmpty.validate(this.getClient()))
+        {
+        	errors.add("Client", new ActionError("field.null", "Client"));
+        }
+        else if (!stringIsValidE.validate(this.getClient()))
+        {
+        	errors.add("Client", new ActionError("field.invalid.specialcharacter", "Client", allowedCharactersE));
+        }
+        else if (!stringLengthIsValidFifty.validate(this.getClient()))
+        {
+        	errors.add("Client", new ActionError("field.invalid.length", "Client", "50"));
+        }
+        
+        //Description: if it's empty, has a special character, or exceeds it's maximum length
+        if (objectIsNull.validate(this.getDescription()) || stringIsEmpty.validate(this.getDescription()))
+        {
+        	errors.add("Description", new ActionError("field.null", "Description"));
+        }
+        else if (!stringIsValidE.validate(this.getDescription()))
+        {
+        	errors.add("Description", new ActionError("field.invalid.specialcharacter", "Description", allowedCharactersE));
+        }
+        else if (!stringLengthIsValidHundred.validate(this.getDescription()))
+        {
+        	errors.add("Description", new ActionError("field.invalid.length", "Description", "100"));
+        }
+        
+        
+//Date fields
+        //Start Date: if it's empty or invalid
+        if
+        (
+        		(objectIsNull.validate(this.getStartDate()) || stringIsEmpty.validate(this.getStartDate()))
+        		&& this.getStartMonth().equals("0") &&
+        		(objectIsNull.validate(this.getStartYear()) || stringIsEmpty.validate(this.getStartYear()))
+        )
+        {
+        	errors.add("Start Date", new ActionError("field.null", "Start Date"));
+        }
+        else
+        {
+        	try
+        	{
+        		int startDate[] = {Integer.parseInt(this.getStartYear()), Integer.parseInt(this.getStartMonth()), Integer.parseInt(this.getStartDate())};
+        		
+        		if (!calendarIsValid.validate(startDate))
+        		{
+        			throw new Exception();
+        		}
+        	}
+        	catch (Exception e)
+        	{
+        		errors.add("Start Date", new ActionError("field.invalid","Start Date"));
+        	}
+        }
+        
+        
         
 		return errors;
 	}
