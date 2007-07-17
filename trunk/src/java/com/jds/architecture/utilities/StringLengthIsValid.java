@@ -51,8 +51,6 @@ public class StringLengthIsValid implements ValidationStrategy{
 		return (((String)target).length() <= this.maxLength) ||
 			(maxLength<0);
 		
-		//return false;
-		
 	}
 
 }
