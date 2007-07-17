@@ -72,10 +72,10 @@ public class SearchProjectForm extends AbstractProjectSearchForm {
 	       // Validator stringLengthIsValidFiveHundred = new Validator( new StringLengthIsValid(500) );
 	        
 	        if( !stringIsValidD.validate( this.getProjectCriteria() ) ){
-				errors.add("projName", new ActionError("field.invalid.specialcharacter", "Project Name", allowedCharactersD));
+				errors.add("project", new ActionError("field.invalid.specialcharacter", "Project Name", allowedCharactersD));
 	        }        
 	        else if( !stringLengthIsValidFifty.validate( this.getProjectCriteria() ) ){
-				errors.add("projName", new ActionError("field.invalid.length", "Project Name", "50"));        	
+				errors.add("project", new ActionError("field.invalid.length", "Project Name", "50"));        	
 	        } 
 	        
 	        return errors;
