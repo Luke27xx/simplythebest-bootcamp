@@ -78,15 +78,15 @@ public class SearchCategoryForm extends AbstractCategorySearchForm {
 	        Validator stringLengthIsValidFifty = new Validator( new StringLengthIsValid(50) ); 
 	        
 	        // Category Name: if it's empty, has a special character, or exceeds it's maximum length
-	        if( objectIsNull.validate(this.getCategories() ) ||
-	                stringIsEmpty.validate( this.getCategories() ) ){
-	        	errors.add("categoryName", new ActionError("field.null","Category Name"));
+	        if( objectIsNull.validate(this.getCategoryCriteria() ) ||
+	                stringIsEmpty.validate( this.getCategoryCriteria() ) ){
+	        	errors.add("category", new ActionError("field.null","Category Name"));
 	        }
-	        else if( !stringIsValidD.validate( this.getCategories() ) ){
-				errors.add("categoryName", new ActionError("field.invalid.specialcharacter", "Category Name", allowedCharactersD));
+	        else if( !stringIsValidD.validate( this.getCategoryCriteria() ) ){
+				errors.add("category", new ActionError("field.invalid.specialcharacter", "Category Name", allowedCharactersD));
 	        }
-	        else if( !stringLengthIsValidFifty.validate( this.getCategories() ) ){
-				errors.add("categoryName", new ActionError("field.invalid.length", "Category Name", "50"));        	
+	        else if( !stringLengthIsValidFifty.validate( this.getCategoryCriteria() ) ){
+				errors.add("category", new ActionError("field.invalid.length", "Category Name", "50"));        	
 	        }    
 	        return errors;
 	     }
