@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jds.apps.hr.skill.set.form.ext.AbstractSkillSearchForm;
 import com.jds.architecture.utilities.ObjectIsNull;
+import com.jds.architecture.utilities.StringIsAlphaNumeric;
 import com.jds.architecture.utilities.StringIsEmpty;
 import com.jds.architecture.utilities.StringIsValid;
 import com.jds.architecture.utilities.StringLengthIsValid;
@@ -45,7 +46,29 @@ public class SearchSkillForm extends AbstractSkillSearchForm {
         ActionErrors errors = new ActionErrors();
 
 //      TODO Implement validation
-	        
+        
+        Validator objectIsNull        =  new Validator( new ObjectIsNull() );
+        Validator stringIsEmpty       =  new Validator ( new StringIsEmpty() );
+        
+        Validator stringIsValidC = new Validator( new StringIsAlphaNumeric() );
+        Validator stringIsValidD = new Validator( new StringIsValid("_- .") );
+        
+        String allowedCharactersC = "letters & numbers";
+        String allowedCharactersD = allowedCharactersC + ", underscores, dashes, spaces, dots ";
+        
+        Validator stringLengthIsValidFifty       = new Validator( new StringLengthIsValid(50) ); 
+        
+        if( objectIsNull.validate(this.getSkillCriteria() ) ||
+                stringIsEmpty.validate( this.getSkillCriteria() ) ){
+        	errors.add("skill", new ActionError("field.null","Skill"));
+        }
+        else if( !stringIsValidD.validate( this.getSkillCriteria() ) ){
+			errors.add("skill", new ActionError("field.invalid.specialcharacter", "Skill", allowedCharactersD));
+        }
+        else if( !stringLengthIsValidFifty.validate( this.getSkillCriteria() ) ){
+			errors.add("skill", new ActionError("field.invalid.length", "Skill", "50"));        	
+        } 
+        
         return errors;
      }
 	
