@@ -5,9 +5,7 @@ package com.jds.architecture.utilities;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
+import java.sql.Date;
 
 /**
  * Transform strategy object used to transform a <code>Calendar</code> instance
@@ -68,11 +66,9 @@ public class CalendarToStringArray implements TransformStrategy{
 	 */
 	public Object transform(Object target) {
 		
-		if (target.getClass() == Calendar.class ||
-			target.getClass() == GregorianCalendar.class) {
+		if (target instanceof Calendar) {
 			calendarStr = df.format(((Calendar)target).getTime());
-		} else if (target.getClass() == java.util.Date.class ||
-				target.getClass() == java.sql.Date.class) {
+		} else if (target instanceof Date) {
 			calendarStr = df.format(target);
 		} else {
 			throw new ClassCastException("Wrong argument");

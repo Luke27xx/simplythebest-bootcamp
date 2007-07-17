@@ -3,8 +3,7 @@ package com.jds.architecture.utilities;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.sql.Date;
 
 /**
  * Transform strategy object used to transform a <code>Calendar</code>
@@ -63,11 +62,9 @@ public class CalendarToString implements TransformStrategy {
 	public Object transform(Object target) {
 
 		String returnStr;
-		if (target.getClass() == Calendar.class
-				|| target.getClass() == GregorianCalendar.class) {
+		if (target instanceof Calendar) {
 			returnStr = df.format(((Calendar) target).getTime());
-		} else if (target.getClass() == java.util.Date.class
-				|| target.getClass() == java.sql.Date.class) {
+		} else if (target instanceof Date) {
 			returnStr = df.format(target);
 		} else {
 			throw new ClassCastException("Wrong argument");
