@@ -49,7 +49,7 @@ public class StringLengthIsValid implements ValidationStrategy{
 	public boolean validate(Object target) {
 		
 		return (((String)target).length() <= this.maxLength) ||
-			(maxLength<0);
+			(this.maxLength<0);
 		
 	}
 

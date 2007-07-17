@@ -31,13 +31,7 @@ public class StringIsEmpty implements ValidationStrategy{
 	 * to the String.equals(String) method, false otherwise.
 	 */
 	public boolean validate(Object target) {
-
-		if ( !target.equals("") ) {
-
-			return false;
-		}
-		
-		return true;
+		return target.equals("");
 	}
 
 }
