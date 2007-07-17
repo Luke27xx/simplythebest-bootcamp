@@ -174,12 +174,35 @@ public class ProjectForm extends AbstractProjectForm {
         		{
         			throw new Exception();
         		}
+        		else //check if Start Date grater than End Date
+        		{
+        			int pStartDay = Integer.parseInt(this.getStartDay());
+                	int pStartMonth = Integer.parseInt(this.getStartMonth());
+                	int pStartYear = Integer.parseInt(this.getStartYear());
+                	int pEndDay = Integer.parseInt(this.getEndDay());
+                	int pEndMonth = Integer.parseInt(this.getEndMonth());
+                	int pEndYear = Integer.parseInt(this.getEndYear());
+                	
+                	if (pStartYear > pEndYear)
+                    {
+                    	errors.add("endDate", new ActionError("field.invalid", "End Date"));
+                    }
+                    else if (pStartYear == pEndYear && pStartMonth > pEndMonth)
+                    {
+                    	errors.add("endDate", new ActionError("field.invalid", "End Date"));
+                    }
+                    else if (pStartYear == pEndYear && pStartMonth == pEndMonth && pStartDay > pEndDay)
+                    {
+                    	errors.add("endDate", new ActionError("field.invalid", "End Date"));
+                    }
+        		}
         	}
         	catch (Exception e)
         	{
         		errors.add("endDate", new ActionError("field.invalid", "End Date"));
         	}
         }
+        
         
 		return errors;
 	}
