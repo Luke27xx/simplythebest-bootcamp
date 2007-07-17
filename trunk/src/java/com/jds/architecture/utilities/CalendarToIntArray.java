@@ -3,8 +3,13 @@
  */
 package com.jds.architecture.utilities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
+import javax.crypto.IllegalBlockSizeException;
 
 
 /**
@@ -37,8 +42,26 @@ public class CalendarToIntArray implements TransformStrategy {
 	 */
 	public Object transform(Object target) {
 		
+		String calendarStr;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
 		
-        return null;
+		if (target.getClass() == Calendar.class ||
+				target.getClass() == GregorianCalendar.class) {
+				calendarStr = sdf.format(((Calendar)target).getTime());
+			} else if (target.getClass() == java.util.Date.class ||
+					target.getClass() == java.sql.Date.class) {
+				calendarStr = sdf.format(target);
+			} else {
+				throw new ClassCastException("Wrong argument");
+			}
+
+			int[] returnValue = {
+					Integer.parseInt(calendarStr.split(" ")[0]),
+					Integer.parseInt(calendarStr.split(" ")[1]),
+					Integer.parseInt(calendarStr.split(" ")[2])
+			};
+			
+			return returnValue;	
 		
 	}
 }
