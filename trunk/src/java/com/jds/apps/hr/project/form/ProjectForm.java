@@ -22,7 +22,9 @@ import com.jds.apps.hr.project.form.ext.AbstractProjectForm;
 import com.jds.architecture.utilities.CalendarIsValid;
 import com.jds.architecture.utilities.IntArrayToCalendar;
 import com.jds.architecture.utilities.ObjectIsNull;
+import com.jds.architecture.utilities.StringIsAlphaNumeric;
 import com.jds.architecture.utilities.StringIsEmpty;
+import com.jds.architecture.utilities.StringIsNumeric;
 import com.jds.architecture.utilities.StringIsValid;
 import com.jds.architecture.utilities.StringLengthIsValid;
 import com.jds.architecture.utilities.Transformer;
@@ -45,6 +47,56 @@ public class ProjectForm extends AbstractProjectForm {
         
         
 //      TODO Implement validation
+		Validator objectIsNull        =  new Validator( new ObjectIsNull() );
+        Validator stringIsEmpty       =  new Validator ( new StringIsEmpty() );
+        Validator calendarIsValid     =  new Validator( new CalendarIsValid() );
+
+        
+        /*
+         * Input validation criteria:
+         *		A: numbers only 
+         *		B: numbers, spaces ( ), and dashes (-) only
+         *		C: letters and numbers only
+         *		D: letters, numbers, underscores (_), dashes (-), spaces ( ), and dots (.) only
+         *		E: E plus line carriage (\n\r), commas (,), and slashes (/ ,\) only
+         *		F: E plus at signs (@) only <-- com.jds.architecture.utilities.EmailIsValid
+         */
+        
+        Validator stringIsValidA = new Validator( new StringIsNumeric() );
+        Validator stringIsValidB = new Validator( new StringIsNumeric(" -") );
+        Validator stringIsValidC = new Validator( new StringIsAlphaNumeric() );
+        Validator stringIsValidD = new Validator( new StringIsValid("_- .") );
+        Validator stringIsValidE = new Validator( new StringIsValid("_- .\n\r,/\\+#()") );
+        
+        String allowedCharactersA = "numbers";
+        String allowedCharactersB = "numbers, spaces, and dashes ";        
+        String allowedCharactersC = "letters & numbers";
+        String allowedCharactersD = allowedCharactersC + ", underscores, dashes, spaces, dots ";
+        String allowedCharactersE = allowedCharactersD + ", line carriage, commas, slashes, pluses, pounds, and parenthesis";        
+        
+        Validator stringLengthIsValidFive        = new Validator( new StringLengthIsValid(5) );
+        Validator stringLengthIsValidFifteen     = new Validator( new StringLengthIsValid(15) );        
+        Validator stringLengthIsValidThirty      = new Validator( new StringLengthIsValid(30) );        
+        Validator stringLengthIsValidFifty       = new Validator( new StringLengthIsValid(50) );        
+        Validator stringLengthIsValidHundred     = new Validator( new StringLengthIsValid(100) );
+        Validator stringLengthIsValidFiveHundred = new Validator( new StringLengthIsValid(500) );
+
+        
+        //Project Name: if it is empty, has a special character, or exceeds it's maximum length
+        if (objectIsNull.validate(this.getProject()) || stringIsEmpty.validate(this.getProject()))
+        {
+        	errors.add("Project Name", new ActionError("field.null", "Project Name"));
+        }
+        else if (!stringIsValidE.validate(this.getProject()))
+        {
+        	errors.add("Project Name", new ActionError("field.invalid.specialcharacter", "Project Name", allowedCharactersE));
+        }
+        else if (!stringLengthIsValidFifty.validate(this.getProject()))
+        {
+        	errors.add("Project Name", new ActionError("field.invalid.length", "Project Name", "50"));
+        }
+        
+        //
         
 		return errors;
 	}
