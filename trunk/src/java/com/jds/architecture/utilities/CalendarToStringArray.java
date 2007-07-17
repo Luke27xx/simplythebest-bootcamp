@@ -6,6 +6,7 @@ package com.jds.architecture.utilities;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
 /**
@@ -67,20 +68,16 @@ public class CalendarToStringArray implements TransformStrategy{
 	 */
 	public Object transform(Object target) {
 		
-		// DOESN'T WORK
-		// TODO
-		// FIXME
-		
-		System.err.println(target.getClass().getName());
-
-		if (target.getClass() == Calendar.class) {
+		if (target.getClass() == Calendar.class ||
+			target.getClass() == GregorianCalendar.class) {
 			calendarStr = df.format(((Calendar)target).getTime());
-		} else if (target.getClass() == java.util.Date.class) {
+		} else if (target.getClass() == java.util.Date.class ||
+				target.getClass() == java.sql.Date.class) {
 			calendarStr = df.format(target);
 		} else {
-			throw new RuntimeException("Wrong argument");
+			throw new ClassCastException("Wrong argument");
 		}
-
+		
 		String[] returnValue = {
 				calendarStr,
 				calendarStr.split(" ")[2],
