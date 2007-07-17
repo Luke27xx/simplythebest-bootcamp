@@ -62,14 +62,12 @@ public class SearchCategoryForm extends AbstractCategorySearchForm {
 	    	
 	        Validator objectIsNull        =  new Validator( new ObjectIsNull() );
 	        Validator stringIsEmpty       =  new Validator ( new StringIsEmpty() );
-	        Validator calendarIsValid     =  new Validator( new CalendarIsValid() );
+	        //Validator calendarIsValid     =  new Validator( new CalendarIsValid() );
         
-	        //TODO Implement validation
 	        /*
 	         * Input validation criteria:
 	         * D: letters, numbers, underscores (_), dashes (-), spaces ( ), and dots (.) only
 	         */  
-	        Validator stringIsValidC = new Validator( new StringIsAlphaNumeric() );
 	        Validator stringIsValidD = new Validator( new StringIsValid("_- .") );
 	        
 	        String allowedCharactersC = "letters & numbers";
@@ -77,12 +75,15 @@ public class SearchCategoryForm extends AbstractCategorySearchForm {
 	        
 	        Validator stringLengthIsValidFifty = new Validator( new StringLengthIsValid(50) ); 
 	        
-	        // Category Name: if it's empty, has a special character, or exceeds it's maximum length
+	        // Category Name: if it has a special character, or exceeds it's maximum length
+	        /*
 	        if( objectIsNull.validate(this.getCategoryCriteria() ) ||
 	                stringIsEmpty.validate( this.getCategoryCriteria() ) ){
 	        	errors.add("category", new ActionError("field.null","Category Name"));
 	        }
-	        else if( !stringIsValidD.validate( this.getCategoryCriteria() ) ){
+	        else
+	        */
+	        if( !stringIsValidD.validate( this.getCategoryCriteria() ) ){
 				errors.add("category", new ActionError("field.invalid.specialcharacter", "Category Name", allowedCharactersD));
 	        }
 	        else if( !stringLengthIsValidFifty.validate( this.getCategoryCriteria() ) ){
