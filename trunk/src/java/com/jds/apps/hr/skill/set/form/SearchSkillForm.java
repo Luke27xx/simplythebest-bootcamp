@@ -57,12 +57,14 @@ public class SearchSkillForm extends AbstractSkillSearchForm {
         String allowedCharactersD = allowedCharactersC + ", underscores, dashes, spaces, dots ";
         
         Validator stringLengthIsValidFifty       = new Validator( new StringLengthIsValid(50) ); 
-        
+        /*
         if( objectIsNull.validate(this.getSkillCriteria() ) ||
                 stringIsEmpty.validate( this.getSkillCriteria() ) ){
         	errors.add("skill", new ActionError("field.null","Skill"));
         }
-        else if( !stringIsValidD.validate( this.getSkillCriteria() ) ){
+        else
+        */	
+        if( !stringIsValidD.validate( this.getSkillCriteria() ) ){
 			errors.add("skill", new ActionError("field.invalid.specialcharacter", "Skill", allowedCharactersD));
         }
         else if( !stringLengthIsValidFifty.validate( this.getSkillCriteria() ) ){
