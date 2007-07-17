@@ -31,10 +31,15 @@ public class StringIsEmpty implements ValidationStrategy{
 	 * to the String.equals(String) method, false otherwise.
 	 */
 	public boolean validate(Object target) {
-		
-	
-		return false;
+	try {	
+		if ( !target.equals("") ) {
+			return false;
+		}
+		return true;
+	} catch (NullPointerException ex) {
+		 throw new NullPointerException("Wrong ");
 		
 	}
+}
 
 }
