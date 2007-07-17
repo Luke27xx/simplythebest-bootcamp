@@ -49,7 +49,7 @@ public class StringIsDouble implements ValidationStrategy{
 		try{
 			
 			String x = String.valueOf(target);
-			double z = Double.valueOf(x); 
+			Double z = Double.valueOf(x); 
 			
 		}catch(Exception e){
 			return false;
