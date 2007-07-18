@@ -12,12 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.RowSet;
+import javax.sql.rowset.CachedRowSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//import ats_jp.activity.jdbc_sample.Bookmark;
+//import ats_jp.activity.jdbc_sample.DAOException;
+import com.jds.architecture.service.dao.DAOConstants;
+
+import com.jds.apps.beans.EmployeeInfo;
 import com.jds.apps.beans.ProjectInfo;
+import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 import com.jds.architecture.service.dao.assembler.ProjectAssembler;
+import com.jds.architecture.service.dbaccess.DBAccess;
+import com.jds.architecture.service.dbaccess.DBAccessException;
 
 public class ProjectDAO  implements DataAccessObjectInterface {
 
@@ -32,6 +41,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	protected Connection conn;
 
 	private Log log = LogFactory.getLog(ProjectDAO.class);
+	private DBAccess dbAccess;
 
 	/**
 	 * In a more realistic example connections are obtained from a connection
@@ -127,7 +137,35 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	 */
 	public boolean remove(Connection conn, Object object) throws DAOException {
 
-	    return true;
+				
+		if (!(object instanceof ProjectInfo))
+			throw new DAOException ("invalid.object.projdao",
+					null, DAOException.ERROR, true);
+		
+		
+		String sqlstmt = DAOConstants.PROJ_DELETE;
+		ProjectInfo project = (ProjectInfo) object;
+		
+		if(project.equals(null))
+			throw new DAOException ("invalid.object.projdao",
+					null, DAOException.ERROR, true);
+	
+		log.debug("removing ProjectInfo entry");
+		try{
+			
+			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
+			ProjectAssembler.getPreparedStatement(project, stmt);
+			stmt.executeUpdate();
+			log.debug("removing ProjectInfo entry");
+		} catch (SQLException e) {
+			throw new DAOException ("sql.create.exception.projdao",
+			e, DAOException.ERROR, true);
+		} catch (Exception e) {
+			throw new DAOException ("create.exception.projdao",
+			e.getCause(),  DAOException.ERROR, true);
+ 
+		} 
+    return true;		
     }
 
 	/**
@@ -160,18 +198,14 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 				rs.close();
 				log.debug("found by pk EmployeeInfo entry");
 			} catch (SQLException e) {
-				throw new DAOException ("sql.findpk.exception.empdao",
+				throw new DAOException ("sql.findpk.exception.projdao",
 				e, DAOException.ERROR, true);
 			} finally {
 				
 					close();
-				
-
 				}
 			
-
-		return projectReturn;
-	
+		return projectReturn;	
 	}
 
 
@@ -182,7 +216,45 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	 */
 	public RowSet find(Object object) throws DAOException {
 
-        return null;
+		String sqlStmt = DAOConstants.PROJ_FIND_MAIN;
+		ProjectInfo projectReturn = null;
+
+		if (!(object instanceof String))
+			throw new DAOException ("invalid.object.projdao",
+					null, DAOException.ERROR, true);
+					
+		String checkedFields = (String) object;				
+		Connection conn = null;
+
+			try{
+				log.debug("finding ProjectInfo entry by specified fields");
+				conn = dbAccess.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
+				
+				stmt.setString(1,checkedFields);
+				ResultSet rs = stmt.executeQuery();
+				
+				if (rs.next()) {
+					projectReturn = ProjectAssembler.getInfo(rs);
+				}
+				
+				rs.close();
+				log.debug("found ProjectInfo entry by specified fields");
+			} catch (DBAccessException e){
+				throw new DAOException (e.getMessageKey(),
+					e, DAOException.ERROR, true);				
+			} catch (SQLException e) {
+				throw new DAOException ("sql.findpk.exception.projdao",
+				e, DAOException.ERROR, true);
+			} finally {
+				try {
+					dbAccess.closeConnection(conn);
+				} catch (DBAccessException e1) {
+
+				}
+			}
+
+	return (RowSet)projectReturn;
 	}
 
 
@@ -208,117 +280,5 @@ public class ProjectDAO  implements DataAccessObjectInterface {
     }
 	
 	
-/*	public void create(Connection conn, Object obj) throws DAOException {
-		try {
-			ProjectInfo item = (ProjectInfo) obj;
-			PreparedStatement pstmt = conn
-					.prepareStatement("INSERT INTO project VALUES (?,?,?,?,?,?)");
-			pstmt.setString(1, item.getProjectId());
-			pstmt.setString(2, item.getProjectName());
-			pstmt.setString(3, item.getClient());
-			pstmt.setString(4, item.getDescription());
-			pstmt.setDate(5, (Date)item.getStartDate());
-			pstmt.setDate(6, (Date)item.getEndDate());
-			pstmt.executeUpdate();
-		} catch (Exception e) {
-			log.error("Could not initialize ProjectDAO", e);
-			throw new DAOException("Could not initialize ProjectDAO", e);
-		}
-	}
 
-	
-	
-
-	public List<Bookmark> findByAll() throws DAOException {
-		List<Bookmark> result = new ArrayList<Bookmark>();
-		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT * FROM bookmark");
-			while (rset.next()) {
-				Bookmark item = getItemFromCursor(rset);
-				result.add(item);
-			}
-			rset.close();
-			stmt.close();
-		} catch (SQLException e) {
-			log.error("Could not select all", e);
-			throw new DAOException("Could not select all", e);
-		}
-		return result;
-	}
-
-	public boolean remove(Connection conn, Object obj) throws DAOException {
-		Bookmark item = (Bookmark) obj;
-		try {
-			PreparedStatement pstmt = conn
-					.prepareStatement("DELETE FROM bookmark WHERE bookmark_id = ?");
-			pstmt.setLong(1, item.getId());
-			int rows = pstmt.executeUpdate();
-			pstmt.close();
-			// returns true, if any rows were deleted
-			return rows > 0;
-		} catch (SQLException e) {
-			log.error("Could not remove item", e);
-			throw new DAOException("Could not remove item", e);
-		}
-	}
-
-	public Object findByPK(int id) throws DAOException {
-		try {
-			Bookmark result;
-			PreparedStatement pstmt = conn
-					.prepareStatement("SELECT * FROM bookmark WHERE bookmark_id = ?");
-			ResultSet rset = pstmt.executeQuery();
-			if (rset.next()) {
-				result = getItemFromCursor(rset);
-			} else {
-				result = null;
-			}
-			rset.close();
-			pstmt.close();
-			return result;
-		} catch (SQLException e) {
-			log.error("Could not find item", e);
-			throw new DAOException("Could not find item", e);
-		}
-	}
-
-	public boolean update(Connection conn, Object obj) throws DAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void setDbDriver(String dbDriver) {
-		this.dbDriver = dbDriver;
-	}
-
-	public void setDbPassword(String dbPassword) {
-		this.dbPassword = dbPassword;
-	}
-
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public void setDbUser(String dbUser) {
-		this.dbUser = dbUser;
-	}
-
-	private Bookmark getItemFromCursor(ResultSet rset) {
-		Bookmark item = new Bookmark();
-		try {
-			item.setId(rset.getLong("bookmark_id"));
-			item.setUrl(rset.getString("url"));
-			item.setTitle(rset.getString("title"));
-			item.setLastModified(rset.getDate("last_modified"));
-			item.setContent(rset.getString("content"));
-			item.setChecksum(rset.getLong("checksum"));
-			item.setDescription(rset.getString("description"));
-		} catch (SQLException e) {
-			log.error("Could not initialize bookmark from resultset", e);
-			throw new DAOException(
-					"Could not initialize bookmark from resultset", e);
-		}
-		return item;
-	}*/
 }
