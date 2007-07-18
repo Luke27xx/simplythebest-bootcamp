@@ -1,4 +1,4 @@
-package com.jds.architecture.service.dao;
+package java.com.jds.architecture.service.dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,14 +19,14 @@ import org.apache.commons.logging.LogFactory;
 
 //import ats_jp.activity.jdbc_sample.Bookmark;
 //import ats_jp.activity.jdbc_sample.DAOException;
-import com.jds.architecture.service.dao.DAOConstants;
+import java.com.jds.architecture.service.dao.DAOConstants;
 
-import com.jds.apps.beans.EmployeeInfo;
-import com.jds.apps.beans.ProjectInfo;
-import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
-import com.jds.architecture.service.dao.assembler.ProjectAssembler;
-import com.jds.architecture.service.dbaccess.DBAccess;
-import com.jds.architecture.service.dbaccess.DBAccessException;
+import java.com.jds.apps.beans.EmployeeInfo;
+import java.com.jds.apps.beans.ProjectInfo;
+import java.com.jds.architecture.service.dao.assembler.EmployeeAssembler;
+import java.com.jds.architecture.service.dao.assembler.ProjectAssembler;
+import java.com.jds.architecture.service.dbaccess.DBAccess;
+import java.com.jds.architecture.service.dbaccess.DBAccessException;
 
 public class ProjectDAO  implements DataAccessObjectInterface {
 
@@ -268,6 +268,39 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	public boolean update(Connection conn, Object objSet, Object objWhere) 
 		throws DAOException{
 	
+		if (!(objSet instanceof ProjectInfo && objWhere instanceof ProjectInfo))
+			throw new DAOException ("invalid.object.projdao",
+					null, DAOException.ERROR, true);
+		
+		
+		String sqlstmt = DAOConstants.EMPSQL_UPDATE;
+		ProjectInfo project = (ProjectInfo) objWhere;
+		ProjectInfo projectChanges = (ProjectInfo)objSet;
+		
+		if(project.equals(null))
+			throw new DAOException ("invalid.object.projdao",
+					null, DAOException.ERROR, true);
+	
+		log.debug("updating ProjectInfo entry");
+		try{
+			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
+			
+			ProjectAssembler.getPreparedStatement(project, stmt);
+			stmt.executeUpdate();
+			ProjectAssembler.getPreparedStatement(projectChanges, stmt);
+			stmt.executeUpdate();
+			
+			log.debug("created EmployeeInfo entry");
+		} catch (SQLException e) {
+			throw new DAOException ("sql.create.exception.projdao",
+			e, DAOException.ERROR, true);
+		} catch (Exception e) {
+			throw new DAOException ("create.exception.projdao",
+			e.getCause(),  DAOException.ERROR, true);
+ 
+		}
+	
+			
 	    
         return false;
 		
@@ -275,9 +308,41 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 
     public RowSet findByAll() throws DAOException {
         
+    	String sqlStmt = DAOConstants.PROJ_FIND_ALL;
+		ProjectInfo projectReturn = null;
         
-        return null;
+		Connection conn = null;
+
+		try{
+			log.debug("finding EmployeeInfo entry by specified fields");
+			conn = dbAccess.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				projectReturn = ProjectAssembler.getInfo(rs);
+			}
+			
+			rs.close();
+			log.debug("found EmployeeInfo entry by specified fields");
+		} catch (DBAccessException e){
+			throw new DAOException (e.getMessageKey(),
+				e, DAOException.ERROR, true);				
+		} catch (SQLException e) {
+			throw new DAOException ("sql.findpk.exception.projdao",
+			e, DAOException.ERROR, true);
+		} finally {
+			try {
+				dbAccess.closeConnection(conn);
+			} catch (DBAccessException e1) {
+
+			}
+		}
+		return (RowSet)projectReturn;
+		
     }
+
 	
 	
 
