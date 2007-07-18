@@ -76,9 +76,7 @@ public class ProjectDAOTest {
 	
 	@Test
 	public void testfindbyPK() throws DAOException {
-		ProjectInfo item1 = new ProjectInfo();
-		item1.setProjectId("1");
-		dao.findByPK(item1);
+		dao.findByPK("1");
 				
 	}
 	
