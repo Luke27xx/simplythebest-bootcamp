@@ -40,10 +40,11 @@ import com.sun.rowset.CachedRowSetImpl;
  */
 public class EmployeeDAO implements DataAccessObjectInterface {
 
-	private DBAccess dbAccess = null;
+	private DBAccess dbAccess;
+	
 	private static Logger log = (Logger) ServiceFactory.getInstance()
 	.getService(LoggerService.class);
-
+	
 	StatementGenerator stmtGen = null;
 	
 
@@ -54,14 +55,18 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	 * @throws DBAccessException
 	 */
 	protected EmployeeDAO() throws DAOException, DBAccessException {
+		
 		log.info("initializing EmployeeDAO");
 		dbAccess = DBAccess.getDBAccess();
 		stmtGen =  StatementGeneratorFactory.
 			getGenerator().getStmtGenerator(DAOConstants.GEN_EMP);
-
+	
 
 	}	
 
+	
+	
+	
 	/**
 	 * Creates or insert new record to the table
 	 *@param Connection - database connection
@@ -104,9 +109,37 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	 * @param Connection -  database connection
 	 * @param Object - must be an instance of String ,  primary key of the object
 	 */
+	// need to test!
 	public boolean remove(Connection conn, Object object) throws DAOException {
-
-	    return true;
+		
+		if (!(object instanceof EmployeeInfo))
+			throw new DAOException ("invalid.object.empdao",
+					null, DAOException.ERROR, true);
+		
+		
+		String sqlstmt = DAOConstants.EMPSQL_DELETE;
+		EmployeeInfo employee = (EmployeeInfo) object;
+		
+		if(employee.equals(null))
+			throw new DAOException ("invalid.object.empdao",
+					null, DAOException.ERROR, true);
+	
+		log.debug("removing EmployeeInfo entry");
+		try{
+			
+			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
+			EmployeeAssembler.getPreparedStatement(employee, stmt);
+			stmt.executeUpdate();
+			log.debug("removing EmployeeInfo entry");
+		} catch (SQLException e) {
+			throw new DAOException ("sql.create.exception.empdao",
+			e, DAOException.ERROR, true);
+		} catch (Exception e) {
+			throw new DAOException ("create.exception.empdao",
+			e.getCause(),  DAOException.ERROR, true);
+ 
+		} 
+    return true;
     }
 
 	/**
@@ -115,6 +148,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	 * @param Object  -  String instance, primary key of the record
 	 */
 	public Object findByPK(Object object) throws DAOException {
+		
 		String sqlStmt = DAOConstants.EMPSQL_FIND_BYPK;
 		EmployeeInfo employeeReturn = null;
 
@@ -162,9 +196,48 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	 * @param Object -  instance of EmployeeInfo used as search criteria
 	 * @return RowSet - rowset of found records
 	 */
+	// need to test!
 	public RowSet find(Object object) throws DAOException {
+		
+		String sqlStmt = DAOConstants.EMPSQL_FIND_MAIN;
+		EmployeeInfo employeeReturn = null;
 
-        return null;
+		if (!(object instanceof String))
+			throw new DAOException ("invalid.object.empdao",
+					null, DAOException.ERROR, true);
+					
+		String checkedFields = (String) object;				
+		Connection conn = null;
+
+			try{
+				log.debug("finding EmployeeInfo entry by specified fields");
+				conn = dbAccess.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
+				
+				stmt.setString(1,checkedFields);
+				ResultSet rs = stmt.executeQuery();
+				
+				if (rs.next()) {
+					employeeReturn = EmployeeAssembler.getInfo(rs);
+				}
+				
+				rs.close();
+				log.debug("found EmployeeInfo entry by specified fields");
+			} catch (DBAccessException e){
+				throw new DAOException (e.getMessageKey(),
+					e, DAOException.ERROR, true);				
+			} catch (SQLException e) {
+				throw new DAOException ("sql.findpk.exception.empdao",
+				e, DAOException.ERROR, true);
+			} finally {
+				try {
+					dbAccess.closeConnection(conn);
+				} catch (DBAccessException e1) {
+
+				}
+			}
+
+	return (RowSet)employeeReturn;
 	}
 
 
@@ -178,18 +251,80 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	public boolean update(Connection conn, Object objSet, Object objWhere) 
 		throws DAOException{
 	
+		if (!(objSet instanceof EmployeeInfo && objWhere instanceof EmployeeInfo))
+			throw new DAOException ("invalid.object.empdao",
+					null, DAOException.ERROR, true);
+		
+		
+		String sqlstmt = DAOConstants.EMPSQL_UPDATE;
+		EmployeeInfo employee = (EmployeeInfo) objWhere;
+		EmployeeInfo employeeChanges = (EmployeeInfo)objSet;
+		
+		if(employee.equals(null))
+			throw new DAOException ("invalid.object.empdao",
+					null, DAOException.ERROR, true);
+	
+		log.debug("updating EmployeeInfo entry");
+		try{
+			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
+			
+			EmployeeAssembler.getPreparedStatement(employee, stmt);
+			stmt.executeUpdate();
+			EmployeeAssembler.getPreparedStatement(employeeChanges, stmt);
+			stmt.executeUpdate();
+			
+			log.debug("created EmployeeInfo entry");
+		} catch (SQLException e) {
+			throw new DAOException ("sql.create.exception.empdao",
+			e, DAOException.ERROR, true);
+		} catch (Exception e) {
+			throw new DAOException ("create.exception.empdao",
+			e.getCause(),  DAOException.ERROR, true);
+ 
+		}
+	
+			
 	    
         return false;
 		
 	}
 
+	//need to test!
     public RowSet findByAll() throws DAOException {
         
+		String sqlStmt = DAOConstants.EMPSQL_FIND_ALL;
+		EmployeeInfo employeeReturn = null;
         
-        return null;
+		Connection conn = null;
+
+		try{
+			log.debug("finding EmployeeInfo entry by specified fields");
+			conn = dbAccess.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				employeeReturn = EmployeeAssembler.getInfo(rs);
+			}
+			
+			rs.close();
+			log.debug("found EmployeeInfo entry by specified fields");
+		} catch (DBAccessException e){
+			throw new DAOException (e.getMessageKey(),
+				e, DAOException.ERROR, true);				
+		} catch (SQLException e) {
+			throw new DAOException ("sql.findpk.exception.empdao",
+			e, DAOException.ERROR, true);
+		} finally {
+			try {
+				dbAccess.closeConnection(conn);
+			} catch (DBAccessException e1) {
+
+			}
+		}
+		return (RowSet)employeeReturn;
+		
     }
-	
 
-
-	
 }
