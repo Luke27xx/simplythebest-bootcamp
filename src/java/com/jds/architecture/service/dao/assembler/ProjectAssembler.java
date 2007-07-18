@@ -25,8 +25,8 @@ public class ProjectAssembler {
 		stmt.setString(1, project.getProjectId() );
 		stmt.setString(2, project.getProjectName() );
 		stmt.setString(3, project.getProjectDescrition() );
-		stmt.setDate(4, (Date) new java.util.Date(project.getStartDate().toString() ) );
-		stmt.setDate(5, (Date) new java.util.Date(project.getEndDate().toString() ) );
+		stmt.setDate(4, new java.sql.Date(project.getStartDate().getTime() ) );
+		stmt.setDate(5, new java.sql.Date(project.getEndDate().getTime() ) );
 	
 		
 			
