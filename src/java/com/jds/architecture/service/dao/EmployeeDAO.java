@@ -369,7 +369,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		throws DAOException{
 	
 		String sqlStmt = DAOConstants.EMPSQL_UPDATE;
-
+		String temp;
 		if (!(objSet instanceof EmployeeInfo)
 				|| !(objWhere instanceof EmployeeInfo))
 			throw new DAOException("invalid.object.accdao", null,
@@ -389,22 +389,19 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			else {
 
 				String sqlWhere = "(empno = ?)";
+				Statement stmt1 = conn.createStatement();
 				
-				//String sqlExt = AccentureDetailsAssembler
-				//		.getExtendedUpdateStatement((AccentureDetails) objSet);
-				//String sqlExt = EmployeeAssembler
-				//.( (EmployeeInfo)objSet)
+				EmployeeAssembler.getPreparedStatement((EmployeeInfo)objSet,stmt1);
 				//if (sqlExt.equals(""))
 				//	return true;
 				
-				//	sqlStmt = sqlStmt.replaceFirst("@@", sqlExt).replaceFirst("@@",
-				//			sqlWhere);
+				sqlStmt = sqlStmt.replaceFirst("@@", sqlExt).replaceFirst("@@",
+							sqlWhere);
+				
 					
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 						
-				int lastIndex = AccentureDetailsAssembler
-						.getPreparedExtendedUpdateStatement(
-								(AccentureDetails) objSet, stmt);
+				int lastIndex = 1;
 
 				do {
 					stmt.setString(lastIndex, rset.getString("empno"));
