@@ -1,4 +1,4 @@
-package java.com.jds.architecture.service.dao;
+package com.jds.architecture.service.dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,14 +19,14 @@ import org.apache.commons.logging.LogFactory;
 
 //import ats_jp.activity.jdbc_sample.Bookmark;
 //import ats_jp.activity.jdbc_sample.DAOException;
-import java.com.jds.architecture.service.dao.DAOConstants;
+import com.jds.architecture.service.dao.DAOConstants;
 
-import java.com.jds.apps.beans.EmployeeInfo;
-import java.com.jds.apps.beans.ProjectInfo;
-import java.com.jds.architecture.service.dao.assembler.EmployeeAssembler;
-import java.com.jds.architecture.service.dao.assembler.ProjectAssembler;
-import java.com.jds.architecture.service.dbaccess.DBAccess;
-import java.com.jds.architecture.service.dbaccess.DBAccessException;
+import com.jds.apps.beans.EmployeeInfo;
+import com.jds.apps.beans.ProjectInfo;
+import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
+import com.jds.architecture.service.dao.assembler.ProjectAssembler;
+import com.jds.architecture.service.dbaccess.DBAccess;
+import com.jds.architecture.service.dbaccess.DBAccessException;
 
 public class ProjectDAO  implements DataAccessObjectInterface {
 
