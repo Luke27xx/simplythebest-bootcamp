@@ -10,17 +10,17 @@ import javax.sql.RowSet;
 import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.service.dao.DAOConstants;
 
-
 /**
+ * SkillsAssembler is a class used for populating prepared statement
+ * and for retrieving skill vo from result set.
+ * 
  * @author Ivars Lacis
- * SkillsAssembler is a class used in populating prepared statement
- * and in retrieving skill vo from result set.
  */
-public class SkillsAssembler {
-
+public class SkillsAssembler
+{
 	/**
 	 * Populates prepared statement using details of value object
-	 * @param employee Employee value object
+	 * @param employee skill value object
 	 * @param stmt prepared statement from data access object
 	 * @throws SQLException 
 	 */
@@ -31,9 +31,8 @@ public class SkillsAssembler {
 		stmt.setString(3, skill.getSkillName());
 		stmt.setString(4, skill.getSkillDescription());
 	}
-	
 	/**
-	 * Creates populated EmployeeInfo vo from the Row set 
+	 * Creates populated SkillSInformation vo from the Row set 
 	 * @param rs Row Set 
 	 * @return EmployeeInfo
 	 * @throws SQLException
@@ -49,9 +48,8 @@ public class SkillsAssembler {
 		
 		return skillReturn;
 	}
-	
 	/**
-	 * Creates populated EmployeeInfo vo from the Result set 
+	 * Creates populated SkillSInformation vo from the Result set 
 	 * @param rs Result Set 
 	 * @return EmployeeInfo
 	 * @throws SQLException
@@ -66,14 +64,14 @@ public class SkillsAssembler {
 		
 		return skillReturn;
 	}
-	
-	
+	/**
+	 * 
+	 * 
+	 * @param SkillsInformation
+	 */
 	public static void toEmptyStringAllNull(SkillsInformation obj)
 	{
 		if(obj.getSkillDescription() == null)
 			obj.setSkillDescription(DAOConstants.STR_SPACE);
 	}
-	
-	
-	
 }
