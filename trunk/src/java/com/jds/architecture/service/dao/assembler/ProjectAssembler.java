@@ -27,7 +27,7 @@ public class ProjectAssembler {
 		stmt.setString(3, project.getProjectDescrition() );
 		stmt.setDate(4, new java.sql.Date(project.getStartDate().getTime() ) );
 		stmt.setDate(5, new java.sql.Date(project.getEndDate().getTime() ) );
-	
+		stmt.setString(6, project.getClient() );
 		
 			
 	}
@@ -40,10 +40,10 @@ public class ProjectAssembler {
 	 */
 	public static ProjectInfo getInfo(ResultSet rs) throws SQLException   {
 		ProjectInfo projectReturn  = new ProjectInfo();
-		projectReturn.setClient(rs.getString("client") );
+		projectReturn.setProjectId(rs.getString("id") );
+		projectReturn.setClient(rs.getString("clientname") );
 		projectReturn.setProjectName(rs.getString("name") ); 
-		projectReturn.setProjectDescription(rs.getString("desc") );
-		projectReturn.setProjectId(rs.getString("id") );		
+		projectReturn.setProjectDescription(rs.getString("description") );
 		projectReturn.setStartDate(new java.util.Date(((java.sql.Timestamp)rs.getObject("startDate")).getTime()));
 		projectReturn.setEndDate(new java.util.Date(((java.sql.Timestamp)rs.getObject("endDate")).getTime()));
 		return projectReturn;
