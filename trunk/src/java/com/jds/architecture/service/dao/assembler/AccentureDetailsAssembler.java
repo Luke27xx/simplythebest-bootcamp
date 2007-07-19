@@ -18,6 +18,7 @@ public class AccentureDetailsAssembler {
 
 	public static String getExtendedUpdateStatement(AccentureDetails objSet) {
 
+		// DO NOT DO IT THIS WAY !!!!!!!!!
 		String sqlStatement = "";
 
 		if (objSet.getEmployeeNo() != null
@@ -57,7 +58,7 @@ public class AccentureDetailsAssembler {
 				&& !objSet.getServiceLine().equals("")) {
 			sqlStatement = sqlStatement.concat(", serviceline = ?");
 		}
-
+		// DO NOT DO IT THIS WAY !!!!!!!!!
 		sqlStatement = sqlStatement.replaceFirst(", ", "");
 
 		return sqlStatement;
@@ -187,6 +188,7 @@ public class AccentureDetailsAssembler {
 	public static String getExtendedStatement(AccentureDetails detailsFind) {
 		String sqlStatement = "";
 
+		// DO NOT DO IT THIS WAY !!!!!!!!!
 		if (detailsFind.getEmployeeNo() != null
 				&& !detailsFind.getEmployeeNo().equals("")) {
 			sqlStatement = sqlStatement.concat("(empNo = ?) AND ");
@@ -234,6 +236,7 @@ public class AccentureDetailsAssembler {
 			sqlStatement = "(1 = 2)";
 		else
 			sqlStatement = sqlStatement.concat("(1 = 1)");
+		// DO NOT DO IT THIS WAY !!!!!!!!!
 
 		return sqlStatement;
 	}
