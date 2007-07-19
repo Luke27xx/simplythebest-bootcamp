@@ -33,7 +33,7 @@ public class ProjectAssembler {
 	}
 	
 	/**
-	 * Creates populated ProjectInfo vo from the Row set 
+	 * Creates populated ProjectInfo VO from the Row set 
 	 * @param rs Row Set 
 	 * @return ProjectInfo
 	 * @throws SQLException
