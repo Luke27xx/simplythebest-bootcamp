@@ -42,6 +42,7 @@ import com.jds.apps.beans.ProjectInfo;
 import com.jds.architecture.service.dao.assembler.AccentureDetailsAssembler;
 import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 import com.jds.architecture.service.dao.assembler.ProjectAssembler;
+import com.jds.architecture.service.dao.stmtgenerator.StatementGenEmployee;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
@@ -369,7 +370,8 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		throws DAOException{
 	
 		String sqlStmt = DAOConstants.EMPSQL_UPDATE;
-		String temp;
+		StatementGenEmployee temp = new StatementGenEmployee();
+		
 		if (!(objSet instanceof EmployeeInfo)
 				|| !(objWhere instanceof EmployeeInfo))
 			throw new DAOException("invalid.object.accdao", null,
@@ -384,38 +386,36 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			
 			RowSet rset = find(objWhere);
 			
-			if (!rset.next())
-				return false;
-			else {
+			String setField = temp.transformStmt(objSet, 1);
+			String whereField = temp.transformStmt(objWhere, 2);
+			
 
-				String sqlWhere = "(empno = ?)";
-				Statement stmt1 = conn.createStatement();
-				
-				EmployeeAssembler.getPreparedStatement((EmployeeInfo)objSet,stmt1);
-				//if (sqlExt.equals(""))
-				//	return true;
-				
-				sqlStmt = sqlStmt.replaceFirst("@@", sqlExt).replaceFirst("@@",
-							sqlWhere);
+				sqlStmt = sqlStmt.replaceFirst("@", setField);
+				sqlStmt = sqlStmt.replaceFirst("@", whereField);
 				
 					
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 						
-				int lastIndex = 1;
+			//	int lastIndex = 1;
 
-				do {
-					stmt.setString(lastIndex, rset.getString("empno"));
+				//do {
+					//stmt.setString(1, s);
 
 					ResultSet rs = stmt.executeQuery();
 					rs.close();
-				} while (rset.next());
-			}
+				//} while (rset.next());
+			//}
 			log.debug("updated AccentureDetails entry");
 			return true;
-		//} catch (DBAccessException dbaex) {
+		} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			}
+		// catch (DBAccessException dbaex) {
 		//	throw new DAOException(dbaex.getMessageKey(), dbaex,
 		//			DAOException.ERROR, true);
-		} catch (SQLException e) {
+	//	}
+			catch (SQLException e) {
 			System.err.println(e.getMessage());
 			throw new DAOException("sql.update.exception.accdao",
 					e, DAOException.ERROR, true);
