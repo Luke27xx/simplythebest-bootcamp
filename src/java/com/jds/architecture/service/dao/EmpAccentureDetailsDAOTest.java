@@ -28,8 +28,8 @@ import com.jds.apps.beans.AccentureDetails;
 public class EmpAccentureDetailsDAOTest {
 
 	final boolean SHORT = false;
-	final boolean FULL  = true;
-	
+	final boolean FULL = true;
+
 	private DataAccessObjectInterface empAccDao;
 	private static Connector connector;
 
@@ -148,7 +148,10 @@ public class EmpAccentureDetailsDAOTest {
 			RowSet rs = empAccDao.findByAll();
 
 			String test = rsContents(rs, SHORT);
-			assertEquals("@:em000:@:em1:@:em2:", test);
+			boolean testResult = test.contains("@:em000:")
+					&& test.contains("@:em1:") && test.contains("@:em2:");
+
+			assertEquals(true, testResult);
 
 			empAccDao.remove(connector.getConnection(), "10");
 
@@ -157,7 +160,6 @@ public class EmpAccentureDetailsDAOTest {
 			test = rsContents(rs, SHORT);
 			assertEquals("@:em1:@:em2:", test);
 
-
 			empAccDao.remove(connector.getConnection(), "1");
 			empAccDao.remove(connector.getConnection(), "2");
 
@@ -165,7 +167,6 @@ public class EmpAccentureDetailsDAOTest {
 
 			test = rsContents(rs, SHORT);
 			assertEquals("", test);
-
 
 			return;
 		} catch (Exception ex) {
@@ -240,8 +241,7 @@ public class EmpAccentureDetailsDAOTest {
 			if (o == null)
 				fail("findByPK returned null");
 
-			assertEquals(((AccentureDetails) o).getEnterpriseAddress(),
-					"em000");
+			assertEquals(((AccentureDetails) o).getEnterpriseAddress(), "em000");
 
 			return;
 		} catch (Exception x) {
@@ -294,9 +294,9 @@ public class EmpAccentureDetailsDAOTest {
 	}
 
 	private String rsContents(RowSet rs, boolean full) {
-		
+
 		StringBuffer res = new StringBuffer("");
-		
+
 		try {
 			while (rs.next()) {
 				res.append("@:");
@@ -313,7 +313,7 @@ public class EmpAccentureDetailsDAOTest {
 
 		return res.toString();
 	}
-	
+
 	/**
 	 * Test method for
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#update(java.sql.Connection, java.lang.Object, java.lang.Object)}.
@@ -338,12 +338,12 @@ public class EmpAccentureDetailsDAOTest {
 
 			where = new AccentureDetails();
 			where.setEnterpriseAddress("em2");
-			
+
 			set.setEnterpriseAddress("xx2");
 
 			empAccDao.update(connector.getConnection(), set, where);
 			rs = empAccDao.findByAll();
-			
+
 			test = rsContents(rs, FULL);
 			assertEquals("@:em000:brr:@:em1:brr:@:xx2:brr:", test);
 
@@ -365,7 +365,7 @@ public class EmpAccentureDetailsDAOTest {
 
 		try {
 			RowSet rs = empAccDao.findByAll();
-		
+
 			String test = rsContents(rs, FULL);
 			assertEquals("@:em000:LMU:@:em1:LMU:@:em2:LMU:", test);
 
