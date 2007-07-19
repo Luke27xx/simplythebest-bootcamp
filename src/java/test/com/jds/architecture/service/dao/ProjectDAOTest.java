@@ -54,7 +54,7 @@ public class ProjectDAOTest {
 		dao.reconnect();
 		Connection conn = dao.getConnection();
 		Statement stmt = conn.createStatement();
-		stmt.executeUpdate("DELETE FROM project");		
+		//stmt.executeUpdate("DELETE FROM project");		
 		stmt.close();
 		conn.close();		
 	}
@@ -77,6 +77,13 @@ public class ProjectDAOTest {
 	@Test
 	public void testfindbyPK() throws DAOException {
 		dao.findByPK("1");
+				
+	}
+	
+	@Test
+	public void testremove() throws DAOException {
+		Connection conn = dao.getConnection();
+		dao.remove(conn,"1");
 				
 	}
 	
