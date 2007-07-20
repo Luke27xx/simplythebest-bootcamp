@@ -36,10 +36,10 @@ import com.jds.architecture.ServiceFactory;
 import com.jds.architecture.logging.LoggerService;
 import com.jds.architecture.service.dao.DAOConstants;
 
-import com.jds.apps.beans.AccentureDetails;
+//import com.jds.apps.beans.AccentureDetails;
 import com.jds.apps.beans.EmployeeInfo;
-import com.jds.apps.beans.ProjectInfo;
-import com.jds.architecture.service.dao.assembler.AccentureDetailsAssembler;
+//import com.jds.apps.beans.ProjectInfo;
+//import com.jds.architecture.service.dao.assembler.AccentureDetailsAssembler;
 import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 import com.jds.architecture.service.dao.assembler.ProjectAssembler;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenEmployee;
@@ -181,6 +181,9 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			
 		log.debug("creating EmployeeInfo entry");
 		try{
+			if (conn == null || conn.isClosed()) 
+				conn = dbAccess.getConnection();
+			
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
 			EmployeeAssembler.getPreparedStatement(employee, stmt);
 			
@@ -193,7 +196,13 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		} catch (Exception e) {
 			throw new DAOException ("create.exception.empdao",
 			e.getCause(),  DAOException.ERROR, true);
-		} 
+		} finally {
+			try {
+				dbAccess.closeConnection(conn);
+		} catch (DBAccessException e) {
+			e.printStackTrace();
+			}
+		 }
 	}
 		
 	
@@ -213,6 +222,8 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	
 		log.debug("removing EmployeeInfo entry by pk");
 		try{
+			if (conn == null || conn.isClosed()) 
+				conn = dbAccess.getConnection();
 			
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
 
