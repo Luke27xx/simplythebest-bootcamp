@@ -156,6 +156,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 
 	}	
 
+	
 	/**
 	 * Creates or insert new record to the table
 	 *@param Connection - database connection
@@ -195,6 +196,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		} 
 	}
 		
+	
 	/**
 	 * Removes a record from the table
 	 * @param Connection -  database connection
@@ -229,6 +231,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	return true;
     }
 
+	
 	/**
 	 * Finds a record from the table
 	 * @return Object -  String
@@ -344,10 +347,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				 	e1.printStackTrace();
 					}
 			}
-			
 	}
-
-
 
 	/**
 	 * @param Connectin - database connection
@@ -405,13 +405,14 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
-				e1.printStackTrace();
+
 			}
 		}
 
 	return false;	
 	}
 
+	
 	/**
 	 * Finds all entries from employee table
 	 */
@@ -437,14 +438,14 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				e, DAOException.ERROR, true);				
 				}
 		 catch (SQLException e) {
-			throw new DAOException ("sql.findpk.exception.empdao",
+			throw new DAOException ("sql.findall.exception.empdao",
 			e, DAOException.ERROR, true);
 		} finally {
 	//		close();
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
-		
+				
 			}
 		}
     }
