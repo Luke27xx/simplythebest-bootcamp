@@ -19,49 +19,49 @@ public class AccentureDetailsAssembler {
 	public static String getExtendedUpdateStatement(AccentureDetails objSet) {
 
 		// DO NOT DO IT THIS WAY !!!!!!!!!
-		String sqlStatement = "";
+		StringBuffer sqlStatement = new StringBuffer("");
 
 		if (objSet.getEmployeeNo() != null
 				&& !objSet.getEmployeeNo().equals("")) {
-			sqlStatement = sqlStatement.concat(", empNo = ?");
+			sqlStatement = sqlStatement.append(", empNo = ?");
 		}
 		if (objSet.getEnterpriseId() != null
 				&& !objSet.getEnterpriseId().equals("")) {
-			sqlStatement = sqlStatement.concat(", enterpriseid = ?");
+			sqlStatement = sqlStatement.append(", enterpriseid = ?");
 		}
 		if (objSet.getEnterpriseAddress() != null
 				&& !objSet.getEnterpriseAddress().equals("")) {
-			sqlStatement = sqlStatement.concat(", emailadd = ?");
+			sqlStatement = sqlStatement.append(", emailadd = ?");
 		}
 		if (objSet.getLevel() != null && !objSet.getLevel().equals("")) {
-			sqlStatement = sqlStatement.concat(", emplevel = ?");
+			sqlStatement = sqlStatement.append(", emplevel = ?");
 		}
 		if (objSet.getLMU() != null && !objSet.getLMU().equals("")) {
-			sqlStatement = sqlStatement.concat(", lmu = ?");
+			sqlStatement = sqlStatement.append(", lmu = ?");
 		}
 		if (objSet.getStatus() != null && !objSet.getStatus().equals("")) {
-			sqlStatement = sqlStatement.concat(", status = ?");
+			sqlStatement = sqlStatement.append(", status = ?");
 		}
 		if (objSet.getDateHired() != null && !objSet.getDateHired().equals("")) {
-			sqlStatement = sqlStatement.concat(", datehired = ?");
+			sqlStatement = sqlStatement.append(", datehired = ?");
 		}
 		if (objSet.getGMU() != null && !objSet.getGMU().equals("")) {
-			sqlStatement = sqlStatement.concat(", gmu = ?");
+			sqlStatement = sqlStatement.append(", gmu = ?");
 		}
 		if (objSet.getWorkGroup() != null && !objSet.getWorkGroup().equals("")) {
-			sqlStatement = sqlStatement.concat(", workgroup = ?");
+			sqlStatement = sqlStatement.append(", workgroup = ?");
 		}
 		if (objSet.getSpecialty() != null && !objSet.getSpecialty().equals("")) {
-			sqlStatement = sqlStatement.concat(", specialty = ?");
+			sqlStatement = sqlStatement.append(", specialty = ?");
 		}
 		if (objSet.getServiceLine() != null
 				&& !objSet.getServiceLine().equals("")) {
-			sqlStatement = sqlStatement.concat(", serviceline = ?");
+			sqlStatement = sqlStatement.append(", serviceline = ?");
 		}
 		// DO NOT DO IT THIS WAY !!!!!!!!!
-		sqlStatement = sqlStatement.replaceFirst(", ", "");
+		//sqlStatement = sqlStatement.replaceFirst(", ", "");
 
-		return sqlStatement;
+		return sqlStatement.toString().replaceFirst(", ", "");
 	}
 
 	public static int getPreparedExtendedUpdateStatement(
@@ -191,45 +191,45 @@ public class AccentureDetailsAssembler {
 		// DO NOT DO IT THIS WAY !!!!!!!!!
 		if (detailsFind.getEmployeeNo() != null
 				&& !detailsFind.getEmployeeNo().equals("")) {
-			sqlStatement = sqlStatement.concat("(empNo = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(empno) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getEnterpriseId() != null
 				&& !detailsFind.getEnterpriseId().equals("")) {
-			sqlStatement = sqlStatement.concat("(enterpriseid = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(enterpriseid) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getEnterpriseAddress() != null
 				&& !detailsFind.getEnterpriseAddress().equals("")) {
-			sqlStatement = sqlStatement.concat("(emailadd = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(emailadd) LIKE LOWER(?)) AND ");
 		}
 		if (detailsFind.getLevel() != null
 				&& !detailsFind.getLevel().equals("")) {
-			sqlStatement = sqlStatement.concat("(emplevel = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(emplevel) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getLMU() != null && !detailsFind.getLMU().equals("")) {
-			sqlStatement = sqlStatement.concat("(lmu = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(lmu) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getStatus() != null
 				&& !detailsFind.getStatus().equals("")) {
-			sqlStatement = sqlStatement.concat("(status = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(emplevel) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getDateHired() != null
 				&& !detailsFind.getDateHired().equals("")) {
 			sqlStatement = sqlStatement.concat("(datehired = ?) AND ");
 		}
 		if (detailsFind.getGMU() != null && !detailsFind.getGMU().equals("")) {
-			sqlStatement = sqlStatement.concat("(gmu = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(gmu) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getWorkGroup() != null
 				&& !detailsFind.getWorkGroup().equals("")) {
-			sqlStatement = sqlStatement.concat("(workgroup = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(workgroup) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getSpecialty() != null
 				&& !detailsFind.getSpecialty().equals("")) {
-			sqlStatement = sqlStatement.concat("(specialty = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(specialty) = LOWER(?)) AND ");
 		}
 		if (detailsFind.getServiceLine() != null
 				&& !detailsFind.getServiceLine().equals("")) {
-			sqlStatement = sqlStatement.concat("(serviceline = ?) AND ");
+			sqlStatement = sqlStatement.concat("(LOWER(serviceline) = LOWER(?)) AND ");
 		}
 
 		if (sqlStatement.equals(""))
