@@ -34,7 +34,7 @@ public class CategoryIdGenerator implements IdGeneratorInterface {
 		return idGen;
 	}
 	
-	@Override
+//	@Override
 	public long getNextId() throws IdGeneratorException {
 		// TODO Auto-generated method stub
 		long id = 0;
