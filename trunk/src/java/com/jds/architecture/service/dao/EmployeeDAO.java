@@ -71,81 +71,17 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	StatementGenerator stmtGen = null;
 	
 
-// temp variables used only for testing 
-//		protected String dbDriver;
-//		protected String dbUrl;
-//		protected String dbUser;
-//		protected String dbPassword;
-//	private Log log = LogFactory.getLog(ProjectDAO.class);
-
 		protected Connection conn;
 		private DBAccess dbAccess;
 
-		/**
-		 * Constructor
-		 * initializes variables
-		 * @throws DAOException
-		 * @throws DBAccessException
-		 */
-/*
-	public EmployeeDAO(String dbDriver, String dbUrl, String dbUser,
-				String dbPassword) throws DAOException, DBAccessException {
-			
-			this.dbDriver = dbDriver;
-			this.dbUrl = dbUrl;
-			this.dbUser = dbUser;
-			this.dbPassword = dbPassword;
-		}
-*/
 
-		/**
-		 * Make sure that connection is open for this DAO object
-		 * @throws DAOException 
-		 */
-/*		public void reconnect() throws DAOException {
-			try {
-				if (conn == null || conn.isClosed()) {
-					Class.forName(dbDriver);
-					conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-				}
-			} catch (Exception e) {
-				log.error("Could not initialize UrlDAO", e);
-				throw new DAOException("Could not initialize UrlDAO", e);
-			}
-
-		}
-*/
-		/**
-		 * Free any resources
-		 * @throws DAOException 
-		 */
-/*		public void close() throws DAOException {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					log.error("Could not close connection", e);
-					throw new DAOException("Could not close connection", e);
-				}
-				conn = null;
-			}
-		}
-
-		public Connection getConnection() {
-			return conn;
-		}
 	/**
 	 * Constructor
 	 * initializes variables
 	 * @throws DAOException
 	 * @throws DBAccessException
 	 */
-	
-		
-		
-	/**
-	 * Constructor Initialize variables
-	 */	
+
 	protected EmployeeDAO() throws DAOException, DBAccessException {
 		
 		log.info("initializing EmployeeDAO");
@@ -237,7 +173,14 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		} catch (Exception e) {
 			throw new DAOException ("create.exception.empdao",
 			e.getCause(),  DAOException.ERROR, true);
-		} 
+		}  finally {
+			try {
+				dbAccess.closeConnection(conn);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				
+			}
+		}
 
 	return true;
     }
@@ -263,8 +206,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			try{
 				log.debug("finding pk EmployeeInfo entry");
 				conn = dbAccess.getConnection();
-				//conn = getConnection();
-
+	
 				conn = dbAccess.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 				stmt.setString(1, pk);
@@ -291,8 +233,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 					} catch (DBAccessException e) {
 						e.printStackTrace();
 					}
-					//close();
-			}
+				}
 	return employeeReturn;
 	}
 
@@ -305,8 +246,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	public RowSet find(Object object) throws DAOException {
 		
 		String sqlStmt = "SELECT * FROM employee WHERE ";
-			//DAOConstants.EMPSQL_FIND_MAIN;
-		
+			
 		EmployeeInfo employeeReturn = null;
 		Connection conn = null;
 		String checkedFirstName;
@@ -333,7 +273,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			try {
 				CachedRowSet crs = new CachedRowSetImpl();	
 				conn = dbAccess.getConnection();
-				//conn = getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sqlStmt);
 		
@@ -352,7 +291,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			}
 			finally {
 				try {
-				//close();
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
 				 	e1.printStackTrace();
@@ -382,8 +320,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 
 			if (conn == null || conn.isClosed()) 
 				conn = dbAccess.getConnection();
-				//reconnect();
-				//conn = getConnection();
 			
 			String setField = temp.transformStmt(objSet, 1);
 			String whereField = temp.transformStmt(objWhere, 2);
@@ -412,7 +348,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		}
 		
 		finally {
-		//	close();
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
@@ -435,7 +370,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		log.debug("finding EmployeeInfo ");
 		try{
 			 conn = dbAccess.getConnection();
-			//conn = getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 			
 			ResultSet rs = stmt.executeQuery();
@@ -452,7 +386,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			throw new DAOException ("sql.findall.exception.empdao",
 			e, DAOException.ERROR, true);
 		} finally {
-	//		close();
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
