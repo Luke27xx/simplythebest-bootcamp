@@ -42,6 +42,9 @@ public class EmpAccentureDetailsDAOTest {
 	}
 
 	/**
+	 * preparation for each of the test-cases e.g. fill database with
+	 * appropriate data
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -56,34 +59,32 @@ public class EmpAccentureDetailsDAOTest {
 		}
 
 		connector.reconnect();
-		// preparation for each of the test-cases
-		// e.g. fill database with appropriate data
 		connector.createEmployees();
+		addEmpDetails();
 	}
 
 	/**
+	 * clean the data that may be left from the tescases.
+	 * 
 	 * @throws java.lang.Exception
 	 */
 	@After
 	public void tearDown() throws Exception {
-		// clean the data that may be left from the tescases.
 		connector.reconnect();
 		connector.clearAll();
 		connector.close();
 	}
 
 	/**
+	 * create 1 legal employee (with all data correcly filled in) check, if it
+	 * exists (findAll or similar). execute "assertEquals" to check, if you
+	 * found the same stuff that was inserted.
+	 * 
 	 * Test method for
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#create(java.sql.Connection, java.lang.Object)}.
 	 */
 	@Test
 	public void testCreate() {
-		// create 1 legal employee (with all data correcly filled in)
-		// check, if it exists (findAll or similar).
-		// execute "assertEquals" to check, if you found the same stuff
-		// that was inserted.
-
-		addEmpDetails();
 
 		try {
 			RowSet r = empAccDao.findByAll();
@@ -91,7 +92,12 @@ public class EmpAccentureDetailsDAOTest {
 				fail("findByAll returned null");
 
 			String test = rsContents(r, SHORT);
-			assertEquals("@:em000:@:em1:@:em2:", test);
+			
+			boolean result = test.indexOf("@:em000:") > -1 &&
+			 test.indexOf("@:em1:") > -1 &&
+			 test.indexOf("@:em2:") > -1;
+			
+			 assertEquals(true, result);
 
 			return;
 		} catch (Exception x) {
@@ -101,9 +107,12 @@ public class EmpAccentureDetailsDAOTest {
 		fail("exception..");
 	}
 
+	/**
+	 *	Try to create an employee with invalid parameters.
+	 */
 	@Test
 	public void testCreateUnsuccessful() {
-		// try to create an employee with invalid parameters.
+
 		try {
 
 			empAccDao.create(connector.getConnection(), null);
@@ -142,7 +151,6 @@ public class EmpAccentureDetailsDAOTest {
 	 */
 	@Test
 	public void testRemove() {
-		addEmpDetails();
 
 		try {
 			RowSet rs = empAccDao.findByAll();
@@ -153,20 +161,22 @@ public class EmpAccentureDetailsDAOTest {
 
 			assertEquals(true, testResult);
 
-			empAccDao.remove(connector.getConnection(), "10");
+			boolean wasRemoveSuccess1 = empAccDao.remove(connector.getConnection(), "10");
 
 			rs = empAccDao.findByAll();
 
 			test = rsContents(rs, SHORT);
 			assertEquals("@:em1:@:em2:", test);
 
-			empAccDao.remove(connector.getConnection(), "1");
-			empAccDao.remove(connector.getConnection(), "2");
+			boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(), "1");
+			boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(), "2");
 
 			rs = empAccDao.findByAll();
 
 			test = rsContents(rs, SHORT);
 			assertEquals("", test);
+
+			assertEquals(true, wasRemoveSuccess1 && wasRemoveSuccess2 && wasRemoveSuccess3);
 
 			return;
 		} catch (Exception ex) {
@@ -175,64 +185,12 @@ public class EmpAccentureDetailsDAOTest {
 		fail("exception..");
 	}
 
-	public void addEmpDetails() {
-		AccentureDetails correctObject = new AccentureDetails();
-
-		try {
-			correctObject.setEmployeeNo("1");
-			correctObject.setEnterpriseId("tratata");
-			correctObject.setEnterpriseAddress("em1");
-			correctObject.setLevel("");
-			correctObject.setLMU("LMU");
-			correctObject.setStatus("");
-			correctObject.setDateHired(new java.sql.Date(2001, 1, 1));
-			correctObject.setGMU("GMU");
-			correctObject.setWorkGroup("");
-			correctObject.setSpecialty("");
-			correctObject.setServiceLine("");
-
-			empAccDao.create(connector.getConnection(), correctObject);
-
-			correctObject.setEmployeeNo("2");
-			correctObject.setEnterpriseId("tratata");
-			correctObject.setEnterpriseAddress("em2");
-			correctObject.setLevel("");
-			correctObject.setLMU("LMU");
-			correctObject.setStatus("");
-			correctObject.setDateHired(new java.sql.Date(1989, 2, 4));
-			correctObject.setGMU("GMU");
-			correctObject.setWorkGroup("");
-			correctObject.setSpecialty("");
-			correctObject.setServiceLine("");
-
-			empAccDao.create(connector.getConnection(), correctObject);
-
-			correctObject.setEmployeeNo("10");
-			correctObject.setEnterpriseId("tratata");
-			correctObject.setEnterpriseAddress("em000");
-			correctObject.setLevel("");
-			correctObject.setLMU("LMU");
-			correctObject.setStatus("");
-			correctObject.setDateHired(new java.sql.Date(2001, 1, 1));
-			correctObject.setGMU("GMU");
-			correctObject.setWorkGroup("");
-			correctObject.setSpecialty("");
-			correctObject.setServiceLine("");
-
-			empAccDao.create(connector.getConnection(), correctObject);
-
-		} catch (Exception x) {
-			System.err.println("error_adding_empdetails: " + x.getMessage());
-		}
-	}
-
 	/**
 	 * Test method for
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#findByPK(java.lang.Object)}.
 	 */
 	@Test
 	public void testFindByPK() {
-		addEmpDetails();
 
 		try {
 			Object findPK = "10";
@@ -257,7 +215,6 @@ public class EmpAccentureDetailsDAOTest {
 	 */
 	@Test
 	public void testFind() {
-		addEmpDetails();
 
 		AccentureDetails findObject = new AccentureDetails();
 
@@ -320,7 +277,6 @@ public class EmpAccentureDetailsDAOTest {
 	 */
 	@Test
 	public void testUpdate() {
-		addEmpDetails();
 
 		AccentureDetails where = new AccentureDetails();
 		where.setLMU("LMU");
@@ -361,7 +317,6 @@ public class EmpAccentureDetailsDAOTest {
 	 */
 	@Test
 	public void testFindByAll() {
-		addEmpDetails();
 
 		try {
 			RowSet rs = empAccDao.findByAll();
@@ -374,6 +329,57 @@ public class EmpAccentureDetailsDAOTest {
 		}
 
 		fail("bad!");
+	}
+	
+	public void addEmpDetails() {
+		AccentureDetails correctObject = new AccentureDetails();
+
+		try {
+			correctObject.setEmployeeNo("1");
+			correctObject.setEnterpriseId("tratata");
+			correctObject.setEnterpriseAddress("em1");
+			correctObject.setLevel("");
+			correctObject.setLMU("LMU");
+			correctObject.setStatus("");
+			correctObject.setDateHired(new java.sql.Date(2001, 1, 1));
+			correctObject.setGMU("GMU");
+			correctObject.setWorkGroup("");
+			correctObject.setSpecialty("");
+			correctObject.setServiceLine("");
+
+			empAccDao.create(connector.getConnection(), correctObject);
+
+			correctObject.setEmployeeNo("2");
+			correctObject.setEnterpriseId("tratata");
+			correctObject.setEnterpriseAddress("em2");
+			correctObject.setLevel("");
+			correctObject.setLMU("LMU");
+			correctObject.setStatus("");
+			correctObject.setDateHired(new java.sql.Date(1989, 2, 4));
+			correctObject.setGMU("GMU");
+			correctObject.setWorkGroup("");
+			correctObject.setSpecialty("");
+			correctObject.setServiceLine("");
+
+			empAccDao.create(connector.getConnection(), correctObject);
+
+			correctObject.setEmployeeNo("10");
+			correctObject.setEnterpriseId("tratata");
+			correctObject.setEnterpriseAddress("em000");
+			correctObject.setLevel("");
+			correctObject.setLMU("LMU");
+			correctObject.setStatus("");
+			correctObject.setDateHired(new java.sql.Date(2001, 1, 1));
+			correctObject.setGMU("GMU");
+			correctObject.setWorkGroup("");
+			correctObject.setSpecialty("");
+			correctObject.setServiceLine("");
+
+			empAccDao.create(connector.getConnection(), correctObject);
+
+		} catch (Exception x) {
+			System.err.println("error_adding_empdetails: " + x.getMessage());
+		}
 	}
 }
 
@@ -477,7 +483,7 @@ class Connector {
 			pstmt.setString(16, "");
 			pstmt.setString(17, "");
 			pstmt.setString(18, "");
-			pstmt.setString(19, "Stoljar");
+			pstmt.setString(19, "tuuuii");
 			pstmt.setString(20, "");
 			pstmt.executeUpdate();
 
@@ -500,7 +506,7 @@ class Connector {
 			pstmt.setString(16, "");
 			pstmt.setString(17, "");
 			pstmt.setString(18, "");
-			pstmt.setString(19, "Stoljar");
+			pstmt.setString(19, "temp");
 			pstmt.setString(20, "");
 			pstmt.executeUpdate();
 
@@ -523,7 +529,7 @@ class Connector {
 			pstmt.setString(16, "");
 			pstmt.setString(17, "");
 			pstmt.setString(18, "");
-			pstmt.setString(19, "Stoljar");
+			pstmt.setString(19, "test");
 			pstmt.setString(20, "");
 			pstmt.executeUpdate();
 
@@ -546,7 +552,7 @@ class Connector {
 			pstmt.setString(16, "");
 			pstmt.setString(17, "");
 			pstmt.setString(18, "");
-			pstmt.setString(19, "Stoljar");
+			pstmt.setString(19, "tikew");
 			pstmt.setString(20, "");
 			pstmt.executeUpdate();
 
