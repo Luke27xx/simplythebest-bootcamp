@@ -7,23 +7,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 
 import com.jds.apps.beans.AccentureDetails;
-import com.jds.apps.beans.EmployeeInfo;
 import com.jds.architecture.Logger;
 import com.jds.architecture.ServiceFactory;
 import com.jds.architecture.logging.LoggerService;
 import com.jds.architecture.service.dao.assembler.AccentureDetailsAssembler;
-import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 import com.sun.rowset.CachedRowSetImpl;
 
 /**
@@ -217,20 +213,25 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			throw new DAOException("invalid.object.accdao", null,
 					DAOException.ERROR, true);
 
-		AccentureDetails detailsFind = (AccentureDetails) object;
 		Connection conn = null;
 		RowSet returnRowSet = null;
 
 		try {
 			log.debug("finding AccentureDetails entry");
 			conn = dbAccess.getConnection();
-			String sqlExtStmt = AccentureDetailsAssembler
-					.getExtendedStatement(detailsFind);
 
+			String s = null;
+			try {
+				s = stmtGen.transformStmt(object, DAOConstants.STMT_TYPE_WHERE);
+			} catch (Exception ex) {
+
+			}
+
+			if (s == null) // XXX
+				return null;
+			
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt.replaceAll(
-					"@@", sqlExtStmt));
-			AccentureDetailsAssembler.getPreparedExtendedStatement(detailsFind,
-					stmt);
+					"@@", s));
 
 			ResultSet rs = stmt.executeQuery();
 
@@ -286,35 +287,22 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			if (conn == null || conn.isClosed())
 				conn = dbAccess.getConnection();
 
-			RowSet rset = find(objWhere);
-			if (!rset.next())
-				return false;
-			else {
+			String sqlWhere = stmtGen.transformStmt(objWhere,
+					DAOConstants.STMT_TYPE_WHERE);
+			String sqlSet = stmtGen.transformStmt(objSet,
+					DAOConstants.STMT_TYPE_SET);
 
-				String sqlWhere = "(empno = ?)";
-				String sqlExt = AccentureDetailsAssembler
-						.getExtendedUpdateStatement((AccentureDetails) objSet);
+			if (sqlSet.equals("") || sqlWhere.equals(""))
+				return true; // XXX
 
-				if (sqlExt.equals(""))
-					return true;
+			sqlStmt = sqlStmt.replaceFirst("@@", sqlSet).replaceFirst("@@",
+					sqlWhere);
 
-				sqlStmt = sqlStmt.replaceFirst("@@", sqlExt).replaceFirst("@@",
-						sqlWhere);
+			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
+			ResultSet rs = stmt.executeQuery();
+			rs.close();
+			stmt.close();
 
-				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
-
-				int lastIndex = AccentureDetailsAssembler
-						.getPreparedExtendedUpdateStatement(
-								(AccentureDetails) objSet, stmt);
-
-				do {
-					stmt.setString(lastIndex, rset.getString("empno"));
-
-					ResultSet rs = stmt.executeQuery();
-					rs.close();
-				} while (rset.next());
-				stmt.close();
-			}
 			log.debug("updated AccentureDetails entry");
 			return true;
 		} catch (DBAccessException dbaex) {
@@ -324,13 +312,15 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			System.err.println(e.getMessage());
 			throw new DAOException("sql.update.exception.accdao", e,
 					DAOException.ERROR, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
 			}
 		}
-
+		return false;
 	}
 
 	public RowSet findByAll() throws DAOException {
