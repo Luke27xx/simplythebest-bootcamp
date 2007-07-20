@@ -11,8 +11,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.sql.RowSet;
+
 
 import com.jds.apps.Constants;
 import com.jds.apps.beans.AccentureDetails;
@@ -26,6 +28,7 @@ import com.jds.architecture.service.dao.DAOConstants;
 import com.jds.architecture.service.dao.DAOException;
 import com.jds.architecture.service.dao.DAOFactory;
 import com.jds.architecture.service.dao.DataAccessObjectInterface;
+import com.jds.architecture.service.dao.EmpAccentureDetailsDAO;
 
 //TODO For implementation
 //import com.jds.architecture.service.dao.EmpAccentureDetailsDAO;
@@ -64,10 +67,8 @@ public class EmployeeBC {
 			   empDao = (EmployeeDAO)DAOFactory.getFactory()
 				 .getDAOInstance(DAOConstants.DAO_EMP);
 
-//TODO: For implementation.               
-//					
-//			   empAccDao = (EmpAccentureDetailsDAO)DAOFactory.getFactory()
-//				.getDAOInstance(DAOConstants.DAO_EMPACC);
+			   empAccDao = (EmpAccentureDetailsDAO)DAOFactory.getFactory()
+				.getDAOInstance(DAOConstants.DAO_EMPACC);
 				
 			   dbAccess = DBAccess.getDBAccess();
 				cons = new Constants();
@@ -191,6 +192,52 @@ public class EmployeeBC {
         return data;            
     }
 		
+	public Collection  searchEmployees(EmployeeInfo info ) throws DAOException, SQLException{
+	
+		String pkSearch;
+		List<EmployeeInfo> employeeInfoList = new ArrayList<EmployeeInfo>();
+		AccentureDetails accDet = new AccentureDetails();
+		EmployeeInfo employeeInfo = new EmployeeInfo();
+		
+		if ( info == null ) {
+			RowSet rsAll = empDao.findByAll();
+			
+			while ( rsAll.next() ) {
+				   pkSearch =	EmployeeAssembler.getInfo(rsAll).getEmpNo();
+				   accDet = (AccentureDetails)empAccDao.findByPK(pkSearch);
+				   employeeInfo = EmployeeAssembler.getInfo(rsAll);
+				   employeeInfo.setAccentureDetails(accDet);
+				   employeeInfoList.add(employeeInfo);
+				}
+				return employeeInfoList;	
+		}
+
+		RowSet rs = empDao.find(info);
+		
+		while ( rs.next() ) {
+		   pkSearch =	EmployeeAssembler.getInfo(rs).getEmpNo();
+		   accDet = (AccentureDetails)empAccDao.findByPK(pkSearch);
+		   employeeInfo = EmployeeAssembler.getInfo(rs);
+		   employeeInfo.setAccentureDetails(accDet);
+		   employeeInfoList.add(employeeInfo);
+		}
+		return employeeInfoList;
+		//temp1.
+			
+		//collEmpAccDao.toArray();
+		//collEmpAccDao.
+		
+	//Collection collEmpDao    = (Collection)empDao.find(info);
+	//Collection collEmpAccDao = (Collection)empAccDao.find(info.getAccentureDetails());
+
+	
+	//empAccDao.findByPK(info.getEmpNo());
+	//collSum.addAll(collEmpAccDao);
+	//collEmpDao.addAll(collEmpAccDao);
+	
+
+	
+	}
 	
 	
 
