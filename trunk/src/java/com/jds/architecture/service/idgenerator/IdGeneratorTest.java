@@ -36,6 +36,9 @@ public class IdGeneratorTest {
 	@Test
 	public void testGetInstance() {
 		assertSame(EmployeeIdGenerator.getInstance(), EmployeeIdGenerator.getInstance());
+		assertSame(CategoryIdGenerator.getInstance(), CategoryIdGenerator.getInstance());
+		assertSame(SkillIdGenerator.getInstance(), SkillIdGenerator.getInstance());
+		assertSame(ProjectIdGenerator.getInstance(), ProjectIdGenerator.getInstance());
 	}
 
 	/**
@@ -45,7 +48,10 @@ public class IdGeneratorTest {
 	@Test
 	public void testGetNextId() throws IdGeneratorException {
 		assertNotNull(EmployeeIdGenerator.getInstance().getNextId());
-		System.out.println(EmployeeIdGenerator.getInstance().getNextId());
+		assertNotNull(CategoryIdGenerator.getInstance().getNextId());
+		assertNotNull(SkillIdGenerator.getInstance().getNextId());
+		assertNotNull(ProjectIdGenerator.getInstance().getNextId());
+
 	}
 
 }
