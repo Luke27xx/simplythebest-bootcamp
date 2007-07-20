@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.jds.apps.beans.AccentureDetails;
 
 /**
- * @author training
+ * @author Dmitrijs.Sadovskis
  * 
  */
 public class EmpAccentureDetailsDAOTest {
@@ -464,101 +464,44 @@ class Connector {
 			// Fill employee table
 			PreparedStatement pstmt = conn
 					.prepareStatement("INSERT INTO employee VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-			pstmt.setString(1, "1"); // primary
-			pstmt.setString(2, "AA"); // unique
-			pstmt.setString(3, "BA"); // unique
-			pstmt.setString(4, "CA"); // unique
-			pstmt.setDate(5, new java.sql.Date(Calendar.getInstance()
-					.getTimeInMillis()));
-			pstmt.setString(6, "");
-			pstmt.setString(7, "M");
-			pstmt.setString(8, "");
-			pstmt.setString(9, "");
-			pstmt.setString(10, "");
-			pstmt.setString(11, "");
-			pstmt.setString(12, "");
-			pstmt.setString(13, "");
-			pstmt.setString(14, "hello, world!");
-			pstmt.setString(15, "");
-			pstmt.setString(16, "");
-			pstmt.setString(17, "");
-			pstmt.setString(18, "");
-			pstmt.setString(19, "tuuuii");
-			pstmt.setString(20, "");
+			
+			fillEmployeeStatement(pstmt, "1", "AA", "BA", "CA");
 			pstmt.executeUpdate();
-
-			pstmt.setString(1, "2"); // primary
-			pstmt.setString(2, "AB"); // unique
-			pstmt.setString(3, "BB"); // unique
-			pstmt.setString(4, "CB"); // unique
-			pstmt.setDate(5, new java.sql.Date(Calendar.getInstance()
-					.getTimeInMillis()));
-			pstmt.setString(6, "");
-			pstmt.setString(7, "M");
-			pstmt.setString(8, "");
-			pstmt.setString(9, "");
-			pstmt.setString(10, "");
-			pstmt.setString(11, "");
-			pstmt.setString(12, "");
-			pstmt.setString(13, "");
-			pstmt.setString(14, "hello, world!");
-			pstmt.setString(15, "");
-			pstmt.setString(16, "");
-			pstmt.setString(17, "");
-			pstmt.setString(18, "");
-			pstmt.setString(19, "temp");
-			pstmt.setString(20, "");
+			fillEmployeeStatement(pstmt, "2", "AB", "BB", "CB");
 			pstmt.executeUpdate();
-
-			pstmt.setString(1, "3"); // primary
-			pstmt.setString(2, "A"); // unique
-			pstmt.setString(3, "B"); // unique
-			pstmt.setString(4, "C"); // unique
-			pstmt.setDate(5, new java.sql.Date(Calendar.getInstance()
-					.getTimeInMillis()));
-			pstmt.setString(6, "");
-			pstmt.setString(7, "M");
-			pstmt.setString(8, "");
-			pstmt.setString(9, "");
-			pstmt.setString(10, "");
-			pstmt.setString(11, "");
-			pstmt.setString(12, "");
-			pstmt.setString(13, "");
-			pstmt.setString(14, "hello, world!");
-			pstmt.setString(15, "");
-			pstmt.setString(16, "");
-			pstmt.setString(17, "");
-			pstmt.setString(18, "");
-			pstmt.setString(19, "test");
-			pstmt.setString(20, "");
+			fillEmployeeStatement(pstmt, "3", "A", "B", "C");
 			pstmt.executeUpdate();
-
-			pstmt.setString(1, "10"); // primary
-			pstmt.setString(2, "Axx"); // unique
-			pstmt.setString(3, "Bxx"); // unique
-			pstmt.setString(4, "Cxx"); // unique
-			pstmt.setDate(5, new java.sql.Date(Calendar.getInstance()
-					.getTimeInMillis()));
-			pstmt.setString(6, "");
-			pstmt.setString(7, "M");
-			pstmt.setString(8, "");
-			pstmt.setString(9, "");
-			pstmt.setString(10, "");
-			pstmt.setString(11, "");
-			pstmt.setString(12, "");
-			pstmt.setString(13, "");
-			pstmt.setString(14, "hello, world!");
-			pstmt.setString(15, "");
-			pstmt.setString(16, "");
-			pstmt.setString(17, "");
-			pstmt.setString(18, "");
-			pstmt.setString(19, "tikew");
-			pstmt.setString(20, "");
+			fillEmployeeStatement(pstmt, "10", "Axx", "Bxx", "Cxx");
 			pstmt.executeUpdate();
-
+			
 		} catch (Exception e) {
 			System.err.println("error3: " + e.getMessage());
 			throw new RuntimeException("Could not initialize UrlDAO", e);
 		}
+	}
+	
+	private void fillEmployeeStatement(PreparedStatement pstmt, String pk, String name1, String name2, String name3) throws Exception {
+		pstmt.setString(1, pk);    // primary
+		pstmt.setString(2, name1); // unique
+		pstmt.setString(3, name2); // unique
+		pstmt.setString(4, name3); // unique
+		pstmt.setDate(5, new java.sql.Date(Calendar.getInstance()
+				.getTimeInMillis()));
+		pstmt.setString(6, "");
+		pstmt.setString(7, "M");
+		pstmt.setString(8, "");
+		pstmt.setString(9, "");
+		pstmt.setString(10, "");
+		pstmt.setString(11, "");
+		pstmt.setString(12, "");
+		pstmt.setString(13, "");
+		pstmt.setString(14, "hello, world!");
+		pstmt.setString(15, "");
+		pstmt.setString(16, "");
+		pstmt.setString(17, "");
+		pstmt.setString(18, "");
+		pstmt.setString(19, "tuuuii");
+		pstmt.setString(20, "");
+		
 	}
 }

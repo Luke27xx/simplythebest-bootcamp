@@ -28,7 +28,8 @@ import com.sun.rowset.CachedRowSetImpl;
 
 /**
  * <p>
- * EmpAccentureDetailsDAO is data access object class for Employee table
+ * EmpAccentureDetailsDAO is data access object class for EmpAccentureDetail
+ * table
  * </p>
  * 
  * 
@@ -126,6 +127,8 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			ResultSet rs = stmt.executeQuery();
 
 			rs.close();
+			stmt.close();
+
 			log.debug("removed AccentureDetails entry by pk");
 			return true;
 		} catch (SQLException e) {
@@ -177,6 +180,7 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			}
 
 			rs.close();
+			stmt.close();
 			log.debug("found AccentureDetails entry by pk");
 		} catch (DBAccessException e) {
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
@@ -234,15 +238,16 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			crs.populate(rs);
 			returnRowSet = (RowSet) crs;
 			rs.close();
-			
+			stmt.close();
+
 			log.debug("found AccentureDetails entry");
 		} catch (DBAccessException e) {
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
 					true);
 		} catch (SQLException e) {
 			System.err.println("error_sql: " + e.getMessage());
-			throw new DAOException("sql.findmain.exception.accdao",
-					e, DAOException.ERROR, true);
+			throw new DAOException("sql.findmain.exception.accdao", e,
+					DAOException.ERROR, true);
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
@@ -308,6 +313,7 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 					ResultSet rs = stmt.executeQuery();
 					rs.close();
 				} while (rset.next());
+				stmt.close();
 			}
 			log.debug("updated AccentureDetails entry");
 			return true;
@@ -316,8 +322,8 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 					DAOException.ERROR, true);
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DAOException("sql.update.exception.accdao",
-					e, DAOException.ERROR, true);
+			throw new DAOException("sql.update.exception.accdao", e,
+					DAOException.ERROR, true);
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
@@ -344,14 +350,15 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			crs.populate(rs);
 			returnRowSet = (RowSet) crs;
 			rs.close();
+			stmt.close();
 
 			log.debug("found all AccentureDetails entries");
 		} catch (DBAccessException e) {
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
 					true);
 		} catch (SQLException e) {
-			throw new DAOException("sql.findall.exception.accdao",
-					e, DAOException.ERROR, true);
+			throw new DAOException("sql.findall.exception.accdao", e,
+					DAOException.ERROR, true);
 		} catch (Exception x) {
 			System.err.println("error2: " + x.getMessage());
 		} finally {
