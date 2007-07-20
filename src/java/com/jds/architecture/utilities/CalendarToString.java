@@ -48,7 +48,7 @@ public class CalendarToString implements TransformStrategy {
 	public CalendarToString() {
 
 		// df = DateFormat.getDateInstance(DateFormat.FULL);
-		df = new SimpleDateFormat("dd-MMM-yy");
+		df = new SimpleDateFormat("dd-MMM-yyyy");
 
 	}
 
@@ -63,6 +63,7 @@ public class CalendarToString implements TransformStrategy {
 
 		String returnStr;
 		if (target instanceof Calendar) {
+			df.setLenient(true);
 			returnStr = df.format(((Calendar) target).getTime());
 		} else if (target instanceof Date) {
 			returnStr = df.format(target);
