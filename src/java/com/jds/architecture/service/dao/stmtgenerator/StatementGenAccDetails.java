@@ -44,8 +44,7 @@ public class StatementGenAccDetails extends StatementGenerator {
 		if (stmtType == DAOConstants.STMT_TYPE_SET) {
 			strConstant = DAOConstants.CHAR_COMMA;
 			isSet = true;
-			AccentureDetailsAssembler.toEmptyStringAllNull(obj);
-		
+			//AccentureDetailsAssembler.toEmptyStringAllNull(obj); // XXX
 		}
 
 		if (obj.getEmployeeNo() != null) {
