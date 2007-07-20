@@ -23,6 +23,7 @@ import com.jds.apps.beans.EmployeeInfo;
 import com.jds.apps.beans.ProjectInfo;
 import com.jds.architecture.service.dao.*;
 import com.jds.architecture.service.dbaccess.DBAccessException;
+import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 
 public class EmployeeDAOTest {
 	
@@ -57,15 +58,7 @@ public class EmployeeDAOTest {
 		} catch (Exception x) {
 			System.err.println("error1: " + x.getMessage());
 		}
-	//	try {
-	//		dao = (EmpAccentureDetailsDAO) DAOFactory.getFactory()
-	//				.getDAOInstance(DAOConstants.DAO_EMPACC);
-//
-	//	} catch (Exception x) {
-	//		System.err.println("error1: " + x.getMessage());
-	//	}
 
-	//	connector.reconnect();
 		
 	}
 	
@@ -90,9 +83,6 @@ public class EmployeeDAOTest {
 
 	@Test
 	public void testCreate() throws DAOException, SQLException {
-	//	Connection conn = dao.getConnection();
-	//	connector.reconnect();
-	//	Connection conn = connector.getConnection();
 		
 		EmployeeInfo empInfo = new EmployeeInfo();
 		
@@ -120,10 +110,10 @@ public class EmployeeDAOTest {
 		empInfo.setEmail("amittere@inbox.lv");
 
 		dao.create(null, empInfo);
-				
+		
 		
 		EmployeeInfo empInfo1 = new EmployeeInfo();
-		
+			
 		empInfo1.setFirstName("Vadim1");
 		empInfo1.setLastName("Kuznecov1");
 		empInfo1.setMiddleName("Aleksandrovich1");
@@ -149,16 +139,19 @@ public class EmployeeDAOTest {
 
 		dao.create(null, empInfo1);
 		
-		RowSet result = dao.findByAll();
-		int i=0;
-	
-		while(result.next()) {
-			i++;
-		}
+		//RowSet result1 = dao.findByAll();
+		//result1.next();
+		//assertEquals(true,empInfo.equals(EmployeeAssembler.getInfo(result1)));
 		
-		assertEquals(2,i);
+		//assertEquals(empInfo,EmployeeAssembler.getInfo(result1));
+		//result1.next();
+		//assertEquals(true,empInfo1.equals(EmployeeAssembler.getInfo(result1)));
 		
+		//assertEquals(empInfo1 , EmployeeAssembler.getInfo(result1));
 	}
+		
+	
+	
 	
 	@Test
 	public void testfindbyPK() throws DAOException {
@@ -174,32 +167,37 @@ public class EmployeeDAOTest {
 		
 		empInfo.setFirstName("Vadim");
 		empInfo.setLastName("Kuznecov");
-
+			
 		
 
-		RowSet t1 = dao.find(empInfo);
+		RowSet t1 = dao.find(empInfo) ;
+		//t1.next();
 		
-		int i =0;
-		while(t1.next()){
-			i++;
-		}
-		assertEquals(1, i);
+		
+		assertEquals("Vadim",EmployeeAssembler.getInfo(t1).getFirstName());
+		assertEquals("Kuznecov",EmployeeAssembler.getInfo(t1).getLastName());
+		assertEquals("1",EmployeeAssembler.getInfo(t1).getEmpNo());
+			
+		//int i =0;
+		//while(t1.next()){
+		//	i++;
+		//}
+		//assertEquals(1, i);
+		
+	}
+	
+	@Test
+	public void testremove() throws DAOException {
+	
+		assertEquals(true,dao.remove(null,"1") );	
+		assertEquals(null,dao.findByPK("1"));
 		
 	}
 	
 	//@Test
-	public void testremove() throws DAOException {
-	
-		//Connection conn = connector.getConnection();
-		Connection conn = dao.getConnection();
-			
-		assertEquals(true,dao.remove(conn,"1") );	
-	}
-	
-	@Test
 	public void testupdate() throws DAOException {
-		dao.reconnect();
-		Connection conn = dao.getConnection();
+	//	dao.reconnect();
+	//	Connection conn = dao.getConnection();
 		
 		EmployeeInfo objSet = new EmployeeInfo();
 		objSet.setFirstName("Vad");
@@ -212,10 +210,8 @@ public class EmployeeDAOTest {
 		objSet.setCity("Tokyo");
 		objSet.setState("Vidzeme");
 		objSet.setCountry("Latvia");
-		
 		Date validTarget1 = new Date(2007,27,8);
 		objSet.setDob(validTarget1);
-		
 		objSet.setEmpNo("1");
 		objSet.setHomePhoneNo("7174455");
 		objSet.setMobilePhoneNo("25981741");
@@ -231,7 +227,8 @@ public class EmployeeDAOTest {
 		objWhere.setFirstName("Vadim");
 		
 		
-		assertEquals(true,dao.update(conn, objSet, objWhere)); 
+		assertEquals(true,dao.update(null, objSet, objWhere)); 
+		
 	}
 	
 	}
