@@ -114,7 +114,7 @@ public class EmployeeDAOTest {
 		
 		EmployeeInfo empInfo1 = new EmployeeInfo();
 			
-		empInfo1.setFirstName("Vadim1");
+		empInfo1.setFirstName("Aleksej");
 		empInfo1.setLastName("Kuznecov1");
 		empInfo1.setMiddleName("Aleksandrovich1");
 		empInfo1.setAge(21);
@@ -154,10 +154,14 @@ public class EmployeeDAOTest {
 	
 	
 	@Test
-	public void testfindbyPK() throws DAOException {
+	public void testfindbyPK() throws DAOException, SQLException {
 	
-		assertEquals("working", dao.findByPK("1"));
-		// true :D
+		EmployeeInfo t1 = (EmployeeInfo)dao.findByPK("2");
+		if (!t1.equals(null)) {
+		assertEquals("Aleksej",t1.getFirstName());
+		assertEquals("Kuznecov1",t1.getLastName());
+		assertEquals("2",t1.getEmpNo());
+		}
 	}
 	
 	@Test
@@ -167,37 +171,28 @@ public class EmployeeDAOTest {
 		
 		empInfo.setFirstName("Vadim");
 		empInfo.setLastName("Kuznecov");
-			
-		
 
+		
 		RowSet t1 = dao.find(empInfo) ;
-		//t1.next();
-		
-		
+		if (t1.next()){
+	
 		assertEquals("Vadim",EmployeeAssembler.getInfo(t1).getFirstName());
 		assertEquals("Kuznecov",EmployeeAssembler.getInfo(t1).getLastName());
 		assertEquals("1",EmployeeAssembler.getInfo(t1).getEmpNo());
-			
-		//int i =0;
-		//while(t1.next()){
-		//	i++;
-		//}
-		//assertEquals(1, i);
+		}
+		
+	}
+	@Test
+	public void testremove() throws DAOException {
+	
+		assertEquals(true,dao.remove(null,"2") );	
+		assertEquals(null,dao.findByPK("2"));
 		
 	}
 	
 	@Test
-	public void testremove() throws DAOException {
-	
-		assertEquals(true,dao.remove(null,"1") );	
-		assertEquals(null,dao.findByPK("1"));
-		
-	}
-	
-	//@Test
 	public void testupdate() throws DAOException {
-	//	dao.reconnect();
-	//	Connection conn = dao.getConnection();
+
 		
 		EmployeeInfo objSet = new EmployeeInfo();
 		objSet.setFirstName("Vad");
@@ -228,8 +223,6 @@ public class EmployeeDAOTest {
 		
 		
 		assertEquals(true,dao.update(null, objSet, objWhere)); 
-		
-	}
-	
+		}
 	}
 
