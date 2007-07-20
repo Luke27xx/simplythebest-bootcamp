@@ -33,7 +33,7 @@ public class ProjectAssembler {
 	}
 	
 	/**
-	 * Creates populated ProjectInfo VO from the Row set 
+	 * Creates populated ProjectInfo vo from the Row set 
 	 * @param rs Row Set 
 	 * @return ProjectInfo
 	 * @throws SQLException
@@ -41,11 +41,11 @@ public class ProjectAssembler {
 	public static ProjectInfo getInfo(ResultSet rs) throws SQLException   {
 		ProjectInfo projectReturn  = new ProjectInfo();
 		projectReturn.setProjectId(rs.getString("id") );
-		projectReturn.setClient(rs.getString("clientname") );
 		projectReturn.setProjectName(rs.getString("name") ); 
 		projectReturn.setProjectDescription(rs.getString("description") );
-		projectReturn.setStartDate(new java.util.Date(((java.sql.Timestamp)rs.getObject("startDate")).getTime()));
-		projectReturn.setEndDate(new java.util.Date(((java.sql.Timestamp)rs.getObject("endDate")).getTime()));
+		projectReturn.setStartDate(new java.util.Date(((java.sql.Date)rs.getObject("startDate")).getTime()));
+		projectReturn.setEndDate(new java.util.Date(((java.sql.Date)rs.getObject("endDate")).getTime()));
+		projectReturn.setClient(rs.getString("clientname") );
 		return projectReturn;
 	}
 	
@@ -53,5 +53,6 @@ public class ProjectAssembler {
 		public static void toEmptyStringAllNull(ProjectInfo obj) {
 		if(obj.getProjectDescrition() == null) obj.setProjectDescription(DAOConstants.STR_SPACE);
 		
+	
 	}
 }
