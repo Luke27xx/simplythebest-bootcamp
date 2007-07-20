@@ -1,10 +1,12 @@
 package com.jds.businesscomponent.hr;
 
 import java.sql.Connection;
+import java.util.Collection;
 
 import javax.sql.RowSet;
 
 import com.jds.apps.Constants;
+import com.jds.apps.beans.AbstractReferenceData;
 import com.jds.apps.beans.AccentureDetails;
 import com.jds.apps.beans.EmployeeInfo;
 import com.jds.apps.beans.ProjectInfo;
@@ -154,5 +156,30 @@ public class ProjectBC {
         
         return data;            
     }
+    
+  //TODO Lena
+    /**
+     * Searches Project records in the database. by HRManager
+     * @param dataFind ProjectInfo
+     * @return Collection of searched Project records 
+      */
+    public Collection searchApprovedProjects(ProjectInfo dataFind){
+		
+    	Collection result = searchReferenceData(dataFind, "hz");
+    	return result;
+    	
+    }
+   
+    //TODO Vytas
+    public Collection searchReferenceData(AbstractReferenceData dataFind, String approvalType){
+    	
+    	return (Collection)dataFind;
+    }
+    
+    //TODO Vytas
+    public void updateProject(ProjectInfo info){
+    	
+    }
+    
 
 }
