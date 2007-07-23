@@ -44,47 +44,10 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 		stmtGen =  StatementGeneratorFactory.
 			getGenerator().getStmtGenerator(DAOConstants.GEN_SKILLCAT);
 
-
 	}
-	
-	public SkillCategoryDAO(String dbDriver, String dbUrl, String dbUser,
-			String dbPassword) {
-		this.dbDriver = dbDriver;
-		this.dbUrl = dbUrl;
-		this.dbUser = dbUser;
-		this.dbPassword = dbPassword;
-	}
-	
-	public void reconnect() throws DAOException {
-		try {
-			if (conn == null || conn.isClosed()) {
-				Class.forName(dbDriver);
-				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-			}
-		} catch (Exception e) {
-			log.error("Could not initialize UrlDAO", e);
-			throw new DAOException("Could not initialize UrlDAO", e);
-		}
-
-	}
-	
-	public void close() throws DAOException {
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				log.error("Could not close connection", e);
-				throw new DAOException("Could not close connection", e);
-			}
-			conn = null;
-		}
-	}
-
-	public Connection getConnection() {
-		return conn;
-	}
-	
-	
+	/**
+	 * This method will insert a record in the SkillCategory table. 
+	 */
 	public void create(Connection conn, Object obj) throws DAOException {
 		// TODO Auto-generated method stub
 
@@ -115,6 +78,10 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 		} 
 	}
 
+	/**
+	 * This method will find the corresponding record in the Employee 
+	 * table given the search criteria in the passed parameter.
+	 */
 	public RowSet find(Object obj) throws DAOException {
 		
 		// TODO Auto-generated method stub
@@ -159,6 +126,9 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 	return (RowSet)skillReturn;
 	}
 
+	/**
+	 * This method will find all the records in the SkillCategory table.
+	 */
 	public RowSet findByAll() throws DAOException {
 		String sqlStmt = DAOConstants.SKILLCAT_FIND_ALL;
 		SkillCategory skillReturn = null;
@@ -196,7 +166,7 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 	}
 
 	/**
-	 * Finds a record from the table
+	 * Finds a record from the table by the primary key
 	 * @return Object -  String
 	 * @param Object  -  String instance, primary key of the record
 	 */
@@ -244,6 +214,9 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 
 	}
 
+	/**
+	 * This method will remove the corresponding record in the SkillCategory table.
+	 */
 	public boolean remove(Connection conn, Object obj) throws DAOException {
 		// TODO Auto-generated method stub
 		
@@ -277,6 +250,9 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
     return true;		
     }
 		
+	/**
+	 * This method will update the corresponding record in the SkillCategory table.
+	 */
 	public boolean update(Connection conn, Object objSet, Object objWhere)
 	throws DAOException{
 		
@@ -314,6 +290,11 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
         return false;
 		
 	}
+	public Connection getConnection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	
 
 }
