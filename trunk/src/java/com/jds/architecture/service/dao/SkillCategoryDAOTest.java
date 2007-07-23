@@ -194,7 +194,7 @@ public class SkillCategoryDAOTest{
 	
 	
 }
-
+/*
 class Connector {
 	protected String dbDriver;
 	protected String dbUrl;
@@ -255,4 +255,4 @@ class Connector {
 		this.dbUser = dbUser;
 	}
 }
-
+*/
