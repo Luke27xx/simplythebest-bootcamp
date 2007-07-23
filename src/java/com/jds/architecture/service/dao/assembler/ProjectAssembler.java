@@ -28,6 +28,7 @@ public class ProjectAssembler {
 		stmt.setDate(4, new java.sql.Date(project.getStartDate().getTime() ) );
 		stmt.setDate(5, new java.sql.Date(project.getEndDate().getTime() ) );
 		stmt.setString(6, project.getClient() );
+		//stmt.setString(7, project.getStatus() );
 		
 			
 	}
@@ -46,6 +47,7 @@ public class ProjectAssembler {
 		projectReturn.setStartDate(new java.util.Date(((java.sql.Date)rs.getObject("startDate")).getTime()));
 		projectReturn.setEndDate(new java.util.Date(((java.sql.Date)rs.getObject("endDate")).getTime()));
 		projectReturn.setClient(rs.getString("clientname") );
+		projectReturn.setStatus(rs.getString("status") );
 		return projectReturn;
 	}
 	
