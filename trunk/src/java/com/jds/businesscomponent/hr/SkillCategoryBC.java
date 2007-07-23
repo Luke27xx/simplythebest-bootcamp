@@ -39,6 +39,7 @@ import com.jds.architecture.service.dao.SkillDAO;
 // TODO For implementation
 import com.jds.architecture.service.dao.EmployeeDAO;
 import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
+import com.jds.architecture.service.dao.assembler.SkillCategoryAssembler;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 import com.jds.architecture.service.idgenerator.CategoryIdGenerator;
@@ -246,10 +247,9 @@ public class SkillCategoryBC {
 			}
 
 			while (rs.next()) {
-				// FIXME
-				if (rs.getString("status").equalsIgnoreCase(approvalType))
-					returnCollection.add((SkillCategory) catDao.findByPK(rs
-							.getString("id")));
+				SkillCategory skcatinfo = SkillCategoryAssembler.getInfo(rs);
+				if (skcatinfo.getStatus().equalsIgnoreCase("approved"))
+					returnCollection.add(skcatinfo);
 			}
 		} catch (SQLException e) {
 			throw new HRSSystemException(e.getMessage(), e.getCause());
