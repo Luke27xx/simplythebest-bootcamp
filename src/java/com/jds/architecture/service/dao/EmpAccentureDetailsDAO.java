@@ -118,6 +118,11 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 				conn = dbAccess.getConnection();
 			log.debug("removing AccentureDetails entry by pk");
 
+			if (findByPK(pk) == null) {
+				log.debug("can't remove AccentureDetails entry by pk - record doesn't exist");
+				return false;
+			}
+			
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 			stmt.setString(1, pk);
 			ResultSet rs = stmt.executeQuery();

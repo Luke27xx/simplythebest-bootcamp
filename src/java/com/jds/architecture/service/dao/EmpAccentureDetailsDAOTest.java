@@ -51,13 +51,8 @@ public class EmpAccentureDetailsDAOTest {
 	@Before
 	public void setUp() throws Exception {
 
-		try {
-			empAccDao = (EmpAccentureDetailsDAO) DAOFactory.getFactory()
-					.getDAOInstance(DAOConstants.DAO_EMPACC);
-
-		} catch (Exception x) {
-			System.err.println("ErrorSetUp: " + x.getMessage());
-		}
+		empAccDao = (EmpAccentureDetailsDAO) DAOFactory.getFactory()
+				.getDAOInstance(DAOConstants.DAO_EMPACC);
 
 		connector.reconnect();
 		connector.createEmployees();
@@ -152,18 +147,24 @@ public class EmpAccentureDetailsDAOTest {
 
 		assertEquals("@:em1:@:em2:", EmpDetailsAll(SHORT));
 
-		boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(),
+		boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(),
 				"2");
 
 		assertEquals("@:em1:", EmpDetailsAll(SHORT));
 
-		boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(),
+		boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(),
+				"1");
+
+		boolean wasRemoveSuccess4 = empAccDao.remove(connector.getConnection(),
 				"1");
 
 		assertEquals("", EmpDetailsAll(SHORT));
 
 		assertEquals(true, wasRemoveSuccess1 && wasRemoveSuccess2
 				&& wasRemoveSuccess3);
+		
+		assertEquals(false, wasRemoveSuccess4);
+
 		return;
 	}
 
@@ -257,7 +258,7 @@ public class EmpAccentureDetailsDAOTest {
 	public void testFindByAll() throws Exception {
 
 		addEmpDetails();
-		
+
 		RowSet rs = empAccDao.findByAll();
 
 		String test = rsContents(rs, SHORT);
