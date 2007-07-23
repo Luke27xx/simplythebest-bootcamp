@@ -159,6 +159,7 @@ public class EmployeeBC {
      * with all the employee related objects as an option
      * @throws HRSLogicalException when employee no. is null
      * @throws HRSSystemException when system exception occurred (e.g. Failed database connection)
+     * 
      */
     public EmployeeInfo searchEmployee(String empno)
         throws HRSSystemException, HRSLogicalException { 
@@ -197,7 +198,16 @@ public class EmployeeBC {
         
         return data;            
     }
-		
+	/**
+	 * searches emplyees in employee and AccentrueEmployee tables using 
+	 * info criteria , if criteria is null then return all employess and Accentrue employees
+	 * else find emplyees by criteria and retrives information from employe
+	 * table and from Accenture table (by EmpNo) as Collection
+	 * @param info -input search criteria
+	 * @return - list of employees
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
 	public Collection  searchEmployees(EmployeeInfo info ) throws DAOException, SQLException{
 	
 		String pkSearch;
@@ -228,21 +238,7 @@ public class EmployeeBC {
 		   employeeInfoList.add(employeeInfo);
 		}
 		return employeeInfoList;
-		//temp1.
-			
-		//collEmpAccDao.toArray();
-		//collEmpAccDao.
-		
-	//Collection collEmpDao    = (Collection)empDao.find(info);
-	//Collection collEmpAccDao = (Collection)empAccDao.find(info.getAccentureDetails());
 
-	
-	//empAccDao.findByPK(info.getEmpNo());
-	//collSum.addAll(collEmpAccDao);
-	//collEmpDao.addAll(collEmpAccDao);
-	
-
-	
 	}
 	
 	
