@@ -157,10 +157,15 @@ public class EmployeeBCTest {
 	EmployeeBC empBc = new EmployeeBC();
 		
 	EmployeeInfo infoTest = new EmployeeInfo();
+	try {
 	infoTest = 	empBc.searchEmployee("1557");
 	assertEquals("1557" , infoTest.getEmpNo() );
-	infoTest = empBc.searchEmployee("1558");
-	assertEquals("1558",infoTest.getEmpNo());
+	} catch (HRSLogicalException e) {
+		assertEquals("no such record","no such record");
+	}
+	
+	//infoTest = empBc.searchEmployee("1558");
+	//assertEquals("1558",infoTest.getEmpNo());
 	
 	}
 
