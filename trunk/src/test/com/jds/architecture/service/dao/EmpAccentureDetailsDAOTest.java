@@ -32,15 +32,14 @@ public class EmpAccentureDetailsDAOTest {
 	final boolean FULL = true;
 
 	private DataAccessObjectInterface empAccDao;
-	private static Connector connector;
+
+	// private static Connector connector;
 
 	@BeforeClass
-	public static void onlyOnce() {
-
-		connector = new Connector("oracle.jdbc.driver.OracleDriver",
-
-				"jdbc:oracle:thin:@127.0.0.1:1521:XE", "hruser", "hruser");
-
+	public static void onlyOnce() throws Exception {
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		conn = DriverManager.getConnection(
+				"jdbc:oracle:thin:@localhost:1521:XE", "hruser", "hruser");
 	}
 
 	/**
@@ -55,8 +54,8 @@ public class EmpAccentureDetailsDAOTest {
 		empAccDao = (EmpAccentureDetailsDAO) DAOFactory.getFactory()
 				.getDAOInstance(DAOConstants.DAO_EMPACC);
 
-		connector.reconnect();
-		connector.createEmployees();
+		reconnect();
+		createEmployees();
 	}
 
 	/**
@@ -66,8 +65,8 @@ public class EmpAccentureDetailsDAOTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		connector.reconnect();
-		connector.clearAll();
+		reconnect();
+		clearAll();
 	}
 
 	/**
@@ -95,7 +94,7 @@ public class EmpAccentureDetailsDAOTest {
 
 		try {
 
-			empAccDao.create(connector.getConnection(), null);
+			empAccDao.create(conn, null);
 
 		} catch (DAOException daoex) {
 			try {
@@ -136,27 +135,23 @@ public class EmpAccentureDetailsDAOTest {
 
 		assertEquals("@:em000:@:em1:@:em2:", EmpDetailsAll(SHORT));
 
-		boolean wasRemoveSuccess1 = empAccDao.remove(connector.getConnection(),
-				"10");
+		boolean wasRemoveSuccess1 = empAccDao.remove(conn, "10");
 
 		assertEquals("@:em1:@:em2:", EmpDetailsAll(SHORT));
 
-		boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(),
-				"2");
+		boolean wasRemoveSuccess2 = empAccDao.remove(conn, "2");
 
 		assertEquals("@:em1:", EmpDetailsAll(SHORT));
 
-		boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(),
-				"1");
+		boolean wasRemoveSuccess3 = empAccDao.remove(conn, "1");
 
-		boolean wasRemoveSuccess4 = empAccDao.remove(connector.getConnection(),
-				"1");
+		boolean wasRemoveSuccess4 = empAccDao.remove(conn, "1");
 
 		assertEquals("", EmpDetailsAll(SHORT));
 
 		assertEquals(true, wasRemoveSuccess1 && wasRemoveSuccess2
 				&& wasRemoveSuccess3);
-		
+
 		assertEquals(false, wasRemoveSuccess4);
 
 		return;
@@ -230,7 +225,7 @@ public class EmpAccentureDetailsDAOTest {
 		AccentureDetails set = new AccentureDetails();
 		set.setLMU("brr");
 
-		empAccDao.update(connector.getConnection(), set, where);
+		empAccDao.update(conn, set, where);
 
 		assertEquals("@:em000:brr:@:em1:brr:@:em2:brr:", EmpDetailsAll(FULL));
 
@@ -239,7 +234,7 @@ public class EmpAccentureDetailsDAOTest {
 
 		set.setEnterpriseAddress("xx2");
 
-		empAccDao.update(connector.getConnection(), set, where);
+		empAccDao.update(conn, set, where);
 
 		assertEquals("@:em000:brr:@:em1:brr:@:xx2:brr:", EmpDetailsAll(FULL));
 	}
@@ -274,9 +269,8 @@ public class EmpAccentureDetailsDAOTest {
 	 * @throws Exception
 	 */
 	private String EmpDetailsAll(boolean full) throws Exception {
-		if (connector.conn == null || connector.conn.isClosed())
-			connector.reconnect();
-		Statement stmt = connector.conn.createStatement();
+		reconnect();
+		Statement stmt = conn.createStatement();
 		ResultSet r = stmt
 				.executeQuery("select * from empaccenturedetail order by emailadd");
 		return rsContents(r, full);
@@ -334,7 +328,7 @@ public class EmpAccentureDetailsDAOTest {
 			correctObject.setSpecialty("");
 			correctObject.setServiceLine("");
 
-			empAccDao.create(connector.getConnection(), correctObject);
+			empAccDao.create(conn, correctObject);
 
 			correctObject.setEmployeeNo("2");
 			correctObject.setEnterpriseId("tratata");
@@ -348,7 +342,7 @@ public class EmpAccentureDetailsDAOTest {
 			correctObject.setSpecialty("");
 			correctObject.setServiceLine("");
 
-			empAccDao.create(connector.getConnection(), correctObject);
+			empAccDao.create(conn, correctObject);
 
 			correctObject.setEmployeeNo("10");
 			correctObject.setEnterpriseId("tratata");
@@ -362,26 +356,26 @@ public class EmpAccentureDetailsDAOTest {
 			correctObject.setSpecialty("");
 			correctObject.setServiceLine("");
 
-			empAccDao.create(connector.getConnection(), correctObject);
+			empAccDao.create(conn, correctObject);
 
 		} catch (Exception x) {
 			System.err.println("error_adding_empdetails: " + x.getMessage());
 		}
 	}
-}
 
-class Connector {
 	protected String dbDriver;
 	protected String dbUrl;
 	protected String dbUser;
 	protected String dbPassword;
-	protected Connection conn;
+	protected static Connection conn;
 
 	public void reconnect() {
 		try {
 			if (conn == null || conn.isClosed()) {
-				Class.forName(dbDriver);
-				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection(
+						"jdbc:oracle:thin:@127.0.0.1:1521:XE", "hruser",
+						"hruser");
 			}
 		} catch (Exception e) {
 			System.err.println("error2: " + e.getMessage());
@@ -389,45 +383,6 @@ class Connector {
 			throw new RuntimeException("Could not initialize UrlDAO", e);
 		}
 
-	}
-
-	public Connector(String dbDriver, String dbUrl, String dbUser,
-			String dbPassword) {
-		this.dbDriver = dbDriver;
-		this.dbUrl = dbUrl;
-		this.dbUser = dbUser;
-		this.dbPassword = dbPassword;
-	}
-
-	public void close() {
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				throw new RuntimeException("Could not close connection", e);
-			}
-			conn = null;
-		}
-	}
-
-	public Connection getConnection() {
-		return conn;
-	}
-
-	public void setDbDriver(String dbDriver) {
-		this.dbDriver = dbDriver;
-	}
-
-	public void setDbPassword(String dbPassword) {
-		this.dbPassword = dbPassword;
-	}
-
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public void setDbUser(String dbUser) {
-		this.dbUser = dbUser;
 	}
 
 	public void clearAll() {
@@ -511,4 +466,5 @@ class Connector {
 		pstmt.setString(20, "");
 
 	}
+
 }
