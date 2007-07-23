@@ -38,6 +38,12 @@ import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 import com.sun.rowset.CachedRowSetImpl;
 
+
+/**
+ * 
+ * @author Vytatas Streimikis and Jelena Sokolova
+ *
+ */
 public class ProjectDAO  implements DataAccessObjectInterface {
 
 	private DBAccess dbAccess = null;
@@ -54,18 +60,19 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	 * @throws DBAccessException
 	 */
 	protected ProjectDAO() throws DAOException, DBAccessException {
-		log.info("initializing EmployeeDAO");
+		log.info("initializing ProjectDAO");
 		dbAccess = DBAccess.getDBAccess();
 		stmtGen =  StatementGeneratorFactory.
 			getGenerator().getStmtGenerator(DAOConstants.GEN_PROJ);
 
 
-	}	
-
+	}
+	
+	//TODO Lena
 	/**
 	 * Creates or insert new record to the table
 	 *@param Connection - database connection
-	 *@param Object  - must be an instance of EmployeeInfo,contains object for insert
+	 *@param Object  - must be an instance of ProjectInfo,contains object for insert
 	 */
 	public void create(Connection conn, Object object) 
 		throws DAOException {
@@ -102,7 +109,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 		} 
 	}
 	
-	
+	//TODO Lena
 	/**
 	 * Removes a record from the table
 	 * @param Connection -  database connection
@@ -139,6 +146,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
     }
 	
 
+	//TODO Lena
 	/**
 	 * Finds a record from the table
 	 * @return Object -  String
@@ -189,9 +197,10 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	}
 
 
+	//TODO Vytas
 	/**
 	 * Finds all records that matches the criteria
-	 * @param Object -  instance of EmployeeInfo used as search criteria
+	 * @param Object -  instance of ProjectInfo used as search criteria
 	 * @return RowSet - rowset of found records
 	 */
 	
@@ -205,7 +214,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 			
 		
 		String sqlstmt = DAOConstants.PROJ_FIND_MAIN;
-		ProjectInfo project = (ProjectInfo) object;
+		//ProjectInfo project = (ProjectInfo) object;
 		StatementGenerator stmGen = StatementGeneratorFactory.getGenerator().getStmtGenerator(StatementGenProject.class.getSimpleName());
 		
 		String sqlWhere=null; 
@@ -257,15 +266,15 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 	}
 
 
-
+	//TODO Vytas
 	/**
 	 * @param Connection -
 	 *            database connection
 	 * @param objSet -
-	 *            instance of AccentureDetails, set the new values of a
+	 *            instance of ProjectInfo, set the new values of a
 	 *            particular record
 	 * @param objWhere-
-	 *            instance of AccentureDetails, used as update criteria
+	 *            instance of ProjectInfo, used as update criteria
 	 * @return boolean - true if record is updated
 	 */
 	public boolean update(Connection conn, Object objSet, Object objWhere)
@@ -316,14 +325,14 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 					rs.close();
 				
 			}
-			log.debug("updated AccentureDetails entry");
+			log.debug("updated ProjectInfo entry");
 			return true;
 		} catch (DBAccessException dbaex) {
 			throw new DAOException(dbaex.getMessageKey(), dbaex,
 					DAOException.ERROR, true);
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-			throw new DAOException("sql.update.exception.accdao",
+			throw new DAOException("sql.update.exception.projdao",
 					e, DAOException.ERROR, true);
 		} finally {
 			try {
@@ -334,6 +343,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 
 	}
 
+	//TODO Vytas
 	public RowSet findByAll() throws DAOException {
 		String sqlStmt = DAOConstants.PROJ_FIND_ALL;
 
@@ -341,7 +351,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 		RowSet returnRowSet = null;
 
 		try {
-			log.debug("finding all ProjectDetails entries");
+			log.debug("finding all ProjectInfo entries");
 			conn = dbAccess.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 
@@ -352,7 +362,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 			returnRowSet = (RowSet) crs;
 			rs.close();
 
-			log.debug("found all ProjectDetails entries");
+			log.debug("found all ProjectInfo entries");
 		} catch (DBAccessException e) {
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
 					true);
