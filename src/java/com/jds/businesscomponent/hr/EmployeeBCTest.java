@@ -7,6 +7,11 @@ import static org.junit.Assert.*;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.sql.RowSet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +22,8 @@ import com.jds.apps.beans.EmployeeInfo;
 import com.jds.architecture.exceptions.HRSLogicalException;
 import com.jds.architecture.exceptions.HRSSystemException;
 import com.jds.architecture.service.dao.DAOException;
+import com.jds.architecture.service.dao.DataAccessObjectInterface;
+import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 
 /**
  * @author training
@@ -24,28 +31,7 @@ import com.jds.architecture.service.dao.DAOException;
  */
 public class EmployeeBCTest {
 	
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link com.jds.businesscomponent.hr.EmployeeBC#EmployeeBC()}.
-	 */
-	//@Test
-	public void testEmployeeBC() {
-		fail("Not yet implemented");
-	}
+	private DataAccessObjectInterface empAccDao = null;
 
 	/**
 	 * Test method for {@link com.jds.businesscomponent.hr.EmployeeBC#createEmployee(com.jds.apps.beans.EmployeeInfo)}.
@@ -54,9 +40,11 @@ public class EmployeeBCTest {
 	 * @throws HRSSystemException 
 	 * @throws HRSLogicalException 
 	 * @throws SQLException 
+	 * uses random to create unique First,Last and Midle names
 	 */
 	@Test 
 	public void testCreatEmp() throws HRSSystemException, HRSLogicalException, SQLException {
+		
 		int empIndexTemp = (int)(Math.random()*1000);
 		String empIndex = "" + empIndexTemp; 
 		testCreateEmployee(empIndex);
@@ -64,11 +52,8 @@ public class EmployeeBCTest {
 	
 	public void testCreateEmployee(String empIndex) throws HRSSystemException, HRSLogicalException, SQLException {
 
-		
-		EmployeeBC empBc = new EmployeeBC();
-
-		
-		EmployeeInfo empInfo = new EmployeeInfo();
+	EmployeeBC empBc = new EmployeeBC();
+	EmployeeInfo empInfo = new EmployeeInfo();
 		
 		empInfo.setFirstName("Vadim" + empIndex);
 		empInfo.setLastName("Kuznecov" + empIndex);
@@ -82,7 +67,6 @@ public class EmployeeBCTest {
 		empInfo.setCountry("Latvia");
 		Date validTarget1 = new Date(2007,27,8);
 		empInfo.setDob(validTarget1);
-		//empInfo.setEmpNo("1");
 		empInfo.setHomePhoneNo("7174455");
 		empInfo.setMobilePhoneNo("25981741");
 		empInfo.setRecognitions("blablabla");
@@ -93,9 +77,8 @@ public class EmployeeBCTest {
 		empInfo.setEducationalAttainment("TSI");
 		empInfo.setEmail("amittere@inbox.lv");
 		
-		AccentureDetails correctObject = new AccentureDetails();
+	AccentureDetails correctObject = new AccentureDetails();
 
-		//correctObject.setEmployeeNo("1");
 		correctObject.setEnterpriseId("tratata");
 		correctObject.setEnterpriseAddress("em000");
 		correctObject.setLevel("");
@@ -107,15 +90,12 @@ public class EmployeeBCTest {
 		correctObject.setSpecialty("");
 		correctObject.setServiceLine("");
 		
-		empInfo.setAccentureDetails(correctObject);
-		
-		empBc.createEmployee(empInfo);
+	empInfo.setAccentureDetails(correctObject);
+	empBc.createEmployee(empInfo);
 		
 
-		EmployeeBC empBc1 = new EmployeeBC();
-
-		
-		EmployeeInfo empInfo1 = new EmployeeInfo();
+	EmployeeBC empBc1 = new EmployeeBC();
+	EmployeeInfo empInfo1 = new EmployeeInfo();
 		
 		empInfo1.setFirstName("Vadwam" + empIndex +"1");
 		empInfo1.setLastName("Kudwacov" + empIndex+"1");
@@ -129,7 +109,6 @@ public class EmployeeBCTest {
 		empInfo1.setCountry("Latvia");
 		Date validTarget2 = new Date(2007,27,8);
 		empInfo1.setDob(validTarget2);
-		//empInfo1.setEmpNo("1");
 		empInfo1.setHomePhoneNo("7174455");
 		empInfo1.setMobilePhoneNo("dwada981741");
 		empInfo1.setRecognitions("blablabla");
@@ -140,9 +119,8 @@ public class EmployeeBCTest {
 		empInfo1.setEducationalAttainment("TSI");
 		empInfo1.setEmail("amittere@inbox.lv");
 		
-		AccentureDetails correctObject1 = new AccentureDetails();
+	AccentureDetails correctObject1 = new AccentureDetails();
 
-		//correctObject.setEmployeeNo("1");
 		correctObject1.setEnterpriseId("tratata");
 		correctObject1.setEnterpriseAddress("em000");
 		correctObject1.setLevel("");
@@ -154,20 +132,22 @@ public class EmployeeBCTest {
 		correctObject1.setSpecialty("");
 		correctObject1.setServiceLine("");
 		
-		empInfo1.setAccentureDetails(correctObject);
-		
-		empBc.createEmployee(empInfo1);
+	empInfo1.setAccentureDetails(correctObject);
+	empBc.createEmployee(empInfo1);
+	
 	}
 
 	/**
 	 * Test method for {@link com.jds.businesscomponent.hr.EmployeeBC#searchEmployee(java.lang.String)}.
 	 * @throws HRSSystemException 
 	 * @throws HRSLogicalException 
+	 * checking 2 records from table and compare with results we recived
+	 * using searchEmployee method
 	 */
 	@Test
 	public void testSearchEmployee() throws HRSSystemException, HRSLogicalException {
 
-		EmployeeBC empBc = new EmployeeBC();
+	EmployeeBC empBc = new EmployeeBC();
 		
 	EmployeeInfo infoTest = new EmployeeInfo();
 	infoTest = 	empBc.searchEmployee("1547");
@@ -182,16 +162,41 @@ public class EmployeeBCTest {
 	 * @throws HRSSystemException 
 	 * @throws SQLException 
 	 * @throws DAOException 
+	 * search Employees using null parameter
 	 */
 	@Test
 	public void testSearchEmployees() throws HRSSystemException, DAOException, SQLException {
 		
 		EmployeeBC empBc1 = new EmployeeBC();
-		EmployeeInfo empInfoTest1 = null; 
-	
+		List<EmployeeInfo> empInfoList = new ArrayList<EmployeeInfo>();
+		List<String> accEmpNoInfoList = new ArrayList<String>();
+		List<String> accEnterpriseIdInfoList = new ArrayList<String>();
+			
+		empInfoList = (List)empBc1.searchEmployees(null);
 		
-		assertEquals("blablabla", empBc1.searchEmployees(empInfoTest1));
-		assertEquals("blablabla" ,  )
+		for(int i = 0; i< empInfoList.size(); i++){
+			accEmpNoInfoList.add(empInfoList.get(i).getAccentureDetails().getEmployeeNo()) ;
+			accEnterpriseIdInfoList.add(empInfoList.get(i).getAccentureDetails().getEnterpriseId());
+		}
+			
+		   assertEquals("Accenture Details Empno",accEmpNoInfoList);
+		   assertEquals("Accenture Details EnterpriseID",accEnterpriseIdInfoList);
+	}
+	
+	@Test
+	/**
+	 * search employees using Info parameter
+	 */
+	public void testSearchEmployeesWithInfo () throws HRSSystemException, DAOException, SQLException {
+		EmployeeBC empBc1 = new EmployeeBC();
+		List<EmployeeInfo> empInfoList = new ArrayList<EmployeeInfo>();
+		EmployeeInfo empInfo = new EmployeeInfo();
+		empInfo.setFirstName("%Vadw%");
+		
+		empInfoList = (List)empBc1.searchEmployees(empInfo);
+		
+		assertEquals("true if you got some results 'checked in table'",empInfoList);
+		
 	}
 
 }
