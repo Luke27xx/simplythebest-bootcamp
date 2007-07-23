@@ -117,8 +117,8 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			
 		log.debug("creating EmployeeInfo entry");
 		try{
-	//		if (conn == null || conn.isClosed()) 
-	//			conn = dbAccess.getConnection();
+			if (conn == null || conn.isClosed()) 
+				conn = dbAccess.getConnection();
 			
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
 			EmployeeAssembler.getPreparedStatement(employee, stmt);
