@@ -44,8 +44,8 @@ public class SkillsAssembler
 		SkillsInformation skillReturn  = new SkillsInformation();
 		
 		skillReturn.setSkillId(rs.getString("id"));
-		skillReturn.setCategoryId(rs.getString("categoryId"));
-		skillReturn.setSkillName(rs.getString("skill"));
+		skillReturn.setCategoryId(rs.getString("catid"));
+		skillReturn.setSkillName(rs.getString("name"));
 		skillReturn.setSkillDescription(rs.getString("description"));
 		
 		return skillReturn;
