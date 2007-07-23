@@ -1,9 +1,13 @@
 package com.jds.businesscomponent.hr;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 
 import javax.sql.RowSet;
+import javax.sql.rowset.CachedRowSet;
 
 import com.jds.apps.Constants;
 import com.jds.apps.beans.AbstractReferenceData;
@@ -21,6 +25,7 @@ import com.jds.architecture.service.dao.DAOFactory;
 import com.jds.architecture.service.dao.DataAccessObjectInterface;
 import com.jds.architecture.service.dao.EmployeeDAO;
 import com.jds.architecture.service.dao.ProjectDAO;
+import com.jds.architecture.service.dao.assembler.ProjectAssembler;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 import com.jds.architecture.service.idgenerator.EmployeeIdGenerator;
@@ -162,24 +167,99 @@ public class ProjectBC {
      * Searches Project records in the database. by HRManager
      * @param dataFind ProjectInfo
      * @return Collection of searched Project records 
+     * @throws HRSLogicalException 
+     * @throws HRSSystemException 
       */
-    public Collection searchApprovedProjects(ProjectInfo dataFind){
+    public Collection searchApprovedProjects(ProjectInfo dataFind) throws HRSSystemException, HRSLogicalException{
 		
-    	Collection result = searchReferenceData(dataFind, "hz");
+    	Collection result = searchReferenceData(dataFind, "approved");
     	return result;
     	
     }
    
     //TODO Vytas
-    public Collection searchReferenceData(AbstractReferenceData dataFind, String approvalType){
-    	
-    	return (Collection)dataFind;
+    public Collection searchReferenceData(AbstractReferenceData dataFind, String approvalType) throws HRSSystemException, HRSLogicalException { 
+        
+        log.info("entered searchReferenceData method");
+            
+        RowSet rset = null;
+        List<ProjectInfo> resultList = new ArrayList<ProjectInfo>();
+      
+        try{
+        	if (dataFind == null){
+        		rset = projDao.findByAll();
+        	}
+            else{
+            	rset = projDao.find(dataFind);
+            }
+        	
+        	while(rset.next()){
+               if (rset.getString("status").equalsIgnoreCase(approvalType)){
+                  resultList.add(ProjectAssembler.getInfo(rset)); 
+               }
+        		
+        	}
+        	
+        } catch (DAOException e) {
+            throw new HRSSystemException (e.getMessageKey(),e.getCause());
+        } catch (Exception e) {
+            throw new HRSSystemException ("business.component.exception",e.getCause());
+        }       
+        
+        log.info("exited searchReferenceData method");
+        
+    	return resultList;
     }
     
     //TODO Vytas
-    public void updateProject(ProjectInfo info){
-    	
-    }
+    public void updateProject(ProjectInfo info) throws HRSLogicalException, HRSSystemException {
+
+		log.info("entered updateProject method");
+
+		ProjectInfo proj = new ProjectInfo();
+		if (info == null)
+			throw new HRSLogicalException("invalid.input.exception");
+
+		if (info.getProjectId() == null)
+			throw new HRSLogicalException("id.required.exception");
+
+		proj.setProjectId(info.getProjectId());
+		Connection conn = null;
+		
+		//info.setProjectId(null);
+
+		try {
+			conn = dbAccess.getConnection();
+			
+			if (!(projDao.update(conn, info, proj))){
+				throw new HRSLogicalException("record.not.updated.exception");
+			}
+			dbAccess.commitConnection(conn);
+			
+		}catch (DBAccessException e) {
+			try {
+				dbAccess.rollbackConnection(conn);
+			} catch (DBAccessException e1) {
+			}
+			throw new HRSSystemException(e.getMessageKey(), e.getCause());
+		} catch (DAOException e) {
+			try {
+				dbAccess.rollbackConnection(conn);
+			} catch (DBAccessException e1) {
+			}
+			if (e.isLogical())
+				throw new HRSLogicalException(e.getMessageKey() + ".project");
+			else
+				throw new HRSSystemException(e.getMessageKey(), e.getCause());
+		} finally {
+			try {
+				dbAccess.closeConnection(conn);
+			} catch (DBAccessException e1) {
+			}
+		}
+
+		log.info("exited updateProject method");
+	}
     
 
 }
