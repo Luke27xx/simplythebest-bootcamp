@@ -1,5 +1,9 @@
 package com.jds.architecture.service.dao.assembler;
 
+/**
+ * @authors Liga Jeca & Gita Balode
+ */
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
