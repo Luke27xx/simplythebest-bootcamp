@@ -10,14 +10,10 @@ import com.jds.architecture.utilities.Transformer;
 
 
 /**
- * StatementGenEmployee is a class that generates SQL statements for EmployeeInfo
+ * StatementGenProject is a class that generates SQL statements for ProjectInfo
  * Statement Generator DAO functions
- * @author c.b.balajadia
- * @author last modified by: $Author: c.b.balajadia $
- * @version 11/2005 initial draft
- * 			02/18/2005 - created JavaDocs
- * 					   
- * @since HRS 2.0
+ * @author Vytautas Streimikis
+ * 
  *
  */
 public class StatementGenProject extends StatementGenerator {
@@ -55,6 +51,12 @@ public class StatementGenProject extends StatementGenerator {
 			strBuffer.append(getColumnValue(isSet, DAOConstants.COL_NAME, 
 					obj.getProjectName(), strConstant));	
 			log.debug("project name:" + strBuffer.toString());			
+			
+		}
+		
+		if(obj.getDescription() != null) {  
+			strBuffer.append(getColumnValue(isSet, DAOConstants.COL_DESCRIPTION, 
+					obj.getDescription(), strConstant));			
 			
 		} 
         
