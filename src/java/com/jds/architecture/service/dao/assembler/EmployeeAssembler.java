@@ -67,7 +67,7 @@ public class EmployeeAssembler {
 		employeeReturn.setFirstName(rs.getString("firstname"));
 		employeeReturn.setLastName(rs.getString("lastname"));
 		employeeReturn.setMiddleName(rs.getString("middlename"));
-		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
+		employeeReturn.setDob(new java.util.Date(((java.sql.Date)rs.getObject("dateofbirth")).getTime()));
 		employeeReturn.setAge(rs.getInt("age"));		
 		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
 		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
@@ -86,38 +86,7 @@ public class EmployeeAssembler {
 		return employeeReturn;
 	}
 	
-	/**
-	 * Creates populated EmployeeInfo vo from the Result set 
-	 * @param rs Result Set 
-	 * @return EmployeeInfo
-	 * @throws SQLException
-	 */
-	public static EmployeeInfo getInfo(RowSet rs) throws SQLException{
-		EmployeeInfo employeeReturn  = new EmployeeInfo();
-		employeeReturn.setEmpNo(rs.getString("empno"));
-		employeeReturn.setFirstName(rs.getString("firstname"));
-		employeeReturn.setLastName(rs.getString("lastname"));
-		employeeReturn.setMiddleName(rs.getString("middlename"));
-		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
-		employeeReturn.setAge(rs.getInt("age"));		
-		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
-		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
-		employeeReturn.setCitizenship(rs.getString("citizenship"));
-		employeeReturn.setSssNo(rs.getString("sssno"));
-		employeeReturn.setTinNo(rs.getString("tinno"));
-		employeeReturn.setMobilePhoneNo(rs.getString("mobileno"));
-		employeeReturn.setHomePhoneNo(rs.getString("homeno"));
-		employeeReturn.setStreet1(rs.getString("stadd1"));
-		employeeReturn.setStreet2(rs.getString("stadd2"));
-		employeeReturn.setCity(rs.getString("city"));
-		employeeReturn.setState(rs.getString("province"));
-		employeeReturn.setCountry(rs.getString("country"));
-		employeeReturn.setEducationalAttainment(rs.getString("educattainment"));
-		employeeReturn.setRecognitions(rs.getString("recognition"));
-		return employeeReturn;
-	}
-	
-	
+
 	public static void toEmptyStringAllNull(EmployeeInfo obj) {
 		if(obj.getCivilStatus() == null) obj.setCivilStatus(DAOConstants.STR_SPACE);
 		if(obj.getCity() == null) obj.setCity(DAOConstants.STR_SPACE);
