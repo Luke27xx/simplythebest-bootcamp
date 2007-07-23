@@ -16,6 +16,7 @@ import com.jds.apps.beans.AccentureDetails;
 import com.jds.apps.beans.EmployeeInfo;
 import com.jds.architecture.exceptions.HRSLogicalException;
 import com.jds.architecture.exceptions.HRSSystemException;
+import com.jds.architecture.service.dao.DAOException;
 
 /**
  * @author training
@@ -169,17 +170,28 @@ public class EmployeeBCTest {
 		EmployeeBC empBc = new EmployeeBC();
 		
 	EmployeeInfo infoTest = new EmployeeInfo();
-	 infoTest = 	empBc.searchEmployee("1547");
-		assertEquals(1547 , infoTest.getEmpNo() );
-		
+	infoTest = 	empBc.searchEmployee("1547");
+	assertEquals("1547" , infoTest.getEmpNo() );
+	infoTest = empBc.searchEmployee("1548");
+	assertEquals("1548",infoTest.getEmpNo());
+	
 	}
 
 	/**
 	 * Test method for {@link com.jds.businesscomponent.hr.EmployeeBC#searchEmployees(com.jds.apps.beans.EmployeeInfo)}.
+	 * @throws HRSSystemException 
+	 * @throws SQLException 
+	 * @throws DAOException 
 	 */
 	@Test
-	public void testSearchEmployees() {
-		fail("Not yet implemented");
+	public void testSearchEmployees() throws HRSSystemException, DAOException, SQLException {
+		
+		EmployeeBC empBc1 = new EmployeeBC();
+		EmployeeInfo empInfoTest1 = null; 
+	
+		
+		assertEquals("blablabla", empBc1.searchEmployees(empInfoTest1));
+		assertEquals("blablabla" ,  )
 	}
 
 }
