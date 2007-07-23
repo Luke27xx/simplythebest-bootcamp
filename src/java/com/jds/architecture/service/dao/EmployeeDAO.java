@@ -57,7 +57,7 @@ import com.sun.rowset.CachedRowSetImpl;
  * </p> 
  * 
  *  							
- * @author c.b.balajadia 
+ * @author Vadim Kuznecov , Ilja Taran
  * @version  11/2004 initial draft c.b.balajadia
   * @since 1.1
  */
