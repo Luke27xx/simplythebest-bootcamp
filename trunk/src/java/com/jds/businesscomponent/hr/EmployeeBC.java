@@ -30,8 +30,6 @@ import com.jds.architecture.service.dao.DAOFactory;
 import com.jds.architecture.service.dao.DataAccessObjectInterface;
 import com.jds.architecture.service.dao.EmpAccentureDetailsDAO;
 
-//TODO For implementation
-//import com.jds.architecture.service.dao.EmpAccentureDetailsDAO;
 import com.jds.architecture.service.dao.EmployeeDAO;
 import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 import com.jds.architecture.service.dbaccess.DBAccess;
@@ -42,7 +40,7 @@ import com.jds.architecture.service.idgenerator.IdGeneratorException;
 
 /**
  * EmployeeBC is a class that serves as an HR module business functions
- * @author aldie.m.lim
+ * @author Vadim Kuznecov , Ilja Taran
  * @author last modified by: $Author: c.b.balajadia $
  * @version 2.0
  */
@@ -56,6 +54,7 @@ public class EmployeeBC {
 	private static Logger log = (Logger) ServiceFactory.getInstance()
 	.getService(LoggerService.class);
 	
+	
 	/**
 	 * Constructor initializes data access objects
 	 */
@@ -67,6 +66,7 @@ public class EmployeeBC {
 			   empDao = (EmployeeDAO)DAOFactory.getFactory()
 				 .getDAOInstance(DAOConstants.DAO_EMP);
 
+			   
 			   empAccDao = (EmpAccentureDetailsDAO)DAOFactory.getFactory()
 				.getDAOInstance(DAOConstants.DAO_EMPACC);
 				
@@ -152,6 +152,7 @@ public class EmployeeBC {
 	
 	}
     
+	
     /**
      * Searches employee by primary key which is the employee no. by HRManager
      * @param empno String
@@ -161,32 +162,32 @@ public class EmployeeBC {
      * @throws HRSSystemException when system exception occurred (e.g. Failed database connection)
      * 
      */
-    public EmployeeInfo searchEmployee(String empno)
+    public EmployeeInfo searchEmployee(String empNo)
         throws HRSSystemException, HRSLogicalException { 
         
         log.info("entered searchEmployee method");
             
-        if (empno == null) 
+        if (empNo == null) 
          throw new HRSLogicalException ("id.required.exception");
 
-        EmployeeInfo data = null;
+        EmployeeInfo empData = null;
         AccentureDetails accData = null;
-        Object temp = null;
+        Object tempAccData = null;
     
         try{
-            data = (EmployeeInfo) empDao.findByPK(empno);
+            empData = (EmployeeInfo) empDao.findByPK(empNo);
             
-            if (data == null) 
+            if (empData == null) 
                 throw new HRSLogicalException ("employee.no.record.exception");
             
             
-            temp = empAccDao.findByPK(empno);
+            tempAccData = empAccDao.findByPK(empNo);
                 
-            if (temp == null) 
+            if (tempAccData == null) 
                 throw new HRSLogicalException ("accenture.details.no.record.exception");
                 
-            accData = (AccentureDetails)temp;
-            data.setAccentureDetails(accData);      
+            accData = (AccentureDetails)tempAccData;
+            empData.setAccentureDetails(accData);      
                         
         } catch (DAOException e) {
             throw new HRSSystemException (e.getMessageKey(),e.getCause());
@@ -196,8 +197,10 @@ public class EmployeeBC {
         
         log.info("exited searchEmployee method");
         
-        return data;            
+        return empData;            
     }
+    
+    
 	/**
 	 * searches emplyees in employee and AccentrueEmployee tables using 
 	 * info criteria , if criteria is null then return all employess and Accentrue employees
@@ -219,6 +222,7 @@ public class EmployeeBC {
 			RowSet rsAll = empDao.findByAll();
 			
 			while ( rsAll.next() ) {
+				
 				   pkSearch =	EmployeeAssembler.getInfo(rsAll).getEmpNo();
 				   accDet = (AccentureDetails)empAccDao.findByPK(pkSearch);
 				   employeeInfo = EmployeeAssembler.getInfo(rsAll);
@@ -238,11 +242,7 @@ public class EmployeeBC {
 		   employeeInfoList.add(employeeInfo);
 		}
 		return employeeInfoList;
-
 	}
-	
-	
-
-			
+				
 }
 
