@@ -1,7 +1,9 @@
 package com.jds.architecture.service.dao;
+
 /**
  * @authors Liga Jeca & Gita Balode
  */
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -17,15 +19,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jds.apps.beans.ProjectInfo;
+
 import com.jds.apps.beans.SkillCategory;
 
 public class SkillCategoryDAOTest{
 
-	final boolean SHORT = false;
-	final boolean FULL = true;
 	private DataAccessObjectInterface catDao = null;
-	
 	private static SkillCategoryDAO cat;
 	private static Connector conn;
 	
@@ -54,33 +53,39 @@ public class SkillCategoryDAOTest{
 	@After
 	public void tearDown() throws SQLException, DAOException {
 		conn.reconnect();	
-		//Connection conn = cat.getConnection();
-		//Statement stmt = conn.createStatement();
-		//stmt.close();
-		
+		Connection conn = cat.getConnection();
+		Statement stmt = conn.createStatement();
+		stmt.close();
+		((Connector) conn).clearAll();
 		conn.close();	
 		
 	}
 	
 	
 	@Test
-	public void create() throws DAOException {
-		//Connection conn = cat.getConnection();
+	public void create() throws DAOException, SQLException {
+		Connection conn = cat.getConnection();
 		SkillCategory skill = new SkillCategory();
 		skill.setCategoryId("1");
 		skill.setCategoryName("name");
 		skill.setCategoryDescription("description");
-		cat.create(conn.getConnection(), skill);
+		cat.create(((Statement) conn).getConnection(), skill);
+		
+		Statement sql_stmt = ((Statement) conn).getConnection().createStatement();
+		java.sql.ResultSet rset = sql_stmt.executeQuery("SELECT id");
+		rset.next();
+		assertEquals("1", rset.getString("id"));
+		rset.close(); 
+		sql_stmt.close();
 		
 		if (skill == null){
 			throw new DAOException ("invalid.object.catdao", null);
-		}
-		
+			}
 		
 		}
 	
 	@Test
-	public void find() throws DAOException{
+	public void find() throws DAOException, SQLException{
 		create();
 
 		SkillCategory obj = new SkillCategory();
@@ -91,58 +96,30 @@ public class SkillCategoryDAOTest{
 		
 
 		try {
-
-			RowSet rs = catDao.find(obj);
-
-			String test = rsContents(rs, SHORT);
-			assertEquals("", test);
-
-			obj = new SkillCategory();
-
-			obj.setCategoryId("2");
-			obj.setCategoryName("name1");
-			obj.setCategoryDescription("desc1");
-
-			rs = catDao.find(obj);
-
-			test = rsContents(rs, SHORT);
-			assertEquals("1", test);
-			assertEquals("name", test);
-			assertEquals("desc", test);
+			assertEquals("1", 2);
+			assertEquals("name", "name1" );
+			assertEquals("desc", "desc1");
 
 			return;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.err.println("something is wrong..");
+			System.err.println("everything is wrong");
 			fail("wrong!");
 		}
 
 		fail("exception..");
 	}
 	
-	private String rsContents(RowSet rs, boolean shorts) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Test 
-	public void findByAll() throws DAOException {
+	public void findByAll() throws DAOException, SQLException {
 		create();
-
-		try {
-			RowSet rs = catDao.findByAll();
-
-			String test = rsContents(rs, FULL);
-			assertEquals("1", test);
-			assertEquals("name", test);
-			assertEquals("desc", test);
-
-			return;
-		} catch (Exception ex) {
-		}
-
-		fail("Not good!");
-	
+		RowSet rs = cat.findByAll();
+		int  i=0;
+		while (rs.next()){i++;}
+		assertEquals(1, i);
+			
 	}
 	
 	@Test
@@ -173,10 +150,12 @@ public class SkillCategoryDAOTest{
 
 	@Test
 	public void remove() throws DAOException {
-		//cat.reconnect();
-		//Connection conn = cat.getConnection();
-		//cat.remove(conn,"1");
+		SkillCategory skill = new SkillCategory();
+		skill.setCategoryId("1");
+		skill.setCategoryName("name");
+		skill.setCategoryDescription("description");
 		cat.remove(conn.getConnection(),"1");
+		
 	}
 	
 	@Test
@@ -194,7 +173,7 @@ public class SkillCategoryDAOTest{
 	
 	
 }
-/*
+
 class Connector {
 	protected String dbDriver;
 	protected String dbUrl;
@@ -214,6 +193,16 @@ class Connector {
 			throw new RuntimeException("Could not initialize UrlDAO", e);
 		}
 
+	}
+
+	public void clearAll() {
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate("DELETE");
+			stmt.close();
+		} catch (Exception ex) {
+		}
+		
 	}
 
 	public Connector(String dbDriver, String dbUrl, String dbUser,
@@ -255,4 +244,4 @@ class Connector {
 		this.dbUser = dbUser;
 	}
 }
-*/
+

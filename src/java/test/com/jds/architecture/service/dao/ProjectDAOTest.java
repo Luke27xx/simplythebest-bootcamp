@@ -26,7 +26,7 @@ import com.jds.architecture.service.dao.DAOFactory;
 import com.jds.architecture.service.dao.DataAccessObjectInterface;
 import com.jds.architecture.service.dao.EmpAccentureDetailsDAO;
 import com.jds.architecture.service.dao.ProjectDAO;
-import com.mysql.jdbc.ResultSet;
+//import com.mysql.jdbc.ResultSet;
 
 /**
  * 
@@ -165,8 +165,6 @@ public class ProjectDAOTest {
 		assertEquals(2, i);
 				
 	}
-	
-	
 }
 
 /**
