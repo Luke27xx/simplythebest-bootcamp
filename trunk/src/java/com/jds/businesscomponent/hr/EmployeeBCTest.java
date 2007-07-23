@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.sql.RowSet;
@@ -65,7 +66,13 @@ public class EmployeeBCTest {
 		empInfo.setCity("Riga");
 		empInfo.setState("Vidzeme");
 		empInfo.setCountry("Latvia");
-		Date validTarget1 = new Date(2007,27,8);
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.set(GregorianCalendar.YEAR, 2007);
+		gc.set(GregorianCalendar.MONTH, 7);
+		gc.set(GregorianCalendar.DATE, 27);
+		Date validTarget1 = new Date(gc.getTimeInMillis());
+		
+		//Date validTarget1 = new Date(2007,27,8);
 		empInfo.setDob(validTarget1);
 		empInfo.setHomePhoneNo("7174455");
 		empInfo.setMobilePhoneNo("25981741");
@@ -126,7 +133,7 @@ public class EmployeeBCTest {
 		correctObject1.setLevel("");
 		correctObject1.setLMU("LMdwaU");
 		correctObject1.setStatus("");
-		correctObject1.setDateHired(new java.sql.Date(2001, 1, 1));
+		correctObject1.setDateHired(new Date(2001, 1, 1));
 		correctObject1.setGMU("GMU");
 		correctObject1.setWorkGroup("");
 		correctObject1.setSpecialty("");
