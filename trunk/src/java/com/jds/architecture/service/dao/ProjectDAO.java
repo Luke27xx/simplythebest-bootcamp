@@ -119,7 +119,6 @@ public class ProjectDAO  implements DataAccessObjectInterface {
            	    
 		String sqlStmt = DAOConstants.PROJ_DELETE;
 		
-		
 		if (!(object instanceof String))
 			throw new DAOException ("invalid.object.projdao",
 					null, DAOException.ERROR, true);
