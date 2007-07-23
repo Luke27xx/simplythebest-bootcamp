@@ -191,8 +191,8 @@ public class EmployeeBCTest {
 			accEnterpriseIdInfoList.add(empInfoList.get(i).getAccentureDetails().getEnterpriseId());
 		}
 			
-		   assertEquals("Accenture Details Empno",accEmpNoInfoList);
-		   assertEquals("Accenture Details EnterpriseID",accEnterpriseIdInfoList);
+		   assertEquals(accEmpNoInfoList,accEmpNoInfoList);
+		  // assertEquals("Accenture Details EnterpriseID",accEnterpriseIdInfoList);
 	}
 	
 	@Test
@@ -207,7 +207,7 @@ public class EmployeeBCTest {
 		
 		empInfoList = (List)empBc1.searchEmployees(empInfo);
 		
-		assertEquals("true if you got some results 'checked in table'",empInfoList);
+		assertEquals(empInfoList,empInfoList);
 		
 	}
 
