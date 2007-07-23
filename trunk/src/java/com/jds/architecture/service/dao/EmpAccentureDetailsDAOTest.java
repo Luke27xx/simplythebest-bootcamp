@@ -5,6 +5,7 @@ package com.jds.architecture.service.dao;
 
 import static org.junit.Assert.*;
 
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,7 +38,7 @@ public class EmpAccentureDetailsDAOTest {
 	public static void onlyOnce() {
 
 		connector = new Connector("oracle.jdbc.driver.OracleDriver",
-				"jdbc:oracle:thin:@127.0.0.1:1521:XE", "hrsuser", "hrspassword");
+				"jdbc:oracle:thin:@localhost:1521:XE", "hrsuser", "hrspassword");
 
 	}
 
@@ -55,12 +56,11 @@ public class EmpAccentureDetailsDAOTest {
 					.getDAOInstance(DAOConstants.DAO_EMPACC);
 
 		} catch (Exception x) {
-			System.err.println("error1: " + x.getMessage());
+			System.err.println("ErrorSetUp: " + x.getMessage());
 		}
 
 		connector.reconnect();
 		connector.createEmployees();
-		addEmpDetails();
 	}
 
 	/**
@@ -84,31 +84,22 @@ public class EmpAccentureDetailsDAOTest {
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#create(java.sql.Connection, java.lang.Object)}.
 	 */
 	@Test
-	public void testCreate() {
+	public void testCreate() throws Exception {
 
-		try {
-			RowSet r = empAccDao.findByAll();
-			if (r == null)
-				fail("findByAll returned null");
+		addEmpDetails();
 
-			String test = rsContents(r, SHORT);
-			
-			boolean result = test.indexOf("@:em000:") > -1 &&
-			 test.indexOf("@:em1:") > -1 &&
-			 test.indexOf("@:em2:") > -1;
-			
-			 assertEquals(true, result);
+		/*
+		 * Statement stmt = connector.conn.createStatement(); ResultSet r = stmt
+		 * .executeQuery("select * from empaccenturedetail order by emailadd");
+		 */
+		String test = EmpDetailsAll(SHORT);// rsContents(r, SHORT);
 
-			return;
-		} catch (Exception x) {
-			System.err.println("error1: " + x.getMessage());
-			x.printStackTrace();
-		}
-		fail("exception..");
+		assertEquals("@:em000:@:em1:@:em2:", test);
+
 	}
 
 	/**
-	 *	Try to create an employee with invalid parameters.
+	 * Try to create an employee with invalid parameters.
 	 */
 	@Test
 	public void testCreateUnsuccessful() {
@@ -150,39 +141,30 @@ public class EmpAccentureDetailsDAOTest {
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#remove(java.sql.Connection, java.lang.Object)}.
 	 */
 	@Test
-	public void testRemove() {
+	public void testRemove() throws Exception {
 
-		try {
-			RowSet rs = empAccDao.findByAll();
+		addEmpDetails();
 
-			String test = rsContents(rs, SHORT);
-			boolean testResult = test.contains("@:em000:")
-					&& test.contains("@:em1:") && test.contains("@:em2:");
+		assertEquals("@:em000:@:em1:@:em2:", EmpDetailsAll(SHORT));
 
-			assertEquals(true, testResult);
+		boolean wasRemoveSuccess1 = empAccDao.remove(connector.getConnection(),
+				"10");
 
-			boolean wasRemoveSuccess1 = empAccDao.remove(connector.getConnection(), "10");
+		assertEquals("@:em1:@:em2:", EmpDetailsAll(SHORT));
 
-			rs = empAccDao.findByAll();
+		boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(),
+				"2");
 
-			test = rsContents(rs, SHORT);
-			assertEquals("@:em1:@:em2:", test);
+		assertEquals("@:em1:", EmpDetailsAll(SHORT));
 
-			boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(), "1");
-			boolean wasRemoveSuccess3 = empAccDao.remove(connector.getConnection(), "2");
+		boolean wasRemoveSuccess2 = empAccDao.remove(connector.getConnection(),
+				"1");
 
-			rs = empAccDao.findByAll();
+		assertEquals("", EmpDetailsAll(SHORT));
 
-			test = rsContents(rs, SHORT);
-			assertEquals("", test);
-
-			assertEquals(true, wasRemoveSuccess1 && wasRemoveSuccess2 && wasRemoveSuccess3);
-
-			return;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		fail("exception..");
+		assertEquals(true, wasRemoveSuccess1 && wasRemoveSuccess2
+				&& wasRemoveSuccess3);
+		return;
 	}
 
 	/**
@@ -190,23 +172,18 @@ public class EmpAccentureDetailsDAOTest {
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#findByPK(java.lang.Object)}.
 	 */
 	@Test
-	public void testFindByPK() {
+	public void testFindByPK() throws Exception {
 
-		try {
-			Object findPK = "10";
-			Object o = empAccDao.findByPK(findPK);
+		addEmpDetails();
+		// 
+		Object findPK = "10";
+		Object o = empAccDao.findByPK(findPK);
 
-			if (o == null)
-				fail("findByPK returned null");
+		assertNotNull(o);
+		assertEquals(((AccentureDetails) o).getEnterpriseAddress(), "em000");
 
-			assertEquals(((AccentureDetails) o).getEnterpriseAddress(), "em000");
-
-			return;
-		} catch (Exception x) {
-			System.err.println("error12: " + x.getMessage());
-			x.printStackTrace();
-		}
-		fail("exception in findByPK");
+		o = empAccDao.findByPK("666");
+		assertNull(o);
 	}
 
 	/**
@@ -214,7 +191,8 @@ public class EmpAccentureDetailsDAOTest {
 	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#find(java.lang.Object)}.
 	 */
 	@Test
-	public void testFind() {
+	public void testFind() throws Exception {
+		addEmpDetails();
 
 		AccentureDetails findObject = new AccentureDetails();
 
@@ -223,34 +201,105 @@ public class EmpAccentureDetailsDAOTest {
 		findObject.setLevel("");
 		findObject.setLMU("LMU");
 
-		try {
+		RowSet rs = empAccDao.find(findObject);
 
-			RowSet rs = empAccDao.find(findObject);
+		String test = rsContents(rs, SHORT);
+		assertEquals("@:em2:", test);
 
-			String test = rsContents(rs, SHORT);
-			assertEquals("@:em2:", test);
+		findObject = new AccentureDetails();
 
-			findObject = new AccentureDetails();
+		findObject.setLevel("");
+		findObject.setDateHired(new java.sql.Date(2001, 1, 1));
 
-			findObject.setLevel("");
-			findObject.setDateHired(new java.sql.Date(2001, 1, 1));
+		rs = empAccDao.find(findObject);
 
-			rs = empAccDao.find(findObject);
+		test = rsContents(rs, SHORT);
+		assertEquals("@:em000:@:em1:", test);
 
-			test = rsContents(rs, SHORT);
-			assertEquals("@:em000:@:em1:", test);
+		return;
 
-			return;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.err.println("something is wrong..");
-			fail("wrong!");
-		}
-
-		fail("exception..");
 	}
 
-	private String rsContents(RowSet rs, boolean full) {
+	/**
+	 * Test method for
+	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#update(java.sql.Connection, java.lang.Object, java.lang.Object)}.
+	 */
+	@Test
+	public void testUpdate() throws Exception {
+
+		addEmpDetails();
+
+		AccentureDetails where = new AccentureDetails();
+		where.setLMU("LMU");
+
+		AccentureDetails set = new AccentureDetails();
+		set.setLMU("brr");
+
+		empAccDao.update(connector.getConnection(), set, where);
+
+		assertEquals("@:em000:brr:@:em1:brr:@:em2:brr:", EmpDetailsAll(FULL));
+
+		where = new AccentureDetails();
+		where.setEnterpriseAddress("em2");
+
+		set.setEnterpriseAddress("xx2");
+
+		empAccDao.update(connector.getConnection(), set, where);
+
+		assertEquals("@:em000:brr:@:em1:brr:@:xx2:brr:", EmpDetailsAll(FULL));
+	}
+
+	/**
+	 * Test method for
+	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#findByAll()}.
+	 */
+	@Test
+	public void testFindByAll() throws Exception {
+
+		addEmpDetails();
+		
+		RowSet rs = empAccDao.findByAll();
+
+		String test = rsContents(rs, SHORT);
+
+		boolean result = test.indexOf("@:em000:") > -1
+				&& test.indexOf("@:em1:") > -1 && test.indexOf("@:em2:") > -1;
+
+		assertEquals(true, result);
+	}
+
+	/**
+	 * Get all records from empaccenturedetail table in a format
+	 * "@:item1_email:[@:item1_lmu:][@:item2_email:[@:item2_lmu:][...]]"
+	 * 
+	 * @param full -
+	 *            if FULL, result contains LMU column, otherwise doesn't.
+	 * @return String in a format
+	 *         "@:item1_email:[@:item1_lmu:][@:item2_email:[@:item2_lmu:][...]]"
+	 * @throws Exception
+	 */
+	private String EmpDetailsAll(boolean full) throws Exception {
+		if (connector.conn == null || connector.conn.isClosed())
+			connector.reconnect();
+		Statement stmt = connector.conn.createStatement();
+		ResultSet r = stmt
+				.executeQuery("select * from empaccenturedetail order by emailadd");
+		return rsContents(r, full);
+
+	}
+
+	/**
+	 * Converts ResultSet contents to a String in format
+	 * "@:item1_email:[@:item1_lmu:][@:item2_email:[@:item2_lmu:][...]]"
+	 * 
+	 * @param rs -
+	 *            ResultSet with items to convert
+	 * @param full -
+	 *            if FULL, result contains LMU column, otherwise doesn't.
+	 * @return String in format
+	 *         "@:item1_email:[@:item1_lmu:][@:item2_email:[@:item2_lmu:][...]]"
+	 */
+	private String rsContents(ResultSet rs, boolean full) {
 
 		StringBuffer res = new StringBuffer("");
 
@@ -272,65 +321,8 @@ public class EmpAccentureDetailsDAOTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#update(java.sql.Connection, java.lang.Object, java.lang.Object)}.
+	 * Adds sample data into EmpAccentureDetail table.
 	 */
-	@Test
-	public void testUpdate() {
-
-		AccentureDetails where = new AccentureDetails();
-		where.setLMU("LMU");
-
-		AccentureDetails set = new AccentureDetails();
-		set.setLMU("brr");
-
-		try {
-			empAccDao.update(connector.getConnection(), set, where);
-
-			RowSet rs = empAccDao.findByAll();
-
-			String test = rsContents(rs, FULL);
-			assertEquals("@:em000:brr:@:em1:brr:@:em2:brr:", test);
-
-			where = new AccentureDetails();
-			where.setEnterpriseAddress("em2");
-
-			set.setEnterpriseAddress("xx2");
-
-			empAccDao.update(connector.getConnection(), set, where);
-			rs = empAccDao.findByAll();
-
-			test = rsContents(rs, FULL);
-			assertEquals("@:em000:brr:@:em1:brr:@:xx2:brr:", test);
-
-			return;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		fail("exception..");
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.jds.architecture.service.dao.EmpAccentureDetailscon#findByAll()}.
-	 */
-	@Test
-	public void testFindByAll() {
-
-		try {
-			RowSet rs = empAccDao.findByAll();
-
-			String test = rsContents(rs, FULL);
-			assertEquals("@:em000:LMU:@:em1:LMU:@:em2:LMU:", test);
-
-			return;
-		} catch (Exception ex) {
-		}
-
-		fail("bad!");
-	}
-	
 	public void addEmpDetails() {
 		AccentureDetails correctObject = new AccentureDetails();
 
@@ -452,6 +444,10 @@ class Connector {
 		}
 	}
 
+	/**
+	 * Adds employees with PK "1", "2", "3" and "10" to database
+	 * 
+	 */
 	public void createEmployees() {
 		try {
 			// Clear tables
@@ -464,7 +460,7 @@ class Connector {
 			// Fill employee table
 			PreparedStatement pstmt = conn
 					.prepareStatement("INSERT INTO employee VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-			
+
 			fillEmployeeStatement(pstmt, "1", "AA", "BA", "CA");
 			pstmt.executeUpdate();
 			fillEmployeeStatement(pstmt, "2", "AB", "BB", "CB");
@@ -473,15 +469,31 @@ class Connector {
 			pstmt.executeUpdate();
 			fillEmployeeStatement(pstmt, "10", "Axx", "Bxx", "Cxx");
 			pstmt.executeUpdate();
-			
+
 		} catch (Exception e) {
 			System.err.println("error3: " + e.getMessage());
 			throw new RuntimeException("Could not initialize UrlDAO", e);
 		}
 	}
-	
-	private void fillEmployeeStatement(PreparedStatement pstmt, String pk, String name1, String name2, String name3) throws Exception {
-		pstmt.setString(1, pk);    // primary
+
+	/**
+	 * Formats statement
+	 * 
+	 * @param pstmt
+	 *            Statement to format.
+	 * @param pk
+	 *            PK of a new employee.
+	 * @param name1
+	 *            FirstName of a new employee.
+	 * @param name2
+	 *            MiddleName of a new employee.
+	 * @param name3
+	 *            LastName of a new employee.
+	 * @throws Exception
+	 */
+	private void fillEmployeeStatement(PreparedStatement pstmt, String pk,
+			String name1, String name2, String name3) throws Exception {
+		pstmt.setString(1, pk); // primary
 		pstmt.setString(2, name1); // unique
 		pstmt.setString(3, name2); // unique
 		pstmt.setString(4, name3); // unique
@@ -502,6 +514,6 @@ class Connector {
 		pstmt.setString(18, "");
 		pstmt.setString(19, "tuuuii");
 		pstmt.setString(20, "");
-		
+
 	}
 }

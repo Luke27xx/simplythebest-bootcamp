@@ -34,7 +34,6 @@ public class StatementGenAccDetails extends StatementGenerator {
 	 */
 	public String transformStmt(Object object, int stmtType) throws Exception {
 		
-		
 		StringBuffer strBuffer = new StringBuffer();
 		String strTemp = null;
 		String strConstant =  DAOConstants.STR_AND;
@@ -44,7 +43,7 @@ public class StatementGenAccDetails extends StatementGenerator {
 		if (stmtType == DAOConstants.STMT_TYPE_SET) {
 			strConstant = DAOConstants.CHAR_COMMA;
 			isSet = true;
-			//AccentureDetailsAssembler.toEmptyStringAllNull(obj); // XXX
+			//AccentureDetailsAssembler.toEmptyStringAllNull(object);
 		}
 
 		if (obj.getEmployeeNo() != null) {

@@ -17,7 +17,8 @@ package com.jds.architecture.utilities;
  * passed to <code>Validator</code> objects via their constructor or to the 
  * <code>Validator.validate(ValidationStrategy, Object)</code> method
  * 
- * 
+ *
+ * @author Dmitrijs.Sadovskis
  * @author Eugene P. Lozada, Arthur D. Gerona
  * @see Validator
  * @see ValidationStrategy
