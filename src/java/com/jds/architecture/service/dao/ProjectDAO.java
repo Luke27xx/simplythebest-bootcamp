@@ -326,19 +326,15 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 			}
 			log.debug("updated ProjectInfo entry");
 			return true;
-		} catch (DBAccessException dbaex) {
-			throw new DAOException(dbaex.getMessageKey(), dbaex,
-					DAOException.ERROR, true);
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			throw new DAOException("sql.update.exception.projdao",
+			throw new DAOException ("sql.create.exception.projdao",
 					e, DAOException.ERROR, true);
-		} finally {
-			try {
-				dbAccess.closeConnection(conn);
-			} catch (DBAccessException e1) {
-		}
-	  }
+				} catch (Exception e) {
+					throw new DAOException ("create.exception.projdao",
+					e.getCause(),  DAOException.ERROR, true);
+		 
+				} 
+	  
 
 	}
 
