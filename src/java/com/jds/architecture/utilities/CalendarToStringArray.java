@@ -22,6 +22,7 @@ import java.sql.Date;
  * passed to <code>Transformer</code> objects via their constructor or to the 
  * <code>Transformer.transform(TransformStrategy, Object)</code> method.
  *  
+ * @author Dmitrijs.Sadovskis
  * @author Eugene P. Lozada, Arthur D. Gerona
  * @see Transformer
  * @see TransformStrategy

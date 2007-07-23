@@ -21,7 +21,8 @@ import java.sql.Date;
  * Classes that implement the <code>TransformStrategy</code> interface should
  * be passed to <code>Transformer</code> objects via their constructor or to
  * the <code>Transformer.transform(TransformStrategy, Object)</code> method.
- * 
+ *
+ * @author Dmitrijs.Sadovskis
  * @author Eugene P. Lozada, Arthur D. Gerona
  * @see Transformer
  * @see TransformStrategy
@@ -39,21 +40,21 @@ public class CalendarToIntArray implements TransformStrategy {
 	 */
 	public Object transform(Object target) {
 
-		String calendarStr;
+		String[] calendarStr;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
 
 		if (target instanceof Calendar) {
-			calendarStr = sdf.format(((Calendar) target).getTime());
+			calendarStr = sdf.format(((Calendar) target).getTime()).split(" ");
 		} else if (target instanceof Date) {
-			calendarStr = sdf.format(target);
+			calendarStr = sdf.format(target).split(" ");
 		} else {
 			throw new ClassCastException("Wrong argument");
 		}
 
 		int[] returnValue = {
-				Integer.parseInt(calendarStr.split(" ")[0]),
-				Integer.parseInt(calendarStr.split(" ")[1]),
-				Integer.parseInt(calendarStr.split(" ")[2])
+				Integer.parseInt(calendarStr[0]),
+				Integer.parseInt(calendarStr[1]),
+				Integer.parseInt(calendarStr[2])
 				};
 
 		return returnValue;

@@ -127,22 +127,18 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 
 			log.debug("removed AccentureDetails entry by pk");
 			return true;
+		} catch (DBAccessException e) {
+			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
+					true);
 		} catch (SQLException e) {
-			System.err.println("aaaa : " + e.getMessage());
 			throw new DAOException("sql.findpk.exception.accdao", e,
 					DAOException.ERROR, true);
-		}
-
-		catch (Exception ex) {
-			System.err.println("error4: " + ex.getMessage());
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
 			}
 		}
-
-		return false;
 	}
 
 	/**
@@ -184,10 +180,6 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 		} catch (SQLException e) {
 			throw new DAOException("sql.findpk.exception.accdao", e,
 					DAOException.ERROR, true);
-		}
-
-		catch (Exception ex) {
-			System.err.println("error3: " + ex.getMessage());
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
@@ -196,7 +188,6 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 		}
 
 		return detailsReturn;
-
 	}
 
 	/**
@@ -224,12 +215,10 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			try {
 				s = stmtGen.transformStmt(object, DAOConstants.STMT_TYPE_WHERE);
 			} catch (Exception ex) {
-
 			}
-
-			if (s == null) // XXX
+			if (s == null)
 				return null;
-			
+
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt.replaceAll(
 					"@@", s));
 
@@ -246,14 +235,12 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR,
 					true);
 		} catch (SQLException e) {
-			System.err.println("error_sql: " + e.getMessage());
 			throw new DAOException("sql.findmain.exception.accdao", e,
 					DAOException.ERROR, true);
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
-
 			}
 		}
 
@@ -287,13 +274,21 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			if (conn == null || conn.isClosed())
 				conn = dbAccess.getConnection();
 
-			String sqlWhere = stmtGen.transformStmt(objWhere,
-					DAOConstants.STMT_TYPE_WHERE);
-			String sqlSet = stmtGen.transformStmt(objSet,
-					DAOConstants.STMT_TYPE_SET);
+			String sqlSet = null;
+			String sqlWhere = null;
 
-			if (sqlSet.equals("") || sqlWhere.equals(""))
-				return true; // XXX
+			try {
+				sqlWhere = stmtGen.transformStmt(objWhere,
+						DAOConstants.STMT_TYPE_WHERE);
+				sqlSet = stmtGen.transformStmt(objSet,
+						DAOConstants.STMT_TYPE_SET);
+			} catch (Exception ex) {
+			}
+
+			if (sqlSet == null || sqlWhere == null) {
+				log.debug("updated AccentureDetails entry [no changes]");
+				return true;
+			}
 
 			sqlStmt = sqlStmt.replaceFirst("@@", sqlSet).replaceFirst("@@",
 					sqlWhere);
@@ -309,18 +304,14 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			throw new DAOException(dbaex.getMessageKey(), dbaex,
 					DAOException.ERROR, true);
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 			throw new DAOException("sql.update.exception.accdao", e,
 					DAOException.ERROR, true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
 			}
 		}
-		return false;
 	}
 
 	public RowSet findByAll() throws DAOException {
@@ -349,15 +340,10 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 		} catch (SQLException e) {
 			throw new DAOException("sql.findall.exception.accdao", e,
 					DAOException.ERROR, true);
-		} catch (Exception x) {
-			System.err.println("error2: " + x.getMessage());
 		} finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {
-
-			} catch (Exception ex) {
-
 			}
 		}
 

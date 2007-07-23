@@ -17,6 +17,7 @@ package com.jds.architecture.utilities;
  * <code>Validator.validate(ValidationStrategy, Object)</code> method
  * 
  * 
+ * @author Dmitrijs.Sadovskis
  * @author Eugene P. Lozada, Arthur D. Gerona
  * @see Validator
  * @see  ValidationStrategy
