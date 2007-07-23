@@ -38,7 +38,7 @@ public class EmpAccentureDetailsDAOTest {
 	public static void onlyOnce() {
 
 		connector = new Connector("oracle.jdbc.driver.OracleDriver",
-				"jdbc:oracle:thin:@localhost:1521:XE", "hrsuser", "hrspassword");
+				"jdbc:oracle:thin:@localhost:1521:XE", "hruser", "hruser");
 
 	}
 
@@ -67,7 +67,6 @@ public class EmpAccentureDetailsDAOTest {
 	public void tearDown() throws Exception {
 		connector.reconnect();
 		connector.clearAll();
-		connector.close();
 	}
 
 	/**
@@ -83,14 +82,8 @@ public class EmpAccentureDetailsDAOTest {
 
 		addEmpDetails();
 
-		/*
-		 * Statement stmt = connector.conn.createStatement(); ResultSet r = stmt
-		 * .executeQuery("select * from empaccenturedetail order by emailadd");
-		 */
-		String test = EmpDetailsAll(SHORT);// rsContents(r, SHORT);
-
+		String test = EmpDetailsAll(SHORT);
 		assertEquals("@:em000:@:em1:@:em2:", test);
-
 	}
 
 	/**
