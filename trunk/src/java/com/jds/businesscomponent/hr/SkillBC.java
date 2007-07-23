@@ -16,8 +16,6 @@ import java.util.Vector;
 
 import javax.sql.RowSet;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.jds.apps.Constants;
 import com.jds.apps.beans.AbstractReferenceData;
 import com.jds.apps.beans.AccentureDetails;
@@ -47,14 +45,15 @@ import com.jds.architecture.service.idgenerator.IdGeneratorException;
 import com.jds.architecture.service.idgenerator.SkillIdGenerator;
 
 /**
- * SkillCategoryBC is a class that serves as an HR module business functions
+ * SkillBC is a class that serves as an HR module business functions
  * 
  * @author Dmitrijs.Sadovskis
- * 
+ * @version 2.0
  */
-public class SkillCategoryBC {
+public class SkillBC {
 
 	private Constants cons;
+	private DataAccessObjectInterface skillDao = null;
 	private DataAccessObjectInterface catDao = null;
 	private DBAccess dbAccess = null;
 
@@ -64,11 +63,15 @@ public class SkillCategoryBC {
 	/**
 	 * Constructor initializes data access objects
 	 */
-	public SkillCategoryBC() throws HRSSystemException {
+	public SkillBC() throws HRSSystemException {
 
-		log.info("entered SkillCategoryBC constructor");
+		log.info("entered SkillBC constructor");
 
 		try {
+			skillDao = (SkillDAO) DAOFactory.getFactory().getDAOInstance(
+					DAOConstants.DAO_SKILL);
+
+			// XXX does it work?!
 			catDao = (SkillCategoryDAO) DAOFactory.getFactory().getDAOInstance(
 					DAOConstants.DAO_SKILLCAT);
 
@@ -87,40 +90,83 @@ public class SkillCategoryBC {
 			throw new HRSSystemException("intialize.bc.exception", e.getCause());
 		}
 
-		log.info("exited SkillCategoryBC constructor");
+		log.info("exited SkillBC constructor");
 
 	}
 
+	// v
+
 	/**
-	 * Create category information by HRManager
+	 * Create skill information by HRManager
 	 * 
 	 * @param info
-	 *            SkillCategory
+	 *            SkillsInformation
 	 * @throws HRSLogicalException
 	 *             when info, date of birth and accenture details is null
 	 * @throws HRSSystemException
 	 *             when system exception occurred (e.g. Failed database
 	 *             connection)
 	 */
-	public void createCategory(SkillCategory info) throws HRSSystemException,
+	public void createSkill(SkillsInformation info) throws HRSSystemException,
 			HRSLogicalException {
 
-		log.info("entered createCategory method");
+		log.info("entered createSkill method");
 
 		long id = 0;
 
 		if (info == null)
 			throw new HRSLogicalException("invalid.input.exception");
 
+		if (info.getCategoryName() == null) {
+			throw new HRSLogicalException("skill.category.no.record.exception");
+		}
+
+		if (!info.getStatus().equals("approved")) {
+			throw new HRSLogicalException("category.not.approved.exception");
+		}
+
 		Connection conn = null;
 
 		try {
 			conn = dbAccess.getConnection();
-
-			id = CategoryIdGenerator.getInstance().getNextId();
-			info.setCategoryId(String.valueOf(id));
-
-			catDao.create(conn, info);
+			
+			/*
+			 * TODO Make sure that the skill category of the passed
+			 * SkillsInformation object is valid by checking if it exists in the
+			 * database.
+			 */
+			SkillsInformation skinfo = new SkillsInformation();
+			skinfo.setCategoryName(info.getCategoryName());
+			RowSet rs = catDao.find(skinfo);
+			// FIXME
+			try {
+				if (!rs.next()) {
+					throw new HRSLogicalException("skill.category.no.record.exception");
+				}
+			} catch (SQLException ex) {
+				throw new HRSLogicalException("skill.category.no.record.exception");
+			}
+			
+			/*
+			 * TODO Get the next system generated id and assign it to the
+			 * SkillsInformation object. Use the appropriate methods of SkillDAO
+			 * to create the object. Commit the connection.
+			 * 
+			 */
+			id = SkillIdGenerator.getInstance().getNextId();
+			info.setSkillId(String.valueOf(id));
+			
+			skillDao.create(conn, info);
+			//catDao.create(conn, info);
+			RowSet set = skillDao.find(info);
+			
+			/*
+			SkillCategory x = new SkillCategory();
+			SkillsInformation skinfo = info.get
+			AccentureDetails details = info.getAccentureDetails();
+			details.setEmployeeNo(info.getEmpNo());
+			empAccDao.create(conn, details);
+			*/
 			dbAccess.commitConnection(conn);
 		} catch (IdGeneratorException e) {
 			try {
@@ -150,37 +196,41 @@ public class SkillCategoryBC {
 			}
 		}
 
-		log.info("exited createCategory method");
+		log.info("exited createSkill method");
 
 	}
 
 	/**
-	 * Searches category by primary key which is the category no. by HRManager
+	 * Searches skill by primary key which is the skill no. by HRManager
 	 * 
 	 * @param id
 	 *            String
-	 * @return SkillCategory object of searched Category
+	 * @return SkillsInformation object of searched skill
 	 * @throws HRSLogicalException
-	 *             when nothing can be found
+	 *             when skill no. is null
 	 * @throws HRSSystemException
 	 *             when system exception occurred (e.g. Failed database
 	 *             connection)
 	 */
-	public SkillCategory searchCategory(String id) throws HRSSystemException,
+	public SkillsInformation searchSkill(String id) throws HRSSystemException,
 			HRSLogicalException {
 
-		log.info("entered searchCategory method");
+		log.info("entered searchSkill method");
 
 		if (id == null)
 			throw new HRSLogicalException("id.required.exception");
 
-		SkillCategory data = null;
+		SkillsInformation data = null;
 
 		try {
-			data = (SkillCategory) catDao.findByPK(id);
+			data = (SkillsInformation) skillDao.findByPK(id);
 
 			if (data == null)
 				throw new HRSLogicalException("record.not.found.exception");
+
+			SkillCategory catData = (SkillCategory) catDao.findByPK(data.getCategoryId());
+			data.setCategoryId(catData.getCategoryId());
+			data.setCategoryName(catData.getCategoryName());
 
 		} catch (DAOException e) {
 			throw new HRSSystemException(e.getMessageKey(), e.getCause());
@@ -189,41 +239,42 @@ public class SkillCategoryBC {
 					.getCause());
 		}
 
-		log.info("exited searchCategory method");
+		log.info("exited searchSkill method");
 
 		return data;
 	}
+	
 
 	/**
-	 * Searches category by primary key which is the category no. by HRManager
+	 * Searches skill
 	 * 
 	 * @param dataFind
-	 *            SkillCategory
-	 * @return Collection of categories
+	 *            SkillsInformation
+	 * @return Collection of skills
 	 * @throws HRSLogicalException
 	 *             when nothing can be found
 	 * @throws HRSSystemException
 	 *             when system exception occurred (e.g. Failed database
 	 *             connection)
 	 */
-	public Collection searchApprovedCategories(SkillCategory dataFind)
+	public Collection searchApprovedSkills(SkillsInformation dataFind)
 			throws HRSSystemException, HRSLogicalException {
 
-		log.info("entered searchApprovedCategories method");
+		log.info("entered searchApprovedSkills method");
 
 		Collection result = searchReferenceData(dataFind, "approved");
 
-		log.info("exited searchApprovedCategories method");
+		log.info("exited searchApprovedSkills method");
 
 		return result;
 	}
 
 	/**
-	 * Searches category by primary key which is the category no. by HRManager
+	 * Searches skills
 	 * 
 	 * @param dataFind
-	 *            SkillCategory
-	 * @return Collection of categories
+	 *            SkillsInformation
+	 * @return Collection of skills
 	 * @throws HRSLogicalException
 	 *             when nothing can be found
 	 * @throws HRSSystemException
@@ -235,20 +286,20 @@ public class SkillCategoryBC {
 
 		log.info("entered searchReferenceData method");
 
-		Collection<SkillCategory> returnCollection = new Vector<SkillCategory>();// <SkillCategory>;
+		Collection<SkillsInformation> returnCollection = new Vector<SkillsInformation>();// <SkillCategory>;
 
 		try {
 			ResultSet rs;
 			if (dataFind == null) {
-				rs = catDao.findByAll();
+				rs = skillDao.findByAll();
 			} else {
-				rs = catDao.find(dataFind);
+				rs = skillDao.find(dataFind);
 			}
 
 			while (rs.next()) {
 				// FIXME
 				if (rs.getString("status").equalsIgnoreCase(approvalType))
-					returnCollection.add((SkillCategory) catDao.findByPK(rs
+					returnCollection.add((SkillsInformation) skillDao.findByPK(rs
 							.getString("id")));
 			}
 		} catch (SQLException e) {
@@ -266,25 +317,25 @@ public class SkillCategoryBC {
 	}
 
 	/**
-	 * Updates category
+	 * Updates skill
 	 * 
 	 * @param info
-	 *            SkillCategory
+	 *            SkillsInformation
 	 * @throws HRSLogicalException
 	 *             can't update
 	 * @throws HRSSystemException
 	 *             when system exception occurred (e.g. Failed database
 	 *             connection)
 	 */
-	public void updateCategory(SkillCategory info) throws HRSSystemException,
+	public void updateSkill(SkillsInformation info) throws HRSSystemException,
 			HRSLogicalException {
 
-		log.info("entered updateCategory method");
+		log.info("entered updateSkill method");
 
 		if (info == null) {
 			throw new HRSLogicalException("invalid.input.exception");
 		}
-		if (info.getCategoryId() == null) {
+		if (info.getSkillId() == null) {
 			throw new HRSLogicalException("id.required.exception");
 		}
 		
@@ -293,10 +344,10 @@ public class SkillCategoryBC {
 		try {
 			conn = dbAccess.getConnection();
 
-			SkillCategory objWhere = new SkillCategory();
-			objWhere.setCategoryId(info.getCategoryId());
+			SkillsInformation objWhere = new SkillsInformation();
+			objWhere.setSkillId(info.getSkillId());
 			
-			if (! catDao.update(conn, info, objWhere) )
+			if (! skillDao.update(conn, info, objWhere) )
 				throw new HRSLogicalException("record.not.updated.exception");
 				
 			dbAccess.commitConnection(conn);
@@ -322,7 +373,7 @@ public class SkillCategoryBC {
 			}
 		}
 		
-		log.info("exited updateCategory method");
-
+		log.info("exited updateSkill method");
 	}
+
 }
