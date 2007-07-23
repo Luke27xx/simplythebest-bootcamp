@@ -1,6 +1,7 @@
 package com.jds.architecture.service.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,13 +35,59 @@ import com.sun.rowset.CachedRowSetImpl;
 public class SkillDAO implements DataAccessObjectInterface
 {
 //variables
-	//Instance of database access object
 	private DBAccess dbAccess = null;
-	//Instance of logger utility
 	private static Logger log = (Logger) ServiceFactory.getInstance().getService(LoggerService.class);
-	//Instance of statement object
 	StatementGenerator stmtGen = null;
+
+//variables for test performing
+	protected String dbDriver;
+	protected String dbUrl;
+	protected String dbUser;
+	protected String dbPassword;
+	protected Connection conn;
 	
+//methods for test performing
+	public SkillDAO(String dbDriver, String dbUrl, String dbUser, String dbPassword)
+	{
+		this.dbDriver = dbDriver;
+		this.dbUrl = dbUrl;
+		this.dbUser = dbUser;
+		this.dbPassword = dbPassword;
+	}
+	public void reconnect() throws DAOException {
+		try
+		{
+			if (conn == null || conn.isClosed())
+			{
+				Class.forName(dbDriver);
+				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			}
+		}
+		catch (Exception e)
+		{
+			log.error("Could not initialize UrlDAO", e);
+			throw new DAOException("Could not initialize UrlDAO", e);
+		}
+	}
+	public void close() throws DAOException
+	{
+		if (conn != null)
+		{
+			try
+			{
+				conn.close();
+			}
+			catch (SQLException e)
+			{
+				log.error("Could not close connection", e);
+				throw new DAOException("Could not close connection", e);
+			}
+			conn = null;
+		}
+	}
+	public Connection getConnection() {
+		return conn;
+	}
 	
 //methods
 	/**
@@ -54,7 +101,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	{
 		log.info("initializing SkillDAO");
 		dbAccess = DBAccess.getDBAccess();
-		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_EMP);
+		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_SKILL);
 	}
 	/**
 	 * Method inserts new record in Skill table.
@@ -63,6 +110,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 *@param Object - must be an instance of SkillInformation, contains object for insert
 	 *@throws DAOException
 	 */
+	//tested
 	public void create(Connection conn, Object obj) throws DAOException
 	{
 		if (!(obj instanceof SkillsInformation))
@@ -75,6 +123,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
 		
 		log.debug("creating SkillsInformation entry");
+		
 		try
 		{
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
@@ -99,6 +148,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @param Object - must be instance of SkillsInformation class
 	 * @throws DAOException
 	 */
+	//still needs testing
 	public RowSet find(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_MAIN;
@@ -157,10 +207,11 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return RowSet - all records in Skill table
 	 */
+	//still needs testing
 	public RowSet findByAll() throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_ALL;
-		SkillsInformation skillReturn = null;
+		RowSet skillsReturn = null;
         
 		Connection conn = null;
 
@@ -171,17 +222,17 @@ public class SkillDAO implements DataAccessObjectInterface
 			conn = dbAccess.getConnection();
 			
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
-			
 			ResultSet rs = stmt.executeQuery();
+
+			CachedRowSet tmp = new CachedRowSetImpl();
+			tmp.populate(rs);
 			
-			if (rs.next())
-			{
-				skillReturn = SkillsAssembler.getInfo(rs);
-			}
-			
+			stmt.close();
 			rs.close();
 			
-			log.debug("found EmployeeInfo entry by specified fields");
+			skillsReturn = (RowSet)tmp;
+			
+			log.debug("found all SkillsInformation entrys");
 		}
 		catch (DBAccessException e)
 		{
@@ -202,7 +253,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			}
 		}
 		
-		return (RowSet)skillReturn;
+		return (RowSet)skillsReturn;
 	}
 	/**
 	 * Finds a record by PrimaryKey from Skill table
@@ -212,6 +263,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return Object - instance of SkillsInformations class
 	 * 
 	 */
+	//still needs testing
 	public Object findByPK(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_BYPK;
@@ -228,6 +280,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			log.debug("finding SkillsInformation entry by PK");
 			
 			conn = dbAccess.getConnection();
+			
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 			stmt.setString(1, pk);
 			ResultSet rs = stmt.executeQuery();
@@ -251,7 +304,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			{
 				dbAccess.closeConnection(conn);
 			}
-			catch (DBAccessException e) 
+			catch (DBAccessException e)
 			{
 			}
 		}
@@ -265,6 +318,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully removed
 	 */
+	//still needs testing
 	public boolean remove(Connection conn, Object obj) throws DAOException
 	{
 		if (!(obj instanceof SkillsInformation))
@@ -306,6 +360,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully updated
 	 */
+	//still needs testing
 	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException
 	{
 		if (!(objNew instanceof SkillsInformation) && !(objOld instanceof SkillsInformation))
