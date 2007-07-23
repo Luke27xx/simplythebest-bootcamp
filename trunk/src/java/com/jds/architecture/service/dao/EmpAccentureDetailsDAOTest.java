@@ -38,7 +38,8 @@ public class EmpAccentureDetailsDAOTest {
 	public static void onlyOnce() {
 
 		connector = new Connector("oracle.jdbc.driver.OracleDriver",
-				"jdbc:oracle:thin:@localhost:1521:XE", "hruser", "hruser");
+
+				"jdbc:oracle:thin:@127.0.0.1:1521:XE", "hruser", "hruser");
 
 	}
 
