@@ -157,10 +157,10 @@ public class EmployeeBCTest {
 	EmployeeBC empBc = new EmployeeBC();
 		
 	EmployeeInfo infoTest = new EmployeeInfo();
-	infoTest = 	empBc.searchEmployee("1547");
-	assertEquals("1547" , infoTest.getEmpNo() );
-	infoTest = empBc.searchEmployee("1548");
-	assertEquals("1548",infoTest.getEmpNo());
+	infoTest = 	empBc.searchEmployee("1557");
+	assertEquals("1557" , infoTest.getEmpNo() );
+	infoTest = empBc.searchEmployee("1558");
+	assertEquals("1558",infoTest.getEmpNo());
 	
 	}
 
