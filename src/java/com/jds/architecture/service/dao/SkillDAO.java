@@ -110,7 +110,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 *@param Object - must be an instance of SkillInformation, contains object for insert
 	 *@throws DAOException
 	 */
-	//tested
+	//test: OK
 	public void create(Connection conn, Object obj) throws DAOException
 	{
 		if (!(obj instanceof SkillsInformation))
@@ -148,7 +148,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @param Object - must be instance of SkillsInformation class
 	 * @throws DAOException
 	 */
-	//still needs testing
+	// TODO test
 	public RowSet find(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_MAIN;
@@ -207,7 +207,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return RowSet - all records in Skill table
 	 */
-	//still needs testing
+	// TODO test
 	public RowSet findByAll() throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_ALL;
@@ -263,7 +263,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return Object - instance of SkillsInformations class
 	 * 
 	 */
-	//still needs testing
+	// TODO test
 	public Object findByPK(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_BYPK;
@@ -318,7 +318,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully removed
 	 */
-	//still needs testing
+	// TODO test
 	public boolean remove(Connection conn, Object obj) throws DAOException
 	{
 		if (!(obj instanceof SkillsInformation))
@@ -360,7 +360,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully updated
 	 */
-	//still needs testing
+	// TODO test
 	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException
 	{
 		if (!(objNew instanceof SkillsInformation) && !(objOld instanceof SkillsInformation))
