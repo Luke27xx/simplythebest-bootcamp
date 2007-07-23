@@ -206,8 +206,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			try{
 				log.debug("finding pk EmployeeInfo entry");
 				conn = dbAccess.getConnection();
-	
-				conn = dbAccess.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 				stmt.setString(1, pk);
 				ResultSet rs = stmt.executeQuery();
@@ -261,12 +259,12 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 
 		if ( searchCriteria.getFirstName() != null  ) {
 				
-			sqlStmt += "firstname = " + "'" + searchCriteria.getFirstName() + "'";
+			sqlStmt += "firstname LIKE " + "'" + searchCriteria.getFirstName() + "'";
 					if ( searchCriteria.getLastName() != null )	
-						sqlStmt += "and " + "lastname = " + "'" + searchCriteria.getLastName() + "'";
+						sqlStmt += "and " + "lastname LIKE " + "'" + searchCriteria.getLastName() + "'";
 		
 		} else if (searchCriteria.getLastName() != null  )
-			sqlStmt += "lastname = " + "'" +  searchCriteria.getLastName() + "'";
+			sqlStmt += "lastname LIKE " + "'" +  searchCriteria.getLastName() + "'";
 		
 		
 			log.debug("finding EmployeeInfo entry by specified fields");
