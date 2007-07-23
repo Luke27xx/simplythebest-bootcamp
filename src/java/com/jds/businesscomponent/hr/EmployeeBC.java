@@ -93,9 +93,10 @@ public class EmployeeBC {
 	 * @param info  EmployeeInfo
 	 * @throws HRSLogicalException when info, date of birth and accenture details is null 
 	 * @throws HRSSystemException when system exception occurred (e.g. Failed database connection)
+	 * @throws SQLException 
 	 */
 	public void createEmployee(EmployeeInfo info) 
-		throws HRSSystemException, HRSLogicalException {
+		throws HRSSystemException, HRSLogicalException, SQLException {
 		
 		log.info("entered createEmployee method");
 		
@@ -117,6 +118,10 @@ public class EmployeeBC {
 		   info.setEmpNo(String.valueOf(id));
 		   empDao.create(conn, info);
 		   RowSet set = empDao.find(info);
+		  
+		   if ( conn == null || conn.isClosed()) {
+			   conn = dbAccess.getConnection();
+		   }
 		   AccentureDetails details = info.getAccentureDetails();
 		   details.setEmployeeNo(info.getEmpNo());
 		   empAccDao.create(conn, details); 
@@ -172,7 +177,8 @@ public class EmployeeBC {
             
             if (data == null) 
                 throw new HRSLogicalException ("employee.no.record.exception");
-
+            
+            
             temp = empAccDao.findByPK(empno);
                 
             if (temp == null) 
