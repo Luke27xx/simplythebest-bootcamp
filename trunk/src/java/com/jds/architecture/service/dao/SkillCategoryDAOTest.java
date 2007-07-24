@@ -92,7 +92,7 @@ public class SkillCategoryDAOTest {
 	}
 	
 	@Test
-	public void createNull() throws DAOException, SQLException {
+	public void createNullObject() throws DAOException, SQLException {
 		
 		SkillCategory skill = new SkillCategory();
 		skill.setCategoryId("2");
@@ -115,7 +115,53 @@ public class SkillCategoryDAOTest {
 
 	}
 	
+	@Test
+	public void createNullConn() throws DAOException, SQLException {
+		
+		SkillCategory skill = new SkillCategory();
+		skill.setCategoryId("2");
+		skill.setCategoryName("name2");
+		skill.setCategoryDescription("description2");
 	
+		try
+		{
+			cat.create(null, skill);
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail(ex.toString());
+		}
+
+	}
+	
+	@Test
+	public void createNullObjectNullCon() throws DAOException, SQLException {
+		
+		SkillCategory skill = new SkillCategory();
+		skill.setCategoryId("2");
+		skill.setCategoryName("name2");
+		skill.setCategoryDescription("description2");
+	
+		try
+		{
+			cat.create(null, null);
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail(ex.toString());
+		}
+
+	}
 
 	@Test
 	public void find() throws DAOException, SQLException {
@@ -219,6 +265,21 @@ public class SkillCategoryDAOTest {
 		fail(x.toString());
 		}
 	}
+	
+	@Test
+	public void findByPKNullId() throws Exception {
+
+		SkillCategory obj;
+		
+		try {
+			
+			obj = (SkillCategory) cat.findByPK("000");
+			
+		} catch (Exception x) {
+		x.printStackTrace();
+		fail(x.toString());
+		}
+	}
 
 	@Test
 	public void remove() throws DAOException {
@@ -226,14 +287,61 @@ public class SkillCategoryDAOTest {
 		{
 			cat.remove(con, "2");
 		}
+		
 		catch (Exception e)
 		{
 			fail(e.toString());
 		}
-		
-
 	}
+	
+	@Test
+	public void removeNullObj() throws DAOException {
+		try
+		{
+			cat.remove(con, null);
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+	}
+		
+	@Test
+	public void removeNullCon() throws DAOException {
+		try
+		{
+			cat.remove(null, "2");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+	}	
 
+	@Test
+	public void removeNullObjNullCon() throws DAOException {
+		try
+		{
+			cat.remove(null, null);
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+	}	
+	
 	@Test
 	public void update() throws DAOException {
 		SkillCategory skill = new SkillCategory();
@@ -247,16 +355,14 @@ public class SkillCategoryDAOTest {
 		skill1.setCategoryDescription("desc1");
 
 		try{ 
-			
-		//public boolean te;
 		
 		if (cat.update(con, skill, skill1)) {
 			
+			}
 		}
-	}
-		//return true;
+		
 		catch (Exception e){
-			fail("vel nav");
+			fail(e.toString());
 		}
 		
 	}
