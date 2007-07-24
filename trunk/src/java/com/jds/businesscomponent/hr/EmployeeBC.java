@@ -243,6 +243,63 @@ public class EmployeeBC {
 		}
 		return employeeInfoList;
 	}
-				
+
+	/**
+	 * 
+	 * @param infoSet changes we need to save in record that matches
+	 * with empNo of record
+	 * @return true if succesefuly false else 
+	 * @throws HRSSystemException
+	 * @throws HRSLogicalException
+	 * @throws SQLException
+	 * @throws DAOException
+	 */
+	public boolean updateEmployee(EmployeeInfo infoSet) 
+		throws HRSSystemException, HRSLogicalException, SQLException, DAOException{
+			log.info("entered updateEmployee method");
+			
+			
+			if (infoSet  == null) throw new HRSLogicalException ("invalid.input.exception");
+			
+			if (infoSet.getEmpNo() == null)
+				throw new HRSLogicalException ("id.required.exception");
+			
+			if (infoSet.getAccentureDetails() == null)
+				throw new HRSLogicalException ("accenture.details.required.exception");
+			
+			Connection conn = null;					
+			try {					 
+				   conn = dbAccess.getConnection();
+				   EmployeeInfo infoWhere = new EmployeeInfo(); //= searchEmployee(infoSet.getEmpNo());
+				   infoWhere.setEmpNo(infoSet.getEmpNo());
+				   AccentureDetails accWhere = new AccentureDetails();
+				   accWhere.setEmployeeNo(infoSet.getEmpNo());
+				   
+				   empDao.update(conn, infoSet, infoWhere);
+				   dbAccess.commitConnection(conn);
+				   
+				   if ( conn == null || conn.isClosed()) {
+					   conn = dbAccess.getConnection();
+				   }
+				   
+				   empAccDao.update(conn, infoSet.getAccentureDetails(), accWhere);
+				   dbAccess.commitConnection(conn);  
+				   return true;
+			
+			} catch (DBAccessException e) {
+				try {
+					dbAccess.rollbackConnection(conn);
+					throw new HRSSystemException (e.getMessageKey(),e.getCause());
+				} catch (Exception e1) {
+				} finally {
+						try {
+							 dbAccess.closeConnection(conn);
+							} catch (DBAccessException e1) {}  
+													  }	
+										  }
+			
+			return false;
+		}
+					
 }
 
