@@ -17,8 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jds.apps.beans.SkillsInformation;
-import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
-import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 
@@ -636,7 +634,6 @@ class SkillDAOTestConnection
 	protected Connection conn;
 	
 	private DBAccess dbAccess = null;
-	StatementGenerator stmtGen = null;
 	
 	public SkillDAOTestConnection(String dbDriver, String dbUrl, String dbUser, String dbPassword) throws DAOException, DBAccessException
 	{
@@ -645,19 +642,14 @@ class SkillDAOTestConnection
 		this.dbUser = dbUser;
 		this.dbPassword = dbPassword;
 		
-		//log.info("initializing SkillDAO");
 		dbAccess = DBAccess.getDBAccess();
-		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_SKILL);
 	}
 	public void reconnect() throws DAOException {
 		try
 		{
 			if (conn == null || conn.isClosed())
 			{
-				//Class.forName(dbDriver);
 				conn = dbAccess.getConnection();
-				
-				//conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			}
 		}
 		catch (Exception e)
