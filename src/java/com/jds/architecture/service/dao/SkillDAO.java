@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+//import java.sql.Statement;
 
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
@@ -18,7 +18,6 @@ import com.jds.architecture.Logger;
 import com.jds.architecture.ServiceFactory;
 import com.jds.architecture.logging.LoggerService;
 import com.jds.architecture.service.dao.assembler.SkillsAssembler;
-import com.jds.architecture.service.dao.stmtgenerator.StatementGenProject;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenSkill;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
@@ -142,7 +141,6 @@ public class SkillDAO implements DataAccessObjectInterface
 		{
 			throw new DAOException("create.exception.skildao", e.getCause(),  DAOException.ERROR, true);
 		}
-			
 	}
 	/**
 	 * Method finds corresponding record in Skill table
@@ -158,7 +156,6 @@ public class SkillDAO implements DataAccessObjectInterface
 		String sqlFieldsToFind = null;
 		Connection conn = null;
 		CachedRowSet tmp = null;
-		//SkillsInformation skillReturn = null;
 		
 		if (!(obj instanceof SkillsInformation))
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
@@ -169,7 +166,7 @@ public class SkillDAO implements DataAccessObjectInterface
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new DAOException(e.getMessage(), e, DAOException.ERROR, true);
 		}
 		
 		try
@@ -206,7 +203,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			}
 			catch (DBAccessException e)
 			{
-
+				throw new DAOException(e.getMessageKey(), e, DAOException.ERROR, true);
 			}
 		}
 
@@ -389,8 +386,6 @@ public class SkillDAO implements DataAccessObjectInterface
 		{
 			
 		}
-		
-		RowSet rset = find(objOld);
 		
 		try
 		{
