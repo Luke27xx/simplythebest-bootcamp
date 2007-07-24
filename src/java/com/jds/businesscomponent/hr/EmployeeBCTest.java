@@ -210,5 +210,57 @@ public class EmployeeBCTest {
 		assertEquals(empInfoList,empInfoList);
 		
 	}
+	
+
+		@Test
+		public void testupdate() throws DAOException, HRSSystemException, HRSLogicalException, SQLException {
+			
+			EmployeeBC empBc = new EmployeeBC();
+			
+			EmployeeInfo empInfo = new EmployeeInfo();
+			
+			empInfo.setFirstName("Ilja2");
+			empInfo.setLastName("Taran222222");
+			empInfo.setMiddleName("Aleksandrovich2");
+			empInfo.setAge(20);
+			empInfo.setGender('M');
+			empInfo.setCivilStatus("solo");
+			empInfo.setCitizenship("Latvian");
+			empInfo.setCity("Riga");
+			empInfo.setState("Vidzeme");
+			empInfo.setCountry("Latvia");
+			Date validTarget1 = new Date(2007,27,8);
+			empInfo.setDob(validTarget1);
+			empInfo.setEmpNo("1570");
+			empInfo.setHomePhoneNo("7174455");
+			empInfo.setMobilePhoneNo("25981741");
+			empInfo.setRecognitions("blablabla");
+			empInfo.setTinNo("22312312");
+			empInfo.setSssNo("fesfopk3");
+			empInfo.setStreet1("dwdaw");
+			empInfo.setStreet2("");
+			empInfo.setEducationalAttainment("TSI");
+			empInfo.setEmail("amittere@inbox.lv");
+			
+			AccentureDetails correctObject = new AccentureDetails();
+
+			correctObject.setEnterpriseId("tratatada");
+			correctObject.setEnterpriseAddress("em000");
+			correctObject.setLevel("");
+			correctObject.setLMU("LMU");
+			correctObject.setStatus("");
+			correctObject.setDateHired(new java.sql.Date(2001, 1, 1));
+			correctObject.setGMU("GMU");
+			correctObject.setWorkGroup("");
+			correctObject.setSpecialty("");
+			correctObject.setServiceLine("");
+			
+			empInfo.setAccentureDetails(correctObject);
+			
+			empBc.updateEmployee(empInfo);
+			
+			
+			
+		}
 
 }
