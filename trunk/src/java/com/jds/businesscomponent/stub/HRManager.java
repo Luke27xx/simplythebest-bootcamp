@@ -20,6 +20,7 @@ import com.jds.apps.beans.SkillCategory;
 import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.exceptions.HRSLogicalException;
 import com.jds.architecture.exceptions.HRSSystemException;
+import com.jds.businesscomponent.hr.ProjectBC;
 
 
 /**
@@ -30,7 +31,8 @@ import com.jds.architecture.exceptions.HRSSystemException;
  *
  */
 public class HRManager {
-
+	
+	
 	private static HRManager thisInstance;
 	
 	public static HRManager getInstance() throws HRSSystemException {
@@ -508,6 +510,9 @@ public class HRManager {
 	        throw new HRSLogicalException("sql.ORA00001.project");
 	    }
 	    
+	    ProjectBC projBC = new ProjectBC();
+	     projBC.createProject(info);
+	    
 	    return;
 	}
 	
@@ -529,7 +534,8 @@ public class HRManager {
 	    if(variableTest == 2) {
 	        throw new HRSLogicalException("sql.ORA00001.project");
 	    }
-	    
+	    ProjectBC projBC = new ProjectBC();
+	     projBC.updateProject(info);
 	    return;
 	}
 	
