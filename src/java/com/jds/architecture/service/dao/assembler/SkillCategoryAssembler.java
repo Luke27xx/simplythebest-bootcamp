@@ -20,22 +20,26 @@ public class SkillCategoryAssembler {
 		stmt.setString(1, skill.getCategoryId());
 		stmt.setString(2, skill.getCategoryName());
 		stmt.setString(3, skill.getCategoryDescription());
+		
 }
 
 	
 	public static SkillCategory getInfo(ResultSet rs) throws SQLException   {
 		SkillCategory skillReturn  = new SkillCategory();
-		skillReturn.setCategoryId(rs.getString("catid"));
-		skillReturn.setCategoryName(rs.getString("catname"));
-		skillReturn.setCategoryDescription(rs.getString("catdesc"));
+		skillReturn.setCategoryId(rs.getString("id"));
+		skillReturn.setCategoryName(rs.getString("name"));
+		skillReturn.setCategoryDescription(rs.getString("description"));
+		skillReturn.setStatus(rs.getString("status"));
 		return skillReturn;
 	}
 	
 	public static SkillCategory getInfo(RowSet rs) throws SQLException{
 		SkillCategory skillReturn  = new SkillCategory();
-		skillReturn.setCategoryId(rs.getString("catid"));
-		skillReturn.setCategoryName(rs.getString("catname"));
-		skillReturn.setCategoryDescription(rs.getString("catdesc"));
+		skillReturn.setCategoryId(rs.getString("id"));
+		skillReturn.setCategoryName(rs.getString("name"));
+		skillReturn.setCategoryDescription(rs.getString("description"));
+		skillReturn.setStatus(rs.getString("status"));
+		
 		return skillReturn;
 		
 	}
