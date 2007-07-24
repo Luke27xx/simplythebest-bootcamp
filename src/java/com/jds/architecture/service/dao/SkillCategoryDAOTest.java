@@ -150,9 +150,7 @@ public class SkillCategoryDAOTest {
 		obj.setCategoryId("000");
 		//obj.setCategoryName("name1");
 		//obj.setCategoryDescription("desc1");
-
 		
-
 		try {
 			rs = cat.find(obj);
 			if (rs.next())
