@@ -188,7 +188,7 @@ public class SkillDAOTest
 		}
 	}
 //find()
-	//test: normal flow - TODO needs test
+	//test: normal flow - OK
 	@Test
 	public final void testFind()
 	{
@@ -242,7 +242,7 @@ public class SkillDAOTest
 		}
 	}
 //findByAll
-	//test: normal flow - OK (probably)
+	//test: normal flow - OK
 	@Test
 	public final void testFindByAll()
 	{
@@ -329,7 +329,7 @@ public class SkillDAOTest
 			fail(e.toString());
 		}
 	}
-	//test: error flow - TODO needs tests
+	//test: error flow - OK
 	@Test
 	public final void testRemoveNullObject()
 	{
@@ -401,7 +401,7 @@ public class SkillDAOTest
 		}
 	}
 //update()
-	//TODO needs test
+	//test: normal flow - OK
 	@Test
 	public final void testUpdate()
 	{
