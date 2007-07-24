@@ -36,7 +36,7 @@ public class StatementGenProject extends StatementGenerator {
 		if (stmtType == DAOConstants.STMT_TYPE_SET) {
 			strConstant = DAOConstants.CHAR_COMMA;
 			isSet = true;
-			ProjectAssembler.toEmptyStringAllNull(obj);
+			//ProjectAssembler.toEmptyStringAllNull(obj);
 		}
          
         
@@ -90,6 +90,12 @@ public class StatementGenProject extends StatementGenerator {
 			}
 		}
 
+		
+		if (strTemp == null && stmtType == DAOConstants.STMT_TYPE_WHERE)
+		{
+				strTemp = "1 = 1";
+		}
+		
 		log.debug("transform strTemp:" + strTemp);
 		return strTemp;
 	}

@@ -68,6 +68,14 @@ public class StatementGenSkill extends StatementGenerator
 				strTemp = sb.toString().substring(0, sb.toString().lastIndexOf(DAOConstants.STR_AND));
 			}
 		}
+		
+		if (sb.toString().length() < 1)
+		{
+			if (stmtType == DAOConstants.STMT_TYPE_WHERE)
+			{
+				strTemp = "1 = 1";
+			}
+		}
 
 		log.debug("transform");
 
