@@ -6,6 +6,7 @@ package com.jds.architecture.service.dao;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.*;
 
@@ -16,6 +17,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jds.apps.beans.SkillsInformation;
+import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
+import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 
@@ -26,6 +29,7 @@ import com.jds.architecture.service.dbaccess.DBAccessException;
 public class SkillDAOTest
 {
 	private static SkillDAO dao;
+	private static SkillDAOTestConnection daoConn;
 	static Connection conn;
 	static String dbDriver, dbUrl, dbUser, dbPassword;
 
@@ -38,7 +42,8 @@ public class SkillDAOTest
 		dbPassword = "hruser";
 		try
 		{
-			dao = new SkillDAO(dbDriver, dbUrl, dbUser, dbPassword);
+			daoConn = new SkillDAOTestConnection(dbDriver, dbUrl, dbUser, dbPassword);
+			dao = new SkillDAO();
 		}
 		catch (Exception e)
 		{
@@ -58,14 +63,14 @@ public class SkillDAOTest
 	@Before
 	public void setUp() throws Exception
 	{
-		dao.reconnect();
-		conn = dao.getConnection();
+		daoConn.reconnect();
+		conn = daoConn.getConnection();
 	}
 	@After
 	public void tearDown() throws Exception
 	{
-		dao.reconnect();
-		Connection conn = dao.getConnection();
+		daoConn.reconnect();
+		Connection conn = daoConn.getConnection();
 		Statement stmt = conn.createStatement();
 		stmt.close();
 		conn.close();
@@ -247,11 +252,9 @@ public class SkillDAOTest
 	@Test
 	public final void testFindError()
 	{
-		RowSet rs;
-		
 		try
 		{
-			rs = dao.find(null);
+			dao.find(null);
 			fail("err: find error");
 		}
 		catch (DAOException e)
@@ -577,4 +580,60 @@ public class SkillDAOTest
 		}
 	}
 }
-
+class SkillDAOTestConnection
+{
+	protected String dbDriver;
+	protected String dbUrl;
+	protected String dbUser;
+	protected String dbPassword;
+	protected Connection conn;
+	
+	private DBAccess dbAccess = null;
+	StatementGenerator stmtGen = null;
+	
+	public SkillDAOTestConnection(String dbDriver, String dbUrl, String dbUser, String dbPassword) throws DAOException, DBAccessException
+	{
+		this.dbDriver = dbDriver;
+		this.dbUrl = dbUrl;
+		this.dbUser = dbUser;
+		this.dbPassword = dbPassword;
+		
+		//log.info("initializing SkillDAO");
+		dbAccess = DBAccess.getDBAccess();
+		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_SKILL);
+	}
+	public void reconnect() throws DAOException {
+		try
+		{
+			if (conn == null || conn.isClosed())
+			{
+				//Class.forName(dbDriver);
+				conn = dbAccess.getConnection();
+				
+				//conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new DAOException("Could not initialize UrlDAO", e);
+		}
+	}
+	public void close() throws DAOException
+	{
+		if (conn != null)
+		{
+			try
+			{
+				conn.close();
+			}
+			catch (SQLException e)
+			{
+				throw new DAOException("Could not close connection", e);
+			}
+			conn = null;
+		}
+	}
+	public Connection getConnection() {
+		return conn;
+	}
+}
