@@ -151,7 +151,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @param Object - must be instance of SkillsInformation class
 	 * @throws DAOException
 	 */
-	// TODO test
+	// test: normal flow - OK; error flow - TODO needs test
 	public RowSet find(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_MAIN;
@@ -369,7 +369,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully updated
 	 */
-	// TODO test
+	//test: normal flow - OK; error flow - TODO needs test
 	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException
 	{
 		if (!(objNew instanceof SkillsInformation) && !(objOld instanceof SkillsInformation))
