@@ -248,6 +248,53 @@ public class SkillDAOTest
 			fail(e.toString());
 		}
 	}
+	@Test
+	public final void testFindNotExisting()
+	{
+		SkillsInformation si = new SkillsInformation();
+		RowSet rs;
+
+		si.setSkillName("000");
+		
+		try
+		{
+			rs = dao.find(si);
+			if (rs.next())
+			{
+				fail("err: find not existing");
+			}
+			else
+			{
+				return;
+			}
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+	}
+	@Test
+	public final void testFindAdvanced2()
+	{
+		SkillsInformation si = new SkillsInformation();
+		RowSet rs;
+
+		si.setCategoryId("1001");
+		
+		try
+		{
+			rs = dao.find(si);
+			while (rs.next())
+			{
+				System.out.print(rs.getString("name"));
+				System.out.print(rs.getString("id"));
+			}
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+	}
 	//test: error flow - OK
 	@Test
 	public final void testFindError()
@@ -430,14 +477,14 @@ public class SkillDAOTest
 		SkillsInformation siNew = new SkillsInformation();
 		
 		siOld.setSkillId("789");
-		siOld.setCategoryId("1001");
-		siOld.setSkillName("Adobe Photoshop");
-		siOld.setSkillDescription("VER 8");
+		//siOld.setCategoryId("1001");
+		//siOld.setSkillName("Adobe Photoshop");
+		//siOld.setSkillDescription("VER 8");
 		
 		siNew.setSkillId("789");
-		siNew.setCategoryId("1001");
-		siNew.setSkillName("Adobe Photoshop");
-		siNew.setSkillDescription("VER 8");
+		//siNew.setCategoryId("1001");
+		//siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 9 CE");
 		
 		try
 		{
