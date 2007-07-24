@@ -29,18 +29,13 @@ public class SkillDAOTest
 	private static SkillDAO dao;
 	private static SkillDAOTestConnection daoConn;
 	static Connection conn;
-	static String dbDriver, dbUrl, dbUser, dbPassword;
 
 	@BeforeClass
 	public static void onlyOnce()
 	{
-		dbDriver = "oracle.jdbc.driver.OracleDriver";
-		dbUrl = "jdbc:oracle:oci:@localhost:1521:XE";
-		dbUser = "hruser";
-		dbPassword = "hruser";
 		try
 		{
-			daoConn = new SkillDAOTestConnection(dbDriver, dbUrl, dbUser, dbPassword);
+			daoConn = new SkillDAOTestConnection();
 			dao = new SkillDAO();
 		}
 		catch (Exception e)
@@ -48,15 +43,6 @@ public class SkillDAOTest
 			
 		}
 		
-	}
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
-	{
-		
-	}
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception
-	{
 	}
 	@Before
 	public void setUp() throws Exception
@@ -68,7 +54,7 @@ public class SkillDAOTest
 	public void tearDown() throws Exception
 	{
 		daoConn.reconnect();
-		Connection conn = daoConn.getConnection();
+		conn = daoConn.getConnection();
 		Statement stmt = conn.createStatement();
 		stmt.close();
 		conn.close();
@@ -486,8 +472,7 @@ public class SkillDAOTest
 		
 		try
 		{
-			boolean b = dao.update(conn, siNew, siOld);
-			assertEquals(true, b);
+			assertEquals(true, dao.update(conn, siNew, siOld));
 		}
 		catch (Exception e)
 		{
@@ -627,21 +612,12 @@ public class SkillDAOTest
 }
 class SkillDAOTestConnection
 {
-	protected String dbDriver;
-	protected String dbUrl;
-	protected String dbUser;
-	protected String dbPassword;
 	protected Connection conn;
 	
 	private DBAccess dbAccess = null;
 	
-	public SkillDAOTestConnection(String dbDriver, String dbUrl, String dbUser, String dbPassword) throws DAOException, DBAccessException
+	public SkillDAOTestConnection() throws DAOException, DBAccessException
 	{
-		this.dbDriver = dbDriver;
-		this.dbUrl = dbUrl;
-		this.dbUser = dbUser;
-		this.dbPassword = dbPassword;
-		
 		dbAccess = DBAccess.getDBAccess();
 	}
 	public void reconnect() throws DAOException {
