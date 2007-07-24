@@ -25,8 +25,8 @@ public class SkillsAssembler {
 	 *            prepared statement from data access object
 	 * @throws SQLException
 	 */
-	public static void getPreparedStatement(SkillsInformation skill,
-			PreparedStatement stmt) throws SQLException {
+	public static void getPreparedStatement(SkillsInformation skill, PreparedStatement stmt) throws SQLException
+	{
 		stmt.setString(1, skill.getSkillId());
 		stmt.setString(2, skill.getCategoryId());
 		stmt.setString(3, skill.getSkillName());
