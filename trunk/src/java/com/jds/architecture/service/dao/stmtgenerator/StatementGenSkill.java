@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.service.dao.DAOConstants;
-import com.jds.architecture.service.dao.assembler.SkillsAssembler;
+//import com.jds.architecture.service.dao.assembler.SkillsAssembler;
 
 /**
  * StatementGenSkill generates SQL statements (SET, WHERE)
