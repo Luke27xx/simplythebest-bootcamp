@@ -267,7 +267,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return Object - instance of SkillsInformations class
 	 * 
 	 */
-	//test: normal flow - OK, error flow - TODO needs tests
+	//test: normal flow - OK, error flow - OK
 	public Object findByPK(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_BYPK;
@@ -327,7 +327,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully removed
 	 */
-	//test: normal flow - OK; error flow - TODO needs test
+	//test: normal flow - OK; error flow - OK
 	public boolean remove(Connection conn, Object obj) throws DAOException
 	{
 		if (!(obj instanceof String) || obj == null)
@@ -366,7 +366,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 * @return boolean - true if successfully updated
 	 */
-	//test: normal flow - OK; error flow - TODO needs test
+	//test: normal flow - OK; error flow - OK
 	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException
 	{
 		if (!(objNew instanceof SkillsInformation) && !(objOld instanceof SkillsInformation))
