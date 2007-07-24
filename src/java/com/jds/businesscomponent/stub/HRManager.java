@@ -8,6 +8,7 @@
  */
 package com.jds.businesscomponent.stub;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +21,8 @@ import com.jds.apps.beans.SkillCategory;
 import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.exceptions.HRSLogicalException;
 import com.jds.architecture.exceptions.HRSSystemException;
+import com.jds.architecture.service.dao.DAOException;
+import com.jds.businesscomponent.hr.EmployeeBC;
 import com.jds.businesscomponent.hr.ProjectBC;
 
 
@@ -50,46 +53,38 @@ public class HRManager {
 	 * @param info  EmployeeInfo
 	 * @throws HRSLogicalException  throws error when empno is null and when accenture details is null 
 	 * @throws HRSSystemException throws exception when system errors occured
+	 * @throws SQLException 
+	 * @throws SQLException 
 	 * @throws 
 	 */
 	
 	public void createEmployee(EmployeeInfo info) 
-		throws HRSSystemException, HRSLogicalException {
+		throws HRSSystemException, HRSLogicalException, SQLException {
 
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.employee");
-	    }
-	    
-	    return;
+		EmployeeBC empBc = new EmployeeBC();
+		
+		empBc.createEmployee(info);
+
 	}
+	
 	
 	/**
 	 * updateEmployee  update employee accenture information by HR 
 	 * @param info  EmployeeInfo
 	 * @throws HRSLogicalException throws error when empno is null and when accenture details is null
 	 * @throws HRSSystemException throws exception when system errors occured
+	 * @throws DAOException 
+	 * @throws SQLException 
 	 */
 	public void updateEmployee(EmployeeInfo info) 
-		throws HRSSystemException, HRSLogicalException {
+		throws HRSSystemException, HRSLogicalException, SQLException, DAOException {
 
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.employee");
-	    }
-	    
-	    return;
+		EmployeeBC empBc = new EmployeeBC();
+	
+		empBc.updateEmployee(info);
+	
 	}
+	
 	
 	/**
 	 * searchEmployees  retrieves all the employees by HR
@@ -97,36 +92,16 @@ public class HRManager {
 	 * @return list of EmployeeInfo object with AccentureDetails object 
 	 * @throws HRSLogicalException 
 	 * @throws HRSSystemException throws exception when system errors occured
+	 * @throws SQLException 
+	 * @throws DAOException 
 	 */
 	public Collection searchEmployees(EmployeeInfo info) 
-		throws HRSSystemException, HRSLogicalException {		
+		throws HRSSystemException, HRSLogicalException, DAOException, SQLException {		
 
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.employee");
-	    }
-	    
-	    List myList = new ArrayList();
-	    
-	    if(variableTest == 3) {
-		    return myList;
-	    }
-	    
-	    EmployeeInfo emp1 = new EmployeeInfo();
-	    emp1.setEmpNo("1");
-	    emp1.setFirstName("Juan");
-	    emp1.setLastName("dela Cruz");
-	    emp1.setMiddleName("Santos");
-	    AccentureDetails emp1Details = new AccentureDetails();
-	    emp1Details.setLevel("Team Lead");
-	    emp1.setAccentureDetails(emp1Details);
-	    myList.add(emp1);
-	    return myList;
+		EmployeeBC empBc = new EmployeeBC();
+	
+		return empBc.searchEmployees(info);
+		
 	}
 	
 	/**
@@ -138,48 +113,15 @@ public class HRManager {
 	 * @throws HRSLogicalException throws exception when at least info does not contain employee id
 	 * @throws HRSSystemException throws exception when system errors occured
 	 */
-	public EmployeeInfo searchEmployee(String empno)
+	public EmployeeInfo searchEmployee(String empNo)
 		throws HRSSystemException, HRSLogicalException { 
 
-
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.employee");
-	    }
-	    
-	    EmployeeInfo emp1 = new EmployeeInfo();
-	    emp1.setFirstName("Juan");
-	    emp1.setLastName("dela Cruz");
-	    emp1.setMiddleName("Santos");
-	    
-	    emp1.setAge(28);
-	    emp1.setCitizenship("Filipino");
-	    emp1.setCivilStatus("Single");
-	    emp1.setGender('M');
-	    emp1.setDob(new Date());
-
-	    emp1.setEducationalAttainment("Mapua");
-	    
-	    emp1.setStreet1("MSE Bldg. Ayala Ave.");
-	    emp1.setCity("Makati");
-	    emp1.setState("Manila");
-	    emp1.setZipcode("1200");
-	    emp1.setCountry("Philippines");
-	    
-	    emp1.setMobilePhoneNo("09178317644");
-	    emp1.setHomePhoneNo("028410111");
-	    AccentureDetails emp1Details = new AccentureDetails();
-	    emp1Details.setDateHired(new Date());
-	    emp1Details.setLevel("Team Lead");
-	    emp1.setAccentureDetails(emp1Details);
-
-	    return emp1;
-	}
+		EmployeeBC empBc = new EmployeeBC();
+		
+		return empBc.searchEmployee(empNo);
+			 
+	 
+		}
 		
 	
 	/****************************skill category ***************************/
@@ -500,18 +442,9 @@ public class HRManager {
 	public void createProject(ProjectInfo info)
 		 throws HRSSystemException, HRSLogicalException {
 		
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.project");
-	    }
-	    
+	    	    
 	    ProjectBC projBC = new ProjectBC();
-	     projBC.createProject(info);
+	    projBC.createProject(info);
 	    
 	    return;
 	}
@@ -525,15 +458,7 @@ public class HRManager {
 	public void updateProject(ProjectInfo info) 
 		throws HRSSystemException, HRSLogicalException {
 		
-	    int variableTest = 0;
 	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.project");
-	    }
 	    ProjectBC projBC = new ProjectBC();
 	     projBC.updateProject(info);
 	    return;
@@ -550,51 +475,9 @@ public class HRManager {
 	public Collection searchApprovedProjects (ProjectInfo dataFind) 
 		throws HRSSystemException, HRSLogicalException {
 
-	    int variableTest = 0;
-	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
-	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.skill");
-	    }
-	    
-	    List myList = new ArrayList();
-	    
-	    if(variableTest == 3) {
-		    return myList;
-	    }
-
-	    ProjectInfo proj1 = new ProjectInfo();
-	    proj1.setProjectId("1");
-	    proj1.setProjectName("E-Sales");
-	    proj1.setStartDate(new Date());
-	    proj1.setEndDate(new Date());
-	    myList.add(proj1);
-	    
-	    ProjectInfo proj2 = new ProjectInfo();
-	    proj2.setProjectId("2");
-	    proj2.setProjectName("WHI");
-	    proj2.setStartDate(new Date());
-	    proj2.setEndDate(new Date());
-	    myList.add(proj2);
-	    
-	    ProjectInfo proj3 = new ProjectInfo();
-	    proj3.setProjectId("3");
-	    proj3.setProjectName("VodaFone");
-	    proj3.setStartDate(new Date());
-	    proj3.setEndDate(new Date());
-	    myList.add(proj3);
-	    
-	    ProjectInfo proj4 = new ProjectInfo();
-	    proj4.setProjectId("4");
-	    proj4.setProjectName("JDS");
-	    proj4.setStartDate(new Date());
-	    proj4.setEndDate(new Date());
-	    myList.add(proj4);
-	    	    
-	    return myList;
+		ProjectBC projBC = new ProjectBC();
+	        	    
+	    return projBC.searchApprovedProjects(dataFind);
 	}
 
 	/**
@@ -607,48 +490,10 @@ public class HRManager {
 	public ProjectInfo searchProject (String id)
 		 throws HRSSystemException, HRSLogicalException {
 
-	    int variableTest = 0;
+		ProjectBC projBC = new ProjectBC();
 	    
-	    if(variableTest == 1) {
-	        throw new HRSSystemException("intialize.dbaccess.exception", null);
-	    }
+	    return projBC.searchProject(id);
 	    
-	    if(variableTest == 2) {
-	        throw new HRSLogicalException("sql.ORA00001.skill");
-	    }
-	    
-	    ProjectInfo proj = new ProjectInfo();
-	    proj.setProjectId(id);
-	    proj.setStartDate(new Date());
-	    proj.setEndDate(new Date());
-	    
-	     
-	    switch (id.toCharArray()[0]) {
-	    	case '1':
-	    	    proj.setProjectName("E-Sales");
-	    	    proj.setProjectDescription("1st on the list.");
-	    	    break;
-	    
-	    	case '2':
-	    	    proj.setProjectName("WHI");
-	    	    proj.setProjectDescription("Walgreens Health Initiative");
-	    	    break;
-	    
-	    	case '3':
-	    	    proj.setProjectName("VodaFone");
-	    	    proj.setProjectDescription("3rd on the list.");
-	    	    break;
-	    
-	    	case '4':
-	    	    proj.setProjectName("JDS");
-	    	    proj.setProjectDescription("JAVA Development School.");
-	    	    break;
-	    
-	        default:
-		        throw new HRSLogicalException("sql.ORA00100.project");
-	    }
-	    	    
-	    return proj;
 	}	
 
 	
