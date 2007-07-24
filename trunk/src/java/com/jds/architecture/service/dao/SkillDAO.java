@@ -327,7 +327,7 @@ public class SkillDAO implements DataAccessObjectInterface
 		}
 		catch (Exception e)
 		{
-			
+			throw new DAOException("update.exception.skilldao", e.getCause(),  DAOException.ERROR, true);
 		}
 		
 		try
