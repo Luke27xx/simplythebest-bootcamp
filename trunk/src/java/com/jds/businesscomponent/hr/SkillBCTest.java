@@ -69,15 +69,42 @@ public class SkillBCTest {
 		si.setSkillName("test skill 23.07"
 				+ String.valueOf((long) (Math.random() * 10000)));
 		si.setSkillDescription("sodienas datums");
-
-		// FIXME: delete this later
-		si.setCategoryId("cat_XXXXXXX1");
-
-		si.setCategoryName("cat_name1");
 		si.setStatus("APPROVED");
 
+		si.setCategoryName("whatever?");
+		si.setCategoryId("123");
+
 		skillBc.createSkill(si);
-		
+	}
+
+	/**
+	 * Create skill with nonexisting category
+	 * 
+	 * @throws HRSException
+	 * @throws Exception
+	 */
+
+	@Test
+	public final void testCreateSkillUnsuccessful() throws HRSException,
+			Exception {
+
+		SkillsInformation si = new SkillsInformation();
+
+		si.setSkillName("test skill 23.07"
+				+ String.valueOf((long) (Math.random() * 10000)));
+		si.setSkillDescription("sodienas datums");
+		si.setStatus("APPROVED");
+
+		si.setCategoryName("whatever?");
+		si.setCategoryId("i_dont_exist");
+
+		try {
+			skillBc.createSkill(si);
+		} catch (HRSLogicalException ex) {
+			return;
+		}
+		fail("wrong behavior");
+
 	}
 
 	/**
@@ -142,16 +169,16 @@ public class SkillBCTest {
 
 		ArrayList<SkillsInformation> temp = (ArrayList<SkillsInformation>) skillBc
 				.searchReferenceData(dataFind, null);
-		
+
 		String correct1 = "JAVAAdobe Photoshop";
 		String correct2 = "Adobe PhotoshopJAVA";
 		String temp_string = "";
 		for (int i = 0; i < temp.size(); i++)
 			temp_string += temp.get(i).getSkillName();
 
-		boolean temp_boolean = temp_string.equals(correct1) ||
-		 	temp_string.equals(correct2);
-		
+		boolean temp_boolean = temp_string.equals(correct1)
+				|| temp_string.equals(correct2);
+
 		assertEquals(true, temp_boolean);
 
 	}

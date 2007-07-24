@@ -55,7 +55,7 @@ public class SkillBC {
 
 	private Constants cons;
 	private DataAccessObjectInterface skillDao = null;
-	// private DataAccessObjectInterface catDao = null;
+	private DataAccessObjectInterface catDao = null;
 	private DBAccess dbAccess = null;
 
 	private static Logger log = (Logger) ServiceFactory.getInstance()
@@ -72,10 +72,8 @@ public class SkillBC {
 			skillDao = (SkillDAO) DAOFactory.getFactory().getDAOInstance(
 					DAOConstants.DAO_SKILL);
 
-			// XXX does it work?!
-			// catDao = (SkillCategoryDAO)
-			// DAOFactory.getFactory().getDAOInstance(
-			// DAOConstants.DAO_SKILLCAT);
+			catDao = (SkillCategoryDAO) DAOFactory.getFactory().getDAOInstance(
+					DAOConstants.DAO_SKILLCAT);
 
 			dbAccess = DBAccess.getDBAccess();
 			cons = new Constants();
@@ -96,8 +94,6 @@ public class SkillBC {
 
 	}
 
-	// v
-
 	/**
 	 * Create skill information by HRManager
 	 * 
@@ -114,8 +110,6 @@ public class SkillBC {
 
 		log.info("entered createSkill method");
 
-		long id = 0;
-
 		if (info == null)
 			throw new HRSLogicalException("invalid.input.exception");
 
@@ -123,56 +117,43 @@ public class SkillBC {
 			throw new HRSLogicalException("skill.category.no.record.exception");
 		}
 
-		if (info.getStatus() == null || !info.getStatus().equalsIgnoreCase("approved")) {
+		if (info.getStatus() == null
+				|| !info.getStatus().equalsIgnoreCase("approved")) {
 			throw new HRSLogicalException("category.not.approved.exception");
 		}
 
 		Connection conn = null;
 
 		try {
-			//System.err.println("Getting connection...");
-
 			conn = dbAccess.getConnection();
 
-			//System.err.println("Got connection...");
+			SkillCategory sci = new SkillCategory();
+			sci.setCategoryId(info.getCategoryId());
 
-			SkillsInformation skinfo = new SkillsInformation();
-			skinfo.setCategoryName(info.getCategoryName());
+			RowSet rs = catDao.find(sci);
 
-			/*
-			 * TODO Not yet implemented
-			 * 
-			 * 
-			 * RowSet rs = catDao.find(skinfo); // FIXME try { if (!rs.next()) {
-			 * throw new
-			 * HRSLogicalException("skill.category.no.record.exception"); } }
-			 * catch (SQLException ex) { throw new
-			 * HRSLogicalException("skill.category.no.record.exception"); }
-			 * 
-			 */
+			try {
+				if (!rs.next()) {
+					throw new HRSLogicalException(
+							"skill.category.no.record.exception");
+				}
+			} catch (SQLException ex) {
+				throw new HRSLogicalException(
+						"skill.category.no.record.exception");
+			}
 
-			// TODO: Not yet implemented
-			// id = SkillIdGenerator.getInstance().getNextId();
-			id = (long) ( Math.random() * 100000 );
+			long id = SkillIdGenerator.getInstance().getNextId();
 			info.setSkillId(String.valueOf(id));
 
-			//System.err.println("Creating skill...");
-			
 			skillDao.create(conn, info);
-			
-			//System.err.println("Done creating skill...");
-			
-				
-			//RowSet set = skillDao.find(info);
-
 			dbAccess.commitConnection(conn);
-		/*} catch (IdGeneratorException e) {
+
+		} catch (IdGeneratorException e) {
 			try {
 				dbAccess.rollbackConnection(conn);
 			} catch (DBAccessException e1) {
 			}
 			throw new HRSSystemException(e.getMessageKey(), e.getCause());
-			*/
 		} catch (DBAccessException e) {
 			try {
 				dbAccess.rollbackConnection(conn);
@@ -228,10 +209,9 @@ public class SkillBC {
 				throw new HRSLogicalException("record.not.found.exception");
 
 			/*
-			SkillCategory catData = (SkillCategory) catDao.findByPK(data
-					.getCategoryId());
-			data.setCategoryId(catData.getCategoryId());
-			data.setCategoryName(catData.getCategoryName());
+			 * SkillCategory catData = (SkillCategory) catDao.findByPK(data
+			 * .getCategoryId()); data.setCategoryId(catData.getCategoryId());
+			 * data.setCategoryName(catData.getCategoryName());
 			 */
 		} catch (DAOException e) {
 			throw new HRSSystemException(e.getMessageKey(), e.getCause());
@@ -298,7 +278,8 @@ public class SkillBC {
 
 			while (rs.next()) {
 				SkillsInformation skinfo = SkillsAssembler.getInfo(rs);
-				if (!(skinfo.getStatus() == null) && skinfo.getStatus().equalsIgnoreCase("approved"))
+				if (!(skinfo.getStatus() == null)
+						&& skinfo.getStatus().equalsIgnoreCase("approved"))
 					returnCollection.add(skinfo);
 			}
 		} catch (SQLException e) {
