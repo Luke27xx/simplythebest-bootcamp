@@ -22,7 +22,7 @@ public class StatementGenCategory extends StatementGenerator{
 		if (stmtType == DAOConstants.STMT_TYPE_SET) {
 			strConstant = DAOConstants.CHAR_COMMA;
 			isSet = true;
-			SkillCategoryAssembler.toEmptyStringAllNull(obj);
+			//SkillCategoryAssembler.toEmptyStringAllNull(obj);
 		}
          
 		if(obj.getCategoryId() != null) {			
@@ -62,6 +62,11 @@ public class StatementGenCategory extends StatementGenerator{
 			}
 		}
 
+		if (strTemp == null) {
+			if (stmtType == DAOConstants.STMT_TYPE_WHERE)
+				strTemp = "1 = 1";
+		}
+		
 		log.debug("transform strTemp:" + strTemp);
 		return strTemp;
 	}
