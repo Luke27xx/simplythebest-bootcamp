@@ -116,9 +116,9 @@ public class SkillBC {
 		if (info.getCategoryName() == null) {
 			throw new HRSLogicalException("skill.category.no.record.exception");
 		}
-
-		if (info.getStatus() == null
-				|| !info.getStatus().equalsIgnoreCase("approved")) {
+		
+		if (info.getStatus() != null
+				&& !info.getStatus().equalsIgnoreCase("approved")) {
 			throw new HRSLogicalException("category.not.approved.exception");
 		}
 
