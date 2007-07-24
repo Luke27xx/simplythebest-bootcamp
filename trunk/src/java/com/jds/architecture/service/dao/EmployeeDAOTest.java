@@ -28,69 +28,31 @@ import com.jds.architecture.service.dao.assembler.EmployeeAssembler;
 public class EmployeeDAOTest {
 	
 	private static DataAccessObjectInterface dao;
-	//private static EmployeeDAO dao;
-//	private static Connector connector;
 
-	//private EmployeeInfo empInfo = new EmployeeInfo();
-	//private EmployeeInfo empInfo1 = new EmployeeInfo();
-		
-//	@BeforeClass
-//	public static void onlyOnce() throws DAOException, DBAccessException {
-				
-	//	String dbDriver = "oracle.jdbc.driver.OracleDriver";
-	//	String dbUrl = "jdbc:oracle:thin:@localhost:1521:XE";
-	//	String dbUser = "tuser";
-	//	String dbPassword = "tuser";		
-	//dao = new EmployeeDAO(dbDriver, dbUrl, dbUser, dbPassword);
-	//	connector = new Connector("oracle.jdbc.driver.OracleDriver",
-	//			"jdbc:oracle:thin:@localhost:1521:XE", "tuser", "tuser");
-
-//	}
-
-	
 	@Before
-	public void setUp() throws DAOException {
+	public void setUp() throws Exception {
 		
-		try {
+		//try {
 			dao = (EmployeeDAO) DAOFactory.getFactory()
 					.getDAOInstance(DAOConstants.DAO_EMP);
 
-		} catch (Exception x) {
-			System.err.println("error1: " + x.getMessage());
-		}
-
-		
+//		} catch (Exception x) {
+//			System.err.println("error1: " + x.getMessage());
+//		}
 	}
 	
 	
-	/**
-	 * Deletes everything
-	 * @throws DAOException 
-	 * @throws DAOException 
-	 */
-//	@After
-//	public void tearDown() throws SQLException, DAOException {
-		//connector.reconnect();
-		
-		//dao.reconnect();
-		//Connection conn = connector.getConnection();
-		//Connection conn = dao.getConnection();
-		//Statement stmt = conn.createStatement();
-	//	stmt.executeUpdate("DELETE FROM employee");		
-		//stmt.close();
-		//conn.close();		
-//	}
 
 	@Test
 	public void testCreate() throws DAOException, SQLException {
 		
 		EmployeeInfo empInfo = new EmployeeInfo();
 		
-		empInfo.setFirstName("Vadim");
-		empInfo.setLastName("Kuznecov");
-		empInfo.setMiddleName("Aleksandrovich");
+		empInfo.setFirstName("Vilnieks");
+		empInfo.setLastName("Strel");
+		empInfo.setMiddleName("blablabla");
 		empInfo.setAge(20);
-		empInfo.setGender('M');
+		empInfo.setGender('F');
 		empInfo.setCivilStatus("solo");
 		empInfo.setCitizenship("Latvian");
 		empInfo.setCity("Riga");
@@ -139,16 +101,7 @@ public class EmployeeDAOTest {
 
 		dao.create(null, empInfo1);
 		
-		//RowSet result1 = dao.findByAll();
-		//result1.next();
-		//assertEquals(true,empInfo.equals(EmployeeAssembler.getInfo(result1)));
-		
-		//assertEquals(empInfo,EmployeeAssembler.getInfo(result1));
-		//result1.next();
-		//assertEquals(true,empInfo1.equals(EmployeeAssembler.getInfo(result1)));
-		
-		//assertEquals(empInfo1 , EmployeeAssembler.getInfo(result1));
-	}
+		}
 		
 	
 	
@@ -169,15 +122,15 @@ public class EmployeeDAOTest {
 		
 		EmployeeInfo empInfo = new EmployeeInfo();
 		
-		empInfo.setFirstName("Vadim");
-		empInfo.setLastName("Kuznecov");
-
+		empInfo.setFirstName("Vilnieks");
+		empInfo.setLastName("Strel");
+		
 		
 		RowSet t1 = dao.find(empInfo) ;
 		if (t1.next()){
 	
-		assertEquals("Vadim",EmployeeAssembler.getInfo(t1).getFirstName());
-		assertEquals("Kuznecov",EmployeeAssembler.getInfo(t1).getLastName());
+		assertEquals("Vilnieks",EmployeeAssembler.getInfo(t1).getFirstName());
+		assertEquals("Strel",EmployeeAssembler.getInfo(t1).getLastName());
 		assertEquals("1",EmployeeAssembler.getInfo(t1).getEmpNo());
 		}
 		
@@ -207,7 +160,7 @@ public class EmployeeDAOTest {
 		objSet.setCountry("Latvia");
 		Date validTarget1 = new Date(2007,27,8);
 		objSet.setDob(validTarget1);
-		objSet.setEmpNo("1");
+		//objSet.setEmpNo("1");
 		objSet.setHomePhoneNo("7174455");
 		objSet.setMobilePhoneNo("25981741");
 		objSet.setRecognitions("blablabla");
@@ -220,9 +173,12 @@ public class EmployeeDAOTest {
 
 		EmployeeInfo objWhere = new EmployeeInfo();
 		objWhere.setFirstName("Vadim");
+		objWhere.setEmpNo("1");
 		
 		
 		assertEquals(true,dao.update(null, objSet, objWhere)); 
-		}
+	
+		dao.remove(null, "1");
+	}
 	}
 
