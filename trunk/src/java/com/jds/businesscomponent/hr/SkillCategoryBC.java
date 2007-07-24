@@ -89,7 +89,6 @@ public class SkillCategoryBC {
 		}
 
 		log.info("exited SkillCategoryBC constructor");
-
 	}
 
 	/**
@@ -236,7 +235,7 @@ public class SkillCategoryBC {
 
 		log.info("entered searchReferenceData method");
 
-		Collection<SkillCategory> returnCollection = new Vector<SkillCategory>();// <SkillCategory>;
+		Collection<SkillCategory> returnCollection = new ArrayList<SkillCategory>();
 
 		try {
 			ResultSet rs;
@@ -248,7 +247,7 @@ public class SkillCategoryBC {
 
 			while (rs.next()) {
 				SkillCategory skcatinfo = SkillCategoryAssembler.getInfo(rs);
-				if (skcatinfo.getStatus().equalsIgnoreCase("approved"))
+				if (!(skcatinfo.getStatus() == null) && skcatinfo.getStatus().equalsIgnoreCase("approved"))
 					returnCollection.add(skcatinfo);
 			}
 		} catch (SQLException e) {
