@@ -82,6 +82,7 @@ public class DAOFactory {
 					throw new DAOException ("dao.classnotfound.factory.instantiate.exception",
 						cne.getCause(), DAOException.ERROR, true);
 				} catch(Exception ce) {
+					ce.printStackTrace(System.err);
 					throw new DAOException ("dao.factory.instantiate.exception",
 						ce.getCause(), DAOException.ERROR, true);
 				}

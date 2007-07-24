@@ -19,159 +19,234 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 import com.jds.apps.beans.SkillCategory;
 
-public class SkillCategoryDAOTest{
+public class SkillCategoryDAOTest {
 
-	private DataAccessObjectInterface catDao = null;
+	//private DataAccessObjectInterface catDao = null;
 	private static SkillCategoryDAO cat;
-	private static Connector conn;
+	//private static Connector conn;
+	private static Connection con;
 	
+	static String dbDriver;
+	static String dbUrl;
+	static String dbUser;
+	static String dbPassword;
+
 	@BeforeClass
 	public static void onlyOnce() {
-				
-		conn = new Connector("oracle.jdbc.driver.OracleDriver",
-				"jdbc:oracle:thin:@localhost:1521:XE", "hruser", "hruser");		
+		dbDriver = "oracle.jdbc.driver.OracleDriver";
+		dbUrl = "jdbc:oracle:thin:@localhost:1521:XE";
+		dbUser = "hruser";
+		dbPassword = "hruser";
+		
+		try
+		{
+			cat = new SkillCategoryDAO(dbDriver, dbUrl, dbUser, dbPassword);
+		}
+		catch (Exception e)
+		{
+			
+		}
+		
+
+		//conn = new Connector("oracle.jdbc.driver.OracleDriver",
+				//"jdbc:oracle:thin:@localhost:1521:XE", "hruser", "hruser");
 	}
-	
+
 	@Before
 	public void setUp() throws DAOException {
-		try {
-			cat = (SkillCategoryDAO) DAOFactory.getFactory()
-			.getDAOInstance(DAOConstants.DAO_SKILLCAT);
+		
+		cat.reconnect();
+		con = cat.getConnection();
+	}
 
-		} 
-		catch (Exception x) {
-	    System.err.println("error1: " + x.getMessage());
-		}
-
-		conn.reconnect();
-}
-	
-	
 	@After
 	public void tearDown() throws SQLException, DAOException {
-		conn.reconnect();	
+		cat.reconnect();
 		Connection conn = cat.getConnection();
 		Statement stmt = conn.createStatement();
 		stmt.close();
-		((Connector) conn).clearAll();
-		conn.close();	
-		
+		conn.close();
+
 	}
-	
-	
+
 	@Test
 	public void create() throws DAOException, SQLException {
-		Connection conn = cat.getConnection();
+		
 		SkillCategory skill = new SkillCategory();
-		skill.setCategoryId("1");
-		skill.setCategoryName("name");
-		skill.setCategoryDescription("description");
-		cat.create(((Statement) conn).getConnection(), skill);
-		
-		Statement sql_stmt = ((Statement) conn).getConnection().createStatement();
-		java.sql.ResultSet rset = sql_stmt.executeQuery("SELECT id");
-		rset.next();
-		assertEquals("1", rset.getString("id"));
-		rset.close(); 
-		sql_stmt.close();
-		
-		if (skill == null){
-			throw new DAOException ("invalid.object.catdao", null);
-			}
-		
-		}
+		skill.setCategoryId("2");
+		skill.setCategoryName("name2");
+		skill.setCategoryDescription("description2");
 	
-	@Test
-	public void find() throws DAOException, SQLException{
-		create();
+		try
+		{
+			cat.create(con, skill);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail(ex.toString());
+		}
 
+	}
+	
+	
+
+	@Test
+	public void find() throws DAOException, SQLException {
+		
 		SkillCategory obj = new SkillCategory();
+		RowSet rs;
 
 		obj.setCategoryId("2");
-		obj.setCategoryName("name1");
-		obj.setCategoryDescription("desc1");
+		obj.setCategoryName("name2");
+		obj.setCategoryDescription("description2");
+
+		try {
+			cat.find(obj);
+			//assertEquals("1", 2);
+			//assertEquals("name", "name1");
+			//assertEquals("desc", "desc1");
+
+			//return;
+		} catch (Exception ex) {
+			//ex.printStackTrace();
+			//System.err.println("everything is wrong");
+			//fail("wrong!");
+			
+			fail(ex.toString());
+		}
+
+		try {
+			rs = cat.find(obj);
+			if (rs.next())
+			{
+				assertEquals("description2", rs.getString("description"));
+			}
+			else
+			{
+				fail("err: find");
+			}
+			
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+		}
+	
+	/**
+	 * Tests object, which is not in the table.
+	 * @throws DAOException
+	 * @throws SQLException
+	 */
+	@Test 
+	public void find1() throws DAOException, SQLException {
+		
+		SkillCategory obj = new SkillCategory();
+		RowSet rs;
+
+		obj.setCategoryId("000");
+		//obj.setCategoryName("name1");
+		//obj.setCategoryDescription("desc1");
+
 		
 
 		try {
-			assertEquals("1", 2);
-			assertEquals("name", "name1" );
-			assertEquals("desc", "desc1");
-
+			rs = cat.find(obj);
+			if (rs.next())
+			{
+				fail("1");
+			}
+			else
+			{
 			return;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.err.println("everything is wrong");
-			fail("wrong!");
-		}
-
-		fail("exception..");
-	}
-	
-	
-
-	@Test 
-	public void findByAll() throws DAOException, SQLException {
-		create();
-		RowSet rs = cat.findByAll();
-		int  i=0;
-		while (rs.next()){i++;}
-		assertEquals(1, i);
+			}
 			
-	}
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
+}
+		
 	
 	@Test
-	public void findByPK() throws Exception {
-		
-			create();
-		
+	public void findByAll() throws DAOException, SQLException {
+		//create();
+		//RowSet rs = cat.findByAll();
+		//int i = 0;
+		//while (rs.next()) {
+		//	i++;
+		//}
+		//assertEquals(1, i);
 		try {
-			Object findPK = "1";
-			Object obj = catDao.findByPK(findPK);
-
-			if (obj == null)
-				fail("findByPK returned null");
-
-			assertEquals(((SkillCategory) obj).getCategoryName(),
-					"name");
-
-			return;
-		} catch (Exception x) {
-			System.err.println("error12: " + x.getMessage());
-			x.printStackTrace();
+			cat.findByAll();
 		}
-		fail("exception in findByPK");
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
 		
 	}
-	
-	
+
+	@Test
+	public void findByPK() throws Exception {
+
+		SkillCategory obj;
+		
+		try {
+			
+			obj = (SkillCategory) cat.findByPK("125");
+			
+		} catch (Exception x) {
+		x.printStackTrace();
+		fail(x.toString());
+		}
+	}
 
 	@Test
 	public void remove() throws DAOException {
-		SkillCategory skill = new SkillCategory();
-		skill.setCategoryId("1");
-		skill.setCategoryName("name");
-		skill.setCategoryDescription("description");
-		cat.remove(conn.getConnection(),"1");
+		try
+		{
+			cat.remove(con, "2");
+		}
+		catch (Exception e)
+		{
+			fail(e.toString());
+		}
 		
+
 	}
-	
+
 	@Test
 	public void update() throws DAOException {
 		SkillCategory skill = new SkillCategory();
-		skill.setCategoryId("id1");
-		skill.setCategoryName("name1");
-		skill.setCategoryDescription("desc1");
-		
+		skill.setCategoryId("2");
+		//skill.setCategoryName("name2");
+		//skill.setCategoryDescription("description2");
+
 		SkillCategory skill1 = new SkillCategory();
-		skill1.setCategoryId("1");
+		//skill1.setCategoryId("2");
+		skill1.setCategoryName("name1");
+		skill1.setCategoryDescription("desc1");
+
+		try{ 
+			
+		//public boolean te;
 		
-		cat.update(conn.getConnection(),skill,skill1);
+		if (cat.update(con, skill, skill1)) {
+			
 		}
-	
-	
+	}
+		//return true;
+		catch (Exception e){
+			fail("vel nav");
+		}
+		
+	}
+
 }
 
 class Connector {
@@ -181,19 +256,7 @@ class Connector {
 	protected String dbPassword;
 	protected Connection conn;
 
-	public void reconnect() {
-		try {
-			if (conn == null || conn.isClosed()) {
-				Class.forName(dbDriver);
-				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-			}
-		} catch (Exception e) {
-			System.err.println("error2: " + e.getMessage());
-			e.printStackTrace();
-			throw new RuntimeException("Could not initialize UrlDAO", e);
-		}
-
-	}
+	
 
 	public void clearAll() {
 		try {
@@ -202,46 +265,28 @@ class Connector {
 			stmt.close();
 		} catch (Exception ex) {
 		}
-		
+
 	}
 
-	public Connector(String dbDriver, String dbUrl, String dbUser,
-			String dbPassword) {
-		this.dbDriver = dbDriver;
-		this.dbUrl = dbUrl;
-		this.dbUser = dbUser;
-		this.dbPassword = dbPassword;
-	}
+	
 
-	public void close() {
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				throw new RuntimeException("Could not close connection", e);
-			}
-			conn = null;
-		}
-	}
+	
 
-	public Connection getConnection() {
-		return conn;
-	}
+	
 
 	public void setDbDriver(String dbDriver) {
-		this.dbDriver = dbDriver;
+		//this.dbDriver = dbDriver;
 	}
 
 	public void setDbPassword(String dbPassword) {
-		this.dbPassword = dbPassword;
+		//this.dbPassword = dbPassword;
 	}
 
 	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
+		//this.dbUrl = dbUrl;
 	}
 
 	public void setDbUser(String dbUser) {
-		this.dbUser = dbUser;
+		//this.dbUser = dbUser;
 	}
 }
-
