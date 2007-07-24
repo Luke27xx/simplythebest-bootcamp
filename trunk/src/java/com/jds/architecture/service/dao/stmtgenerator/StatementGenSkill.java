@@ -39,6 +39,10 @@ public class StatementGenSkill extends StatementGenerator
 			isSet = true;
 		}
 		
+		if (obj.getSkillId() != null)
+		{
+			sb.append(getColumnValue(isSet, DAOConstants.COL_ID, obj.getSkillId(), strConstant));
+		}
 		if (obj.getSkillName() != null)
 		{
 			sb.append(getColumnValue(isSet, DAOConstants.COL_NAME, obj.getSkillName(), strConstant));
