@@ -16,6 +16,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jds.apps.beans.SkillsInformation;
+import com.jds.architecture.service.dbaccess.DBAccess;
+import com.jds.architecture.service.dbaccess.DBAccessException;
 
 /**
  * @author Ivars Lacis
@@ -241,6 +243,22 @@ public class SkillDAOTest
 			fail(e.toString());
 		}
 	}
+	//test: error flow - OK
+	@Test
+	public final void testFindError()
+	{
+		RowSet rs;
+		
+		try
+		{
+			rs = dao.find(null);
+			fail("err: find error");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+	}
 //findByAll
 	//test: normal flow - OK
 	@Test
@@ -427,7 +445,136 @@ public class SkillDAOTest
 		{
 			fail(e.toString());
 		}
-		//fail("pabeigt");
+	}
+	//test: error flow - OK
+	@Test
+	public final void testUpdateNullConnection()
+	{
+		SkillsInformation siOld = new SkillsInformation();
+		SkillsInformation siNew = new SkillsInformation();
+		
+		siOld.setSkillId("789");
+		siOld.setCategoryId("1001");
+		siOld.setSkillName("Adobe Photoshop");
+		siOld.setSkillDescription("VER 8");
+		
+		siNew.setSkillId("789");
+		siNew.setCategoryId("1001");
+		siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 8");
+		
+		try
+		{
+			dao.update(null, siNew, siOld);
+			fail("err: testUpdateNullConnection");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+	}
+	@Test
+	public final void testUpdateNullSiNew()
+	{
+		SkillsInformation siOld = new SkillsInformation();
+		SkillsInformation siNew = new SkillsInformation();
+		
+		siOld.setSkillId("789");
+		siOld.setCategoryId("1001");
+		siOld.setSkillName("Adobe Photoshop");
+		siOld.setSkillDescription("VER 8");
+		
+		siNew.setSkillId("789");
+		siNew.setCategoryId("1001");
+		siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 8");
+		
+		try
+		{
+			dao.update(conn, null, siOld);
+			fail("err: testUpdateNullSiNew");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+	}
+	@Test
+	public final void testUpdateNullSiOld()
+	{
+		SkillsInformation siOld = new SkillsInformation();
+		SkillsInformation siNew = new SkillsInformation();
+		
+		siOld.setSkillId("789");
+		siOld.setCategoryId("1001");
+		siOld.setSkillName("Adobe Photoshop");
+		siOld.setSkillDescription("VER 8");
+		
+		siNew.setSkillId("789");
+		siNew.setCategoryId("1001");
+		siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 8");
+		
+		try
+		{
+			dao.update(conn, siNew, null);
+			fail("err: testUpdateNullSiOld");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+	}
+	@Test
+	public final void testUpdateNotInstanceOfSkillsInformation1()
+	{
+		SkillsInformation siOld = new SkillsInformation();
+		SkillsInformation siNew = new SkillsInformation();
+		
+		siOld.setSkillId("789");
+		siOld.setCategoryId("1001");
+		siOld.setSkillName("Adobe Photoshop");
+		siOld.setSkillDescription("VER 8");
+		
+		siNew.setSkillId("789");
+		siNew.setCategoryId("1001");
+		siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 8");
+		
+		try
+		{
+			dao.update(null, "Ivars", siOld);
+			fail("err: testUpdateNotInstanceOfSkillsInformation1");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+	}
+	public final void testUpdateNotInstanceOfSkillsInformation2()
+	{
+		SkillsInformation siOld = new SkillsInformation();
+		SkillsInformation siNew = new SkillsInformation();
+		
+		siOld.setSkillId("789");
+		siOld.setCategoryId("1001");
+		siOld.setSkillName("Adobe Photoshop");
+		siOld.setSkillDescription("VER 8");
+		
+		siNew.setSkillId("789");
+		siNew.setCategoryId("1001");
+		siNew.setSkillName("Adobe Photoshop");
+		siNew.setSkillDescription("VER 8");
+		
+		try
+		{
+			dao.update(null, siNew, "Ivars");
+			fail("err: testUpdateNotInstanceOfSkillsInformation1");
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
 	}
 }
 
