@@ -5,11 +5,13 @@ package com.jds.architecture.service.dao;
  */
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.RowSet;
+import javax.sql.rowset.CachedRowSet;
 
 import com.jds.apps.beans.SkillCategory;
 
@@ -21,6 +23,7 @@ import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
+import com.sun.rowset.CachedRowSetImpl;
 
 public class SkillCategoryDAO implements DataAccessObjectInterface {
 
@@ -39,6 +42,52 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 			.getService(LoggerService.class);
 
 	StatementGenerator stmtGen = null;
+	
+	public SkillCategoryDAO(String dbDriver, String dbUrl, String dbUser, String dbPassword) throws DAOException, DBAccessException
+	{
+		this.dbDriver = dbDriver;
+		this.dbUrl = dbUrl;
+		this.dbUser = dbUser;
+		this.dbPassword = dbPassword;
+		
+		log.info("initializing SkillDAO");
+		dbAccess = DBAccess.getDBAccess();
+		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_SKILLCAT);
+	}
+	public void reconnect() throws DAOException {
+		try
+		{
+			if (conn == null || conn.isClosed())
+			{
+				Class.forName(dbDriver);
+				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			}
+		}
+		catch (Exception e)
+		{
+			log.error("Could not initialize UrlDAO", e);
+			throw new DAOException("Could not initialize UrlDAO", e);
+		}
+	}
+	public void close() throws DAOException
+	{
+		if (conn != null)
+		{
+			try
+			{
+				conn.close();
+			}
+			catch (SQLException e)
+			{
+				log.error("Could not close connection", e);
+				throw new DAOException("Could not close connection", e);
+			}
+			conn = null;
+		}
+	}
+	public Connection getConnection() {
+		return conn;
+	}
 
 	protected SkillCategoryDAO() throws DAOException, DBAccessException {
 		log.info("initializing SkillCategoryDAO");
@@ -91,26 +140,36 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 
 		// TODO Auto-generated method stub
 		String sqlStmt = DAOConstants.SKILLCAT_FIND_MAIN;
-		SkillCategory skillReturn = null;
+		//SkillCategory skillReturn = null;
+		String checkedFields = null;
+		CachedRowSet tmp = null;
 
 		if (!(obj instanceof SkillCategory))
 			throw new DAOException("invalid.object.catdao", null,
 					DAOException.ERROR, true);
 
-		String checkedFields = (String) obj;
+		try {
+			checkedFields = stmtGen.transformStmt(obj, DAOConstants.STMT_TYPE_WHERE);
+		}
+		catch (Exception e) {
+			
+		}
+		
 		Connection conn = null;
 
 		try {
 			log.debug("finding SkillCategory entry by specified fields");
 			conn = dbAccess.getConnection();
+			
+
+			sqlStmt = sqlStmt.replaceFirst("@", checkedFields);
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
-
-			stmt.setString(1, checkedFields);
 			ResultSet rs = stmt.executeQuery();
-
-			if (rs.next()) {
-				skillReturn = SkillCategoryAssembler.getInfo(rs);
-			}
+			tmp = new CachedRowSetImpl();
+			tmp.populate(rs);
+			//if (rs.next()) {
+			//	skillReturn = SkillCategoryAssembler.getInfo(rs);
+			//}
 
 			rs.close();
 			log.debug("found SkillCategory entry by specified fields");
@@ -128,7 +187,7 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 			}
 		}
 
-		return (RowSet) skillReturn;
+		return (RowSet) tmp;
 	}
 
 	/**
@@ -136,7 +195,8 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 	 */
 	public RowSet findByAll() throws DAOException {
 		String sqlStmt = DAOConstants.SKILLCAT_FIND_ALL;
-		SkillCategory skillReturn = null;
+		//SkillCategory skillReturn = null;
+		CachedRowSet tmp;
 
 		Connection conn = null;
 
@@ -147,10 +207,13 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 
 			ResultSet rs = stmt.executeQuery();
 
-			if (rs.next()) {
-				skillReturn = SkillCategoryAssembler.getInfo(rs);
-			}
-
+			//if (rs.next()) {
+			//	skillReturn = SkillCategoryAssembler.getInfo(rs);
+			//}
+			
+			tmp = new CachedRowSetImpl();
+			tmp.populate(rs);
+			stmt.close();
 			rs.close();
 			log.debug("found SkillCategory entry by specified fields");
 		} catch (DBAccessException e) {
@@ -166,7 +229,7 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 
 			}
 		}
-		return (RowSet) skillReturn;
+		return (RowSet) tmp;
 
 	}
 
@@ -233,7 +296,7 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 					DAOException.ERROR, true);
 
 		String sqlstmt = DAOConstants.SKILLCAT_DELETE;
-		SkillCategory skill = (SkillCategory) obj;
+		String skill = (String) obj;
 
 		if (skill.equals(null))
 			throw new DAOException("invalid.object.catdao", null,
@@ -241,11 +304,12 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 
 		log.debug("removing SkillCategory entry");
 		try {
-			if (conn == null || conn.isClosed())
-				conn = dbAccess.getConnection();
+			//if (conn == null || conn.isClosed())
+			//	conn = dbAccess.getConnection();
 
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
-			SkillCategoryAssembler.getPreparedStatement(skill, stmt);
+			//SkillCategoryAssembler.getPreparedStatement(skill, stmt);
+			stmt.setString(1, skill);
 			stmt.executeUpdate();
 			log.debug("removing SkillCategory entry");
 		} catch (SQLException e) {
@@ -271,23 +335,32 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 					DAOException.ERROR, true);
 
 		String sqlstmt = DAOConstants.SKILLCAT_UPDATE_MAIN;
-		SkillCategory skill = (SkillCategory) objWhere;
-		SkillCategory skillChanges = (SkillCategory) objSet;
-
-		if (skill.equals(null))
-			throw new DAOException("invalid.object.catdao", null,
-					DAOException.ERROR, true);
-
-		log.debug("updating SkillCategory entry");
+		
+		String sqlNew = null;
+		String sqlOld = null;
+		
+		try
+		{
+			sqlNew = stmtGen.transformStmt(objSet, DAOConstants.STMT_TYPE_SET);
+			sqlOld = stmtGen.transformStmt(objWhere, DAOConstants.STMT_TYPE_WHERE);
+		}
+		catch (Exception e)
+		{
+			
+		}
+		
+		
+		
 		try {
+			log.debug("updating SkillCategory entry");
+			sqlstmt = sqlstmt.replaceFirst("@", sqlNew).replaceFirst("@", sqlOld);
+
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
-
-			SkillCategoryAssembler.getPreparedStatement(skill, stmt);
-			stmt.executeUpdate();
-			SkillCategoryAssembler.getPreparedStatement(skillChanges, stmt);
-			stmt.executeUpdate();
-
-			log.debug("created SkillCategory entry");
+			ResultSet rs = stmt.executeQuery();
+				
+			rs.close();
+			
+			log.debug("updated SkillCategory entry");
 		} catch (SQLException e) {
 			throw new DAOException("sql.create.exception.catdao", e,
 					DAOException.ERROR, true);
@@ -296,13 +369,10 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 					DAOException.ERROR, true);
 
 		}
-		return false;
+		return true;
 
 	}
 
-	public Connection getConnection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }

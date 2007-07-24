@@ -76,6 +76,7 @@ public class StatementGeneratorFactory {
 					throw new DAOException ("generator.illegal.factory.instantiate.exception",
 						le.getCause(), DAOException.ERROR, true);
 				} catch(ClassNotFoundException cne) {
+					cne.printStackTrace(System.err);
 					throw new DAOException ("generator.classnotfound.factory.instantiate.exception",
 						cne.getCause(), DAOException.ERROR, true);
 				} catch(Exception ce) {
