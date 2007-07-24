@@ -1,11 +1,9 @@
 package com.jds.architecture.service.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import java.sql.Statement;
 
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
@@ -18,7 +16,6 @@ import com.jds.architecture.Logger;
 import com.jds.architecture.ServiceFactory;
 import com.jds.architecture.logging.LoggerService;
 import com.jds.architecture.service.dao.assembler.SkillsAssembler;
-import com.jds.architecture.service.dao.stmtgenerator.StatementGenSkill;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGenerator;
 import com.jds.architecture.service.dao.stmtgenerator.StatementGeneratorFactory;
 import com.jds.architecture.service.dbaccess.DBAccess;
@@ -40,60 +37,6 @@ public class SkillDAO implements DataAccessObjectInterface
 	private static Logger log = (Logger) ServiceFactory.getInstance().getService(LoggerService.class);
 	StatementGenerator stmtGen = null;
 
-//variables for test performing
-	protected String dbDriver;
-	protected String dbUrl;
-	protected String dbUser;
-	protected String dbPassword;
-	protected Connection conn;
-	
-//methods for test performing
-	public SkillDAO(String dbDriver, String dbUrl, String dbUser, String dbPassword) throws DAOException, DBAccessException
-	{
-		this.dbDriver = dbDriver;
-		this.dbUrl = dbUrl;
-		this.dbUser = dbUser;
-		this.dbPassword = dbPassword;
-		
-		log.info("initializing SkillDAO");
-		dbAccess = DBAccess.getDBAccess();
-		stmtGen =  StatementGeneratorFactory.getGenerator().getStmtGenerator(DAOConstants.GEN_SKILL);
-	}
-	public void reconnect() throws DAOException {
-		try
-		{
-			if (conn == null || conn.isClosed())
-			{
-				Class.forName(dbDriver);
-				conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-			}
-		}
-		catch (Exception e)
-		{
-			log.error("Could not initialize UrlDAO", e);
-			throw new DAOException("Could not initialize UrlDAO", e);
-		}
-	}
-	public void close() throws DAOException
-	{
-		if (conn != null)
-		{
-			try
-			{
-				conn.close();
-			}
-			catch (SQLException e)
-			{
-				log.error("Could not close connection", e);
-				throw new DAOException("Could not close connection", e);
-			}
-			conn = null;
-		}
-	}
-	public Connection getConnection() {
-		return conn;
-	}
-	
 //methods
 	/**
 	 * Default constructor.
