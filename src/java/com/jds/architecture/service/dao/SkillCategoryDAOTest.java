@@ -91,6 +91,30 @@ public class SkillCategoryDAOTest {
 
 	}
 	
+	@Test
+	public void createNull() throws DAOException, SQLException {
+		
+		SkillCategory skill = new SkillCategory();
+		skill.setCategoryId("2");
+		skill.setCategoryName("name2");
+		skill.setCategoryDescription("description2");
+	
+		try
+		{
+			cat.create(con, null);
+		}
+		catch (DAOException e)
+		{
+			return;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			fail(ex.toString());
+		}
+
+	}
+	
 	
 
 	@Test
@@ -105,16 +129,8 @@ public class SkillCategoryDAOTest {
 
 		try {
 			cat.find(obj);
-			//assertEquals("1", 2);
-			//assertEquals("name", "name1");
-			//assertEquals("desc", "desc1");
-
-			//return;
-		} catch (Exception ex) {
-			//ex.printStackTrace();
-			//System.err.println("everything is wrong");
-			//fail("wrong!");
 			
+		} catch (Exception ex) {
 			fail(ex.toString());
 		}
 
@@ -265,13 +281,7 @@ class Connector {
 		}
 
 	}
-
 	
-
-	
-
-	
-
 	public void setDbDriver(String dbDriver) {
 		//this.dbDriver = dbDriver;
 	}
