@@ -36,7 +36,6 @@ public class SkillDAO implements DataAccessObjectInterface
 	private DBAccess dbAccess = null;
 	private static Logger log = (Logger) ServiceFactory.getInstance().getService(LoggerService.class);
 	StatementGenerator stmtGen = null;
-
 //methods
 	/**
 	 * Default constructor.
@@ -92,7 +91,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @param Object - must be instance of SkillsInformation class
 	 * @throws DAOException
 	 */
-	// test: normal flow - OK; error flow - TODO needs test
+	//test: normal flow - OK; error flow - OK
 	public RowSet find(Object obj) throws DAOException
 	{
 		String sqlStmt = DAOConstants.SKILL_FIND_MAIN;
