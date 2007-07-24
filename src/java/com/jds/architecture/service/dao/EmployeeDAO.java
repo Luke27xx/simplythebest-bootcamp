@@ -240,13 +240,15 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 	 * Finds all records that matches the criteria
 	 * @param Object -  instance of EmployeeInfo used as search criteria
 	 * @return RowSet - rowset of found records
+	 * @throws DAOException 
 	 */
 	public RowSet find(Object object) throws DAOException {
 		
-		String sqlStmt = "SELECT * FROM employee WHERE ";
+		String sqlStmt = "SELECT * FROM employee WHERE @";
+		
+		StatementGenEmployee temp = new StatementGenEmployee();
 			
 		EmployeeInfo employeeReturn = null;
-		Connection conn = null;
 		String checkedFirstName;
 		String checkedLastName;
 
@@ -257,7 +259,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			EmployeeInfo searchCriteria = new EmployeeInfo();
 			searchCriteria = (EmployeeInfo)object;
 
-		if ( searchCriteria.getFirstName() != null  ) {
+/* if ( searchCriteria.getFirstName() != null  ) {
 				
 			sqlStmt += "firstname LIKE " + "'" + searchCriteria.getFirstName() + "'";
 					if ( searchCriteria.getLastName() != null )	
@@ -265,12 +267,17 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		
 		} else if (searchCriteria.getLastName() != null  )
 			sqlStmt += "lastname LIKE " + "'" +  searchCriteria.getLastName() + "'";
-		
-		
+*/
+			
 			log.debug("finding EmployeeInfo entry by specified fields");
+
+			Connection conn = null;
 			try {
-				CachedRowSet crs = new CachedRowSetImpl();	
+				
 				conn = dbAccess.getConnection();
+				CachedRowSet crs = new CachedRowSetImpl();	
+				String whereField = temp.transformStmt(searchCriteria, 2);
+				sqlStmt = sqlStmt.replaceFirst("@", whereField);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sqlStmt);
 		
@@ -286,6 +293,8 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			catch (SQLException e) {
 				throw new DAOException ("sql.find.exception.empdao",
 				e, DAOException.ERROR, true);
+			} catch ( Exception e2) {
+				 e2.printStackTrace();
 			}
 			finally {
 				try {
@@ -293,7 +302,9 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			} catch (DBAccessException e1) {
 				 	e1.printStackTrace();
 					}
+
 			}
+		return null;
 	}
 
 	/**
