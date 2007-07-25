@@ -6,10 +6,10 @@
  */
 package com.jds.architecture.service.dao.assembler;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
 //import java.util.Date;
 import javax.sql.RowSet;
 
@@ -69,6 +69,7 @@ public class EmployeeAssembler {
 		employeeReturn.setLastName(rs.getString("lastname"));
 		employeeReturn.setMiddleName(rs.getString("middlename"));
 		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
+		//employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
 		employeeReturn.setAge(rs.getInt("age"));		
 		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
 		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
@@ -100,6 +101,7 @@ public class EmployeeAssembler {
 		employeeReturn.setLastName(rs.getString("lastname"));
 		employeeReturn.setMiddleName(rs.getString("middlename"));
 		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
+		//employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
 		employeeReturn.setAge(rs.getInt("age"));		
 		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
 		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
