@@ -51,6 +51,18 @@ public class ProjectAssembler {
 		return projectReturn;
 	}
 	
+	public static ProjectInfo getInfo(RowSet rs) throws SQLException   {
+		ProjectInfo projectReturn  = new ProjectInfo();
+		projectReturn.setProjectId(rs.getString("id") );
+		projectReturn.setProjectName(rs.getString("name") ); 
+		projectReturn.setProjectDescription(rs.getString("description") );
+		projectReturn.setStartDate(new java.util.Date(((java.sql.Date)rs.getObject("startDate")).getTime()));
+		projectReturn.setEndDate(new java.util.Date(((java.sql.Date)rs.getObject("endDate")).getTime()));
+		projectReturn.setClient(rs.getString("clientname") );
+		projectReturn.setStatus(rs.getString("status") );
+		return projectReturn;
+	}
+	
 
 		public static void toEmptyStringAllNull(ProjectInfo obj) {
 		if(obj.getProjectDescrition() == null) obj.setProjectDescription(DAOConstants.STR_SPACE);
