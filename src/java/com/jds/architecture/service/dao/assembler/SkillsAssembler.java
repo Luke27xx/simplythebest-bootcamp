@@ -34,7 +34,7 @@ public class SkillsAssembler {
 	}
 
 	/**
-	 * Creates populated SkillSInformation from the Row set
+	 * Creates SkillSInformation from the Row set
 	 * 
 	 * @param ResultSet
 	 * @return EmployeeInfo
@@ -54,7 +54,7 @@ public class SkillsAssembler {
 	}
 
 	/**
-	 * Creates populated SkillSInformation from the Result set
+	 * Creates SkillSInformation from the Result set
 	 * 
 	 * @param RowSet
 	 * @return EmployeeInfo
