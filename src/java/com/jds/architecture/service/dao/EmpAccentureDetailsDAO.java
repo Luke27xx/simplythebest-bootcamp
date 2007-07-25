@@ -299,8 +299,7 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 					sqlWhere);
 
 			PreparedStatement stmt = conn.prepareStatement(sqlStmt);
-			ResultSet rs = stmt.executeQuery();
-			rs.close();
+			stmt.executeUpdate();
 			stmt.close();
 
 			log.debug("updated AccentureDetails entry");
@@ -312,10 +311,10 @@ public class EmpAccentureDetailsDAO implements DataAccessObjectInterface {
 			throw new DAOException("sql.update.exception.accdao", e,
 					DAOException.ERROR, true);
 		} finally {
-			try {
-				dbAccess.closeConnection(conn);
-			} catch (DBAccessException e1) {
-			}
+			//try {
+			//	dbAccess.closeConnection(conn);
+			//} catch (DBAccessException e1) {
+			//}
 		}
 	}
 
