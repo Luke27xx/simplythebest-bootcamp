@@ -64,7 +64,7 @@ public class AccentureDetailsAssembler {
 		detailsReturn.setDateHired(
 				new java.sql.Date(
 					(
-						(java.sql.Date) rs.getObject("datehired")
+						(java.sql.Timestamp) rs.getObject("datehired")
 					).getTime()
 				)
 				);
