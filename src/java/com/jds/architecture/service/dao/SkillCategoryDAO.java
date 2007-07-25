@@ -133,7 +133,7 @@ public class SkillCategoryDAO implements DataAccessObjectInterface {
 	}
 
 	/**
-	 * This method will find the corresponding record in the Employee table
+	 * This method will find the corresponding record in the Skill table
 	 * given the search criteria in the passed parameter.
 	 */
 	public RowSet find(Object obj) throws DAOException {
