@@ -204,7 +204,7 @@ public class SkillCategoryDAOTest {
 	 * @throws SQLException
 	 */
 	@Test 
-	public void find1() throws DAOException, SQLException {
+	public void findNull() throws DAOException, SQLException {
 		
 		SkillCategory obj = new SkillCategory();
 		RowSet rs;
