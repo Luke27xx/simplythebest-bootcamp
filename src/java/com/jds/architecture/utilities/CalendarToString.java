@@ -68,7 +68,10 @@ public class CalendarToString implements TransformStrategy {
 			returnStr = df.format(((Calendar) target).getTime());
 		} else if (target instanceof Date) {
 			returnStr = df.format(target);
-		} else {
+		}else if (target instanceof java.util.Date) {
+			returnStr = df.format(target);
+		} 		
+		else {
 			throw new ClassCastException("Wrong argument");
 		}
 

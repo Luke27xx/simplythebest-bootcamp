@@ -172,7 +172,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 				if (rs.next()) {
 					projectReturn = ProjectAssembler.getInfo(rs);
 				}
-				
+				stmt.close();
 				rs.close();
 				log.debug("found by pk ProjectInfo entry");
 			} catch (DBAccessException e) {
@@ -227,7 +227,7 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 		
 
 		Connection conn = null;
-
+		CachedRowSet crset =null;
 			try{
 				log.debug("finding ProjectInfo entry by specified fields");
 				conn = dbAccess.getConnection();
@@ -238,10 +238,10 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 
 				ResultSet rs = stmt.executeQuery();
 								
-				CachedRowSet crset = new CachedRowSetImpl();
+				crset = new CachedRowSetImpl();
 			    crset.populate(rs);
 				
-								
+			    stmt.close();				
 				rs.close();
 				log.debug("found ProjectInfo entry by specified fields");
 				return crset;
@@ -321,7 +321,9 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 
 				ResultSet rs = stmt.executeQuery();
-					rs.close();
+					
+				stmt.close();
+				rs.close();
 				
 			}
 			log.debug("updated ProjectInfo entry");
@@ -355,6 +357,8 @@ public class ProjectDAO  implements DataAccessObjectInterface {
 			CachedRowSet crs = new CachedRowSetImpl();
 			crs.populate(rs);
 			returnRowSet = (RowSet) crs;
+			
+			stmt.close();
 			rs.close();
 
 			log.debug("found all ProjectInfo entries");
