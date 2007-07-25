@@ -70,9 +70,13 @@ public class DAOConstants {
 			" VALUES ( ? , ? , ? , ?)";
 	protected static String SKILL_UPDATE_MAIN = "UPDATE skill SET @ WHERE @ ";
 	protected static String SKILL_DELETE = "DELETE skill WHERE  id =  ? ";
-	protected static String SKILL_FIND_MAIN = "SELECT * FROM skill WHERE @ ";
-	protected static String SKILL_FIND_BYPK = "SELECT * FROM skill WHERE  id =  ? ";
-	protected static String SKILL_FIND_ALL = "SELECT * FROM skill";
+
+	protected static String SKILL_FIND_MAIN = "SELECT skill.*, skillcategory.name as catname FROM skill left join skillcategory on skill.catid = skillcategory.id WHERE @ ";
+	protected static String SKILL_FIND_BYPK = "SELECT skill.*, skillcategory.name as catname FROM skill left join skillcategory on skill.catid = skillcategory.id WHERE  skill.id =  ? ";
+	protected static String SKILL_FIND_ALL = "SELECT skill.*, skillcategory.name as catname FROM skill left join skillcategory on skill.catid = skillcategory.id";
+//	protected static String SKILL_FIND_MAIN = "SELECT * FROM skill WHERE @ ";
+//	protected static String SKILL_FIND_BYPK = "SELECT * FROM skill WHERE  id =  ? ";
+//	protected static String SKILL_FIND_ALL = "SELECT * FROM skill";
 	
 	// constants for category sql create, update, delete, queries
 	protected static String SKILLCAT_CREATE = 
@@ -96,6 +100,15 @@ public class DAOConstants {
 	protected static String PROJ_FIND_ALL = "SELECT * FROM project";
 	
 	//column names
+	protected static String   COL_JOINSKILLID_LIKE = " LOWER(skill.id) = LOWER('@')";
+	public static String[]    COL_JOINSKILLID = {" skill.id = '@'", COL_JOINSKILLID_LIKE}; 
+	protected static String   COL_JOINSKILLNAME_LIKE = " LOWER(skill.name) LIKE LOWER('%@%')";
+	public static String[]    COL_JOINSKILLNAME = {" name = '@'", COL_JOINSKILLNAME_LIKE}; 
+	protected static String   COL_JOINSKILLDESCRIPTION_LIKE  = " LOWER(skill.description) LIKE LOWER('@')";
+	public static String[]    COL_JOINSKILLDESCRIPTION  = {" description = '@'", COL_JOINSKILLDESCRIPTION_LIKE};
+	protected static String   COL_JOINSKILLSTATUS_LIKE  = " LOWER(skill.status) = LOWER('@')";
+	public static String[]    COL_JOINSKILLSTATUS  = {" status = '@'", COL_JOINSKILLSTATUS_LIKE};
+
 	protected static String   COL_ID_LIKE = " LOWER(id) = LOWER('@')";
 	public static String[]    COL_ID = {" id = '@'", COL_ID_LIKE}; 
 	protected static String   COL_NAME_LIKE = " LOWER(name) LIKE LOWER('%@%')";
