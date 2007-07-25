@@ -59,8 +59,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 *@throws DAOException
 	 */
 	//test: normal flow - OK; error flow - OK
-	public void create(Connection conn, Object obj) throws DAOException
-	{
+	public void create(Connection conn, Object obj) throws DAOException{
 		if (!(obj instanceof SkillsInformation) || obj == null || !(conn instanceof Connection) || conn == null)
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
 		
@@ -69,19 +68,14 @@ public class SkillDAO implements DataAccessObjectInterface
 		
 		log.debug("creating SkillsInformation entry");
 		
-		try
-		{
+		try{
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
 			SkillsAssembler.getPreparedStatement(skill, stmt);
 			stmt.executeUpdate();
 			log.debug("created SkillsInformation entry");
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException("sql.create.exception.skilldao", e, DAOException.ERROR, true);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e){
 			throw new DAOException("create.exception.skildao", e.getCause(),  DAOException.ERROR, true);
 		}
 	}
@@ -93,8 +87,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @throws DAOException
 	 */
 	//test: normal flow - OK; error flow - OK
-	public RowSet find(Object obj) throws DAOException
-	{
+	public RowSet find(Object obj) throws DAOException{
 		String sqlStmt = DAOConstants.SKILL_FIND_MAIN;
 		String sqlFieldsToFind = null;
 		Connection conn = null;
@@ -103,12 +96,9 @@ public class SkillDAO implements DataAccessObjectInterface
 		if (!(obj instanceof SkillsInformation))
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
 
-		try
-		{
+		try{
 			sqlFieldsToFind = stmtGen.transformStmt(obj, DAOConstants.STMT_TYPE_WHERE);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e){
 			throw new DAOException(e.getMessage(), e, DAOException.ERROR, true);
 		}
 		
@@ -129,23 +119,15 @@ public class SkillDAO implements DataAccessObjectInterface
 		    rs.close();
 			
 			log.debug("found SkillsInformation entry by specified fields");
-		}
-		catch (DBAccessException e)
-		{
+		} catch (DBAccessException e){
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR, true);				
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException("sql.find.exception.skilldao", e, DAOException.ERROR, true);
-		}
-		finally
-		{
+		} finally{
 			try
 			{
 				dbAccess.closeConnection(conn);
-			}
-			catch (DBAccessException e)
-			{
+			} catch (DBAccessException e){
 				throw new DAOException(e.getMessageKey(), e, DAOException.ERROR, true);
 			}
 		}
@@ -159,13 +141,11 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return RowSet - all records in Skill table
 	 */
 	//test: normal flow - OK; error flow - OK
-	public RowSet findByAll() throws DAOException
-	{
+	public RowSet findByAll() throws DAOException{
 		String sqlStmt = DAOConstants.SKILL_FIND_ALL;
 		Connection conn = null;
 		CachedRowSet tmp;
-		try
-		{
+		try{
 			log.debug("finding all SkillsInformation entrys");
 			
 			conn = dbAccess.getConnection();
@@ -180,23 +160,16 @@ public class SkillDAO implements DataAccessObjectInterface
 			rs.close();
 			
 			log.debug("found all SkillsInformation entrys");
-		}
-		catch (DBAccessException e)
-		{
+		} catch (DBAccessException e){
 			throw new DAOException(e.getMessageKey(), e, DAOException.ERROR, true);				
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException("sql.findall.exception.skildao", e, DAOException.ERROR, true);
-		}
-		finally
-		{
+		} finally{
 			try
 			{
 				dbAccess.closeConnection(conn);
-			}
-			catch (DBAccessException e)
-			{
+			} catch (DBAccessException e){
+				
 			}
 		}
 		
@@ -211,8 +184,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * 
 	 */
 	//test: normal flow - OK, error flow - OK
-	public Object findByPK(Object obj) throws DAOException
-	{
+	public Object findByPK(Object obj) throws DAOException{
 		String sqlStmt = DAOConstants.SKILL_FIND_BYPK;
 		SkillsInformation skillReturn = null;
 
@@ -222,8 +194,7 @@ public class SkillDAO implements DataAccessObjectInterface
 		String pkToFind = (String)obj;				
 		Connection conn = null;
 
-		try
-		{
+		try{
 			log.debug("finding SkillsInformation entry by PK");
 			
 			conn = dbAccess.getConnection();
@@ -232,8 +203,7 @@ public class SkillDAO implements DataAccessObjectInterface
 			stmt.setString(1, pkToFind);
 			ResultSet rs = stmt.executeQuery();
 			
-			if (rs.next())
-			{
+			if (rs.next()){
 				skillReturn = SkillsAssembler.getInfo(rs);
 			}
 			if (skillReturn.getCategoryId() != null)
@@ -257,23 +227,15 @@ public class SkillDAO implements DataAccessObjectInterface
 			rs.close();
 			
 			log.debug("found SkillsInformation entry by PK");
-		}
-		catch (DBAccessException e)
-		{
+		} catch (DBAccessException e){
 			throw new DAOException (e.getMessageKey(), e, DAOException.ERROR, true);				
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException ("sql.findpk.exception.skilldao", e, DAOException.ERROR, true);
-		}
-		finally
-		{
+		} finally{
 			try
 			{
 				dbAccess.closeConnection(conn);
-			}
-			catch (DBAccessException e)
-			{
+			} catch (DBAccessException e){
 			}
 		}
 		return skillReturn;
@@ -287,8 +249,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return boolean - true if successfully removed
 	 */
 	//test: normal flow - OK; error flow - OK
-	public boolean remove(Connection conn, Object obj) throws DAOException
-	{
+	public boolean remove(Connection conn, Object obj) throws DAOException{
 		if (!(obj instanceof String) || obj == null)
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
 		
@@ -297,22 +258,16 @@ public class SkillDAO implements DataAccessObjectInterface
 	
 		log.debug("removing ProjectInfo entry");
 		
-		try
-		{	
+		try{	
 			PreparedStatement stmt = conn.prepareStatement(sqlstmt);
 			stmt.setString(1, skillToRemove);
 			stmt.executeUpdate();
 			
 			log.debug("removing SkillsInformation entry");
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException("sql.remove.exception.skilldao", e, DAOException.ERROR, true);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e){
 			throw new DAOException("remove.exception.skilldao", e.getCause(),  DAOException.ERROR, true);
- 
 		} 
 		return true;
 	}
@@ -326,8 +281,7 @@ public class SkillDAO implements DataAccessObjectInterface
 	 * @return boolean - true if successfully updated
 	 */
 	//test: normal flow - OK; error flow - OK
-	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException
-	{
+	public boolean update(Connection conn, Object objNew, Object objOld) throws DAOException{
 		if (!(objNew instanceof SkillsInformation) && !(objOld instanceof SkillsInformation))
 			throw new DAOException("invalid.object.skilldao", null, DAOException.ERROR, true);
 		
@@ -336,18 +290,14 @@ public class SkillDAO implements DataAccessObjectInterface
 		String sqlNew = null;
 		String sqlOld = null;
 		
-		try
-		{
+		try{
 			sqlNew = stmtGen.transformStmt(objNew, DAOConstants.STMT_TYPE_SET);
 			sqlOld = stmtGen.transformStmt(objOld, DAOConstants.STMT_TYPE_WHERE);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e){
 			throw new DAOException("update.exception.skilldao", e.getCause(),  DAOException.ERROR, true);
 		}
 		
-		try
-		{
+		try{
 			log.debug("updating SkillsInformation entry");
 			
 			sqlstmt = sqlstmt.replaceFirst("@", sqlNew).replaceFirst("@", sqlOld);
@@ -358,13 +308,9 @@ public class SkillDAO implements DataAccessObjectInterface
 			rs.close();
 			
 			log.debug("updated Skill entry");
-		}
-		catch (SQLException e)
-		{
+		} catch (SQLException e){
 			throw new DAOException("sql.update.exception.skilldao", e, DAOException.ERROR, true);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e){
 			throw new DAOException("update.exception.skilldao", e.getCause(),  DAOException.ERROR, true);
 		}
 		
