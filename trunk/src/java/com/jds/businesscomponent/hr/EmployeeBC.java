@@ -8,14 +8,14 @@
 package com.jds.businesscomponent.hr;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.sql.RowSet;
-
-
+//import com.jdbc.ResultSet;
 import com.jds.apps.Constants;
 import com.jds.apps.beans.AccentureDetails;
 import com.jds.apps.beans.EmployeeInfo;
@@ -36,6 +36,7 @@ import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 import com.jds.architecture.service.idgenerator.EmployeeIdGenerator;
 import com.jds.architecture.service.idgenerator.IdGeneratorException;
+//import com.mysql.jdbc.ResultSet;
 
 
 /**
@@ -94,6 +95,7 @@ public class EmployeeBC {
 	 * @throws HRSLogicalException when info, date of birth and accenture details is null 
 	 * @throws HRSSystemException when system exception occurred (e.g. Failed database connection)
 	 * @throws SQLException 
+	 * @throws SQLException 
 	 */
 	public void createEmployee(EmployeeInfo info) 
 		throws HRSSystemException, HRSLogicalException, SQLException {
@@ -124,6 +126,9 @@ public class EmployeeBC {
 		   }
 		   AccentureDetails details = info.getAccentureDetails();
 		   details.setEmployeeNo(info.getEmpNo());
+		  // if ( conn == null || conn.isClosed()) {
+			//   conn = dbAccess.getConnection();
+		   //}
 		   empAccDao.create(conn, details); 
 		   dbAccess.commitConnection(conn);
 		} catch (IdGeneratorException e) {
@@ -142,7 +147,7 @@ public class EmployeeBC {
 			} catch (DBAccessException e1) {}
 			if (e.isLogical()) throw new HRSLogicalException (e.getMessageKey()+".employee");
 			else throw new HRSSystemException (e.getMessageKey(),e.getCause());
-		} finally {
+		}	finally {
 			try {
 				dbAccess.closeConnection(conn);
 			} catch (DBAccessException e1) {}  
@@ -217,9 +222,11 @@ public class EmployeeBC {
 		List<EmployeeInfo> employeeInfoList = new ArrayList<EmployeeInfo>();
 		AccentureDetails accDet = new AccentureDetails();
 		EmployeeInfo employeeInfo = new EmployeeInfo();
-		
-		if ( info == null ) {
-			RowSet rsAll = empDao.findByAll();
+		RowSet rsAll;
+		//if ( info == null ) {
+		//if ( info==null ) {	
+		if ( info.getFirstName().equals("") && info.getLastName().equals("")){
+		rsAll= empDao.findByAll();
 			
 			while ( rsAll.next() ) {
 				
@@ -229,9 +236,10 @@ public class EmployeeBC {
 				   employeeInfo.setAccentureDetails(accDet);
 				   employeeInfoList.add(employeeInfo);
 				}
-				return employeeInfoList;	
+				rsAll.close();
+				return (Collection)employeeInfoList;	
 		}
-
+		else{
 		RowSet rs = empDao.find(info);
 		
 		while ( rs.next() ) {
@@ -241,7 +249,9 @@ public class EmployeeBC {
 		   employeeInfo.setAccentureDetails(accDet);
 		   employeeInfoList.add(employeeInfo);
 		}
-		return employeeInfoList;
+		rs.close();
+		return (Collection)employeeInfoList;
+		}
 	}
 
 	/**
@@ -276,12 +286,6 @@ public class EmployeeBC {
 				   accWhere.setEmployeeNo(infoSet.getEmpNo());
 				   
 				   empDao.update(conn, infoSet, infoWhere);
-				   dbAccess.commitConnection(conn);
-				   
-				   if ( conn == null || conn.isClosed()) {
-					   conn = dbAccess.getConnection();
-				   }
-				   
 				   empAccDao.update(conn, infoSet.getAccentureDetails(), accWhere);
 				   dbAccess.commitConnection(conn);  
 				   return true;
