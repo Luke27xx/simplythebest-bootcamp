@@ -140,7 +140,7 @@ public class SkillCategoryBC {
 			} catch (DBAccessException e1) {
 			}
 			if (e.isLogical())
-				throw new HRSLogicalException(e.getMessageKey() + ".employee");
+				throw new HRSLogicalException(e.getMessageKey() + ".category");
 			else
 				throw new HRSSystemException(e.getMessageKey(), e.getCause());
 		} finally {
