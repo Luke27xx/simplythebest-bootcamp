@@ -8,7 +8,7 @@ package com.jds.architecture.service.dao;
 
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +21,7 @@ import java.util.List;
 import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 
-import java.sql.*;
+//import java.sql.*;
 import javax.sql.*; 
 import javax.naming.*;
 import javax.ejb.*;
@@ -107,7 +107,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			
 		
 		String sqlstmt = DAOConstants.EMPSQL_CREATE;
-		
 		EmployeeInfo employee = (EmployeeInfo) object;
 
 		if(employee.getEmpNo() == null)
@@ -124,7 +123,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			EmployeeAssembler.getPreparedStatement(employee, stmt);
 			
 			stmt.executeUpdate();
-			stmt.close();
+			//stmt.close();
 			log.debug("created EmployeeInfo entry");
 		} catch (SQLException e) {
 			throw new DAOException ("sql.create.exception.empdao",
@@ -132,13 +131,13 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		} catch (Exception e) {
 			throw new DAOException ("create.exception.empdao",
 			e.getCause(),  DAOException.ERROR, true);
-		} finally {
+		}/* finally {
 			try {
-				dbAccess.closeConnection(conn);
+				//dbAccess.closeConnection(conn);
 		} catch (DBAccessException e) {
 			e.printStackTrace();
 			}
-		 }
+		 }*/
 	}
 		
 	
@@ -166,7 +165,9 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			stmt.setString(1, pk);
 			stmt.executeUpdate();
 			
+			stmt.close();
 		log.debug("removing EmployeeInfo entry by pk");
+		return true;
 		} catch (SQLException e) {
 			throw new DAOException ("sql.create.exception.empdao",
 			e, DAOException.ERROR, true);
@@ -178,11 +179,8 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				dbAccess.closeConnection(conn);
 			} catch (Exception e1) {
 				e1.printStackTrace();
-				
 			}
 		}
-
-	return true;
     }
 
 	
@@ -215,9 +213,9 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				}
 				
 				rs.close();
-				log.debug("found by pk EmployeeInfo entry");
-
-			
+				stmt.close();
+				
+			log.debug("found by pk EmployeeInfo entry");
 			} catch (SQLException e) {
 				throw new DAOException ("sql.findpk.exception.empdao",
 				e, DAOException.ERROR, true);
@@ -247,10 +245,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 		String sqlStmt = "SELECT * FROM employee WHERE @";
 		
 		StatementGenEmployee temp = new StatementGenEmployee();
-			
-		EmployeeInfo employeeReturn = null;
-		String checkedFirstName;
-		String checkedLastName;
 
 		if (!(object instanceof EmployeeInfo))
 			throw new DAOException ("invalid.object.empdao",
@@ -258,16 +252,6 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 			
 			EmployeeInfo searchCriteria = new EmployeeInfo();
 			searchCriteria = (EmployeeInfo)object;
-
-/* if ( searchCriteria.getFirstName() != null  ) {
-				
-			sqlStmt += "firstname LIKE " + "'" + searchCriteria.getFirstName() + "'";
-					if ( searchCriteria.getLastName() != null )	
-						sqlStmt += "and " + "lastname LIKE " + "'" + searchCriteria.getLastName() + "'";
-		
-		} else if (searchCriteria.getLastName() != null  )
-			sqlStmt += "lastname LIKE " + "'" +  searchCriteria.getLastName() + "'";
-*/
 			
 			log.debug("finding EmployeeInfo entry by specified fields");
 
@@ -280,10 +264,15 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				sqlStmt = sqlStmt.replaceFirst("@", whereField);
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sqlStmt);
-		
+				
+			//	if (rs.next()) {
+			//		employeeReturn = EmployeeAssembler.getInfo(rs);
+			//	}
+				
 				crs.populate(rs);
 				
 				rs.close();
+				stmt.close();
 			return crs;
 			}
 			catch (DBAccessException e){
@@ -325,7 +314,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 					DAOException.ERROR, true);
 
 		try {
-			RowSet rset = find(objWhere);
+			//RowSet rset = find(objWhere);
 
 			if (conn == null || conn.isClosed()) 
 				conn = dbAccess.getConnection();
@@ -341,6 +330,7 @@ public class EmployeeDAO implements DataAccessObjectInterface {
 				PreparedStatement stmt = conn.prepareStatement(sqlStmt);
 						
 				ResultSet rs = stmt.executeQuery();
+				stmt.close();
 				rs.close();
 
 		log.debug("updated AccentureDetails entry");
