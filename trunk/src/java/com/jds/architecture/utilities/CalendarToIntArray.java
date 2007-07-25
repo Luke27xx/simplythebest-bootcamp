@@ -47,7 +47,10 @@ public class CalendarToIntArray implements TransformStrategy {
 			calendarStr = sdf.format(((Calendar) target).getTime()).split(" ");
 		} else if (target instanceof Date) {
 			calendarStr = sdf.format(target).split(" ");
-		} else {
+		}else if (target instanceof java.util.Date) {
+			calendarStr = sdf.format(target).split(" ");
+		} 
+		else {
 			throw new ClassCastException("Wrong argument");
 		}
 

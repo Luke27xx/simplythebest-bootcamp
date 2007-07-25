@@ -1,6 +1,9 @@
+
 package com.jds.businesscomponent.hr;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +17,8 @@ import com.jds.apps.beans.AbstractReferenceData;
 import com.jds.apps.beans.AccentureDetails;
 import com.jds.apps.beans.EmployeeInfo;
 import com.jds.apps.beans.ProjectInfo;
+import com.jds.apps.beans.SkillCategory;
+import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.Logger;
 import com.jds.architecture.ServiceFactory;
 import com.jds.architecture.exceptions.HRSLogicalException;
@@ -26,6 +31,7 @@ import com.jds.architecture.service.dao.DataAccessObjectInterface;
 import com.jds.architecture.service.dao.EmployeeDAO;
 import com.jds.architecture.service.dao.ProjectDAO;
 import com.jds.architecture.service.dao.assembler.ProjectAssembler;
+import com.jds.architecture.service.dao.assembler.SkillCategoryAssembler;
 import com.jds.architecture.service.dbaccess.DBAccess;
 import com.jds.architecture.service.dbaccess.DBAccessException;
 import com.jds.architecture.service.idgenerator.EmployeeIdGenerator;
@@ -172,20 +178,25 @@ public class ProjectBC {
       */
     public Collection searchApprovedProjects(ProjectInfo dataFind) throws HRSSystemException, HRSLogicalException{
 		
+    	log.info("entered searchApprovedProjects method");
+    	
     	Collection result = searchReferenceData(dataFind, "approved");
+    	
+    	log.info("exited searchApprovedProjects method");
+    	
     	return result;
     	
     }
    
     //TODO Vytas
-    public Collection searchReferenceData(AbstractReferenceData dataFind, String approvalType) throws HRSSystemException, HRSLogicalException { 
+    public Collection<ProjectInfo> searchReferenceData(AbstractReferenceData dataFind, String approvalType) throws HRSSystemException, HRSLogicalException { 
         
         log.info("entered searchReferenceData method");
             
-        RowSet rset = null;
-        List<ProjectInfo> resultList = new ArrayList<ProjectInfo>();
+        Collection<ProjectInfo> resultList = new ArrayList<ProjectInfo>();
       
         try{
+        	ResultSet rset;
         	if (dataFind == null){
         		rset = projDao.findByAll();
         	}
@@ -194,21 +205,26 @@ public class ProjectBC {
             }
         	
         	while(rset.next()){
-               if (rset.getString("status").equalsIgnoreCase(approvalType)){
-                  resultList.add(ProjectAssembler.getInfo(rset)); 
+               
+        		ProjectInfo info1 = ProjectAssembler.getInfo(rset);
+        		if (!(info1.getStatus() == null) && info1.getStatus().equalsIgnoreCase("approved")){
+                  resultList.add(info1); 
                }
         		
         	}
         	
-        } catch (DAOException e) {
-            throw new HRSSystemException (e.getMessageKey(),e.getCause());
-        } catch (Exception e) {
-            throw new HRSSystemException ("business.component.exception",e.getCause());
-        }       
+        } catch (SQLException e) {
+			throw new HRSSystemException(e.getMessage(), e.getCause());
+		} catch (DAOException e) {
+			throw new HRSSystemException(e.getMessageKey(), e.getCause());
+		} catch (Exception e) {
+			throw new HRSSystemException("business.component.exception", e
+					.getCause());
+		}     
         
         log.info("exited searchReferenceData method");
         
-    	return resultList;
+    	return (Collection<ProjectInfo>) resultList;
     }
     
     //TODO Vytas
