@@ -41,11 +41,11 @@ public class StatementGenSkill extends StatementGenerator
 		
 		if (obj.getSkillId() != null)
 		{
-			sb.append(getColumnValue(isSet, DAOConstants.COL_ID, obj.getSkillId(), strConstant));
+			sb.append(getColumnValue(isSet, DAOConstants.COL_JOINSKILLID, obj.getSkillId(), strConstant));
 		}
 		if (obj.getSkillName() != null)
 		{
-			sb.append(getColumnValue(isSet, DAOConstants.COL_NAME, obj.getSkillName(), strConstant));
+			sb.append(getColumnValue(isSet, DAOConstants.COL_JOINSKILLNAME, obj.getSkillName(), strConstant));
 		}
 		if (obj.getCategoryId() != null)
 		{
@@ -53,7 +53,7 @@ public class StatementGenSkill extends StatementGenerator
 		}
 		if (obj.getSkillDescription() != null)
 		{
-			sb.append(getColumnValue(isSet, DAOConstants.COL_DESCRIPTION, obj.getDescription(), strConstant));
+			sb.append(getColumnValue(isSet, DAOConstants.COL_JOINSKILLDESCRIPTION, obj.getDescription(), strConstant));
 		}
 
 		

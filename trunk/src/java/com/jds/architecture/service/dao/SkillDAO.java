@@ -11,6 +11,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.jds.apps.beans.SkillCategory;
 import com.jds.apps.beans.SkillsInformation;
 import com.jds.architecture.Logger;
 import com.jds.architecture.ServiceFactory;
@@ -235,7 +236,23 @@ public class SkillDAO implements DataAccessObjectInterface
 			{
 				skillReturn = SkillsAssembler.getInfo(rs);
 			}
-			
+			if (skillReturn.getCategoryId() != null)
+			{
+				skillReturn.setCategoryName("TEST0");
+				
+				pkToFind = skillReturn.getCategoryId();
+				sqlStmt = DAOConstants.SKILLCAT_FIND_BYPK;
+				stmt = conn.prepareStatement(sqlStmt);
+				stmt.setString(1, pkToFind);
+	
+				rs = stmt.executeQuery();
+				
+				if (rs.next())
+				{
+					skillReturn.setCategoryName(rs.getString("name"));
+				}
+			}
+	
 			stmt.close();
 			rs.close();
 			
