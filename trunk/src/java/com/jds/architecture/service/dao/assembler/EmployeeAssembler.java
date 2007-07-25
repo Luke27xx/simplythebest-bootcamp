@@ -9,7 +9,8 @@ package com.jds.architecture.service.dao.assembler;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.GregorianCalendar;
+//import java.util.Date;
 import javax.sql.RowSet;
 
 import com.jds.apps.beans.EmployeeInfo;
@@ -37,7 +38,7 @@ public class EmployeeAssembler {
 		stmt.setString(2, employee.getFirstName());
 		stmt.setString(3, employee.getLastName());
 		stmt.setString(4, employee.getMiddleName());
-		stmt.setDate(5, new java.sql.Date(employee.getDob().getTime()));			
+		stmt.setDate(5, new java.sql.Date((employee.getDob().getTime())));
 		stmt.setInt(6, employee.getAge());
 		stmt.setString(7, new Character(employee.getGender()).toString());	
 		stmt.setString(8, employee.getCivilStatus());
@@ -67,7 +68,38 @@ public class EmployeeAssembler {
 		employeeReturn.setFirstName(rs.getString("firstname"));
 		employeeReturn.setLastName(rs.getString("lastname"));
 		employeeReturn.setMiddleName(rs.getString("middlename"));
-		employeeReturn.setDob(new java.util.Date(((java.sql.Date)rs.getObject("dateofbirth")).getTime()));
+		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
+		employeeReturn.setAge(rs.getInt("age"));		
+		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
+		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
+		employeeReturn.setCitizenship(rs.getString("citizenship"));
+		employeeReturn.setSssNo(rs.getString("sssno"));
+		employeeReturn.setTinNo(rs.getString("tinno"));
+		employeeReturn.setMobilePhoneNo(rs.getString("mobileno"));
+		employeeReturn.setHomePhoneNo(rs.getString("homeno"));
+		employeeReturn.setStreet1(rs.getString("stadd1"));
+		employeeReturn.setStreet2(rs.getString("stadd2"));
+		employeeReturn.setCity(rs.getString("city"));
+		employeeReturn.setState(rs.getString("province"));
+		employeeReturn.setCountry(rs.getString("country"));
+		employeeReturn.setEducationalAttainment(rs.getString("educattainment"));
+		employeeReturn.setRecognitions(rs.getString("recognition"));
+		return employeeReturn;
+	}
+	
+	/**
+	 * Creates populated EmployeeInfo vo from the Row set 
+	 * @param rs Row Set 
+	 * @return EmployeeInfo
+	 * @throws SQLException
+	 */
+	public static EmployeeInfo getInfo(RowSet rs) throws SQLException   {
+		EmployeeInfo employeeReturn  = new EmployeeInfo();
+		employeeReturn.setEmpNo(rs.getString("empno"));
+		employeeReturn.setFirstName(rs.getString("firstname"));
+		employeeReturn.setLastName(rs.getString("lastname"));
+		employeeReturn.setMiddleName(rs.getString("middlename"));
+		employeeReturn.setDob(new java.util.Date(((java.sql.Timestamp)rs.getObject("dateofbirth")).getTime()));
 		employeeReturn.setAge(rs.getInt("age"));		
 		employeeReturn.setGender(rs.getString("gender").toCharArray()[0]);
 		employeeReturn.setCivilStatus(rs.getString("civilstatus"));
